@@ -1,0 +1,7 @@
+{
+  "content": [
+    { "type": "server_tool_use", "id": "srvtoolu_1", "name": "web_search", "input": { "query": "linear oauth scopes" } },
+    { "type": "web_search_tool_result", "tool_use_id": "srvtoolu_1", "content": [{ "type": "web_search_result", "url": "https://linear.app/developers/oauth-2-0-authentication", "title": "OAuth 2.0 authentication" }] },
+    { "type": "text", "text": "Linear supports the read and write scopes.", "citations": [{ "type": "web_search_result_location", "url": "https://linear.app/developers/oauth-2-0-authentication", "title": "OAuth 2.0 authentication", "cited_text": "read - Read access for the user's account. This scope will always be present." }] }
+  ]
+}

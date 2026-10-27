@@ -129,14 +129,14 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Notes:** agent:a8b49097c6a2368e2. 15 node tests. Goldfish FAIL→PASS: probe read state.research (always empty in parallel fan-out) → now uses target.website + URL docsHints; SSRF guard (https only, no IPs/local/internal, manual redirects). Composio slug fallback strips hyphens (googlecalendar).
 
 ### T12 · Node: docs_research
-- **Status:** in_progress · **Tier:** A · **Deps:** T10, T01 · **Est:** 30 min · **Agent:** sonnet
+- **Status:** done · **Tier:** A · **Deps:** T10, T01 · **Est:** 30 min · **Agent:** sonnet
 - **Files:** `packages/agent/src/nodes/research.ts`, `packages/agent/src/prompts/research.md`, `packages/agent/test/research.test.ts`, `packages/agent/fixtures/unit/research-*.json`
 - **Spec:** 03_AGENT_GRAPH; 06_RESEARCH_PROTOCOL §Source ranking; DECISIONS D-API-5
 - **Accept:** parses a recorded server-tool response fixture into `ResearchNote[]` with url + quote; emits one `log` event per search query.
-- **Notes:** agent:a085424ad911165b4
+- **Notes:** agent:a085424ad911165b4. Goldfish FAIL→PASS: robust JSON extraction, pause_turn continuations, URL normalization. Live Linear recording: 23 s, 170k input tok (mostly cache), 13 notes. Found the llm.ts temperature bug (fixed as a T10 follow-up).
 
 ### T13 · Nodes: draft (Elephant), verify (Goldfish), finalize + repair loop
-- **Status:** todo · **Tier:** A · **Deps:** T11, T12 · **Est:** 45 min · **Agent:** sonnet
+- **Status:** in_progress · **Tier:** A · **Deps:** T11, T12 · **Est:** 45 min · **Agent:** sonnet
 - **Files:** `packages/agent/src/nodes/{draft,verify,finalize}.ts`, `packages/agent/src/prompts/{draft,verify}.md`, `packages/agent/test/{draft,verify,finalize}.test.ts`
 - **Spec:** 03_AGENT_GRAPH §Nodes (verify gets ONLY claims + sources); 02_GUIDE_SCHEMA
 - **Accept:**

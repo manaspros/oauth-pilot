@@ -1,0 +1,29 @@
+{
+  "content": [
+    { "type": "server_tool_use", "id": "srvtoolu_1", "name": "web_search", "input": { "query": "Linear OAuth 2.0 app registration" } },
+    {
+      "type": "web_search_tool_result",
+      "tool_use_id": "srvtoolu_1",
+      "content": [
+        { "type": "web_search_result", "url": "https://linear.app/developers/oauth-2-0-authentication", "title": "OAuth 2.0 authentication" },
+        { "type": "web_search_result", "url": "https://rollout.com/integration-guides/linear/how-to-build-a-public-linear-integration-building-the-auth-flow", "title": "Building a public Linear integration" }
+      ]
+    },
+    { "type": "server_tool_use", "id": "srvtoolu_2", "name": "web_search", "input": { "query": "Linear OAuth app scopes admin actor" } },
+    {
+      "type": "web_search_tool_result",
+      "tool_use_id": "srvtoolu_2",
+      "content": [{ "type": "web_search_result", "url": "https://linear.app/developers/oauth-actor-authorization", "title": "OAuth actor authorization" }]
+    },
+    { "type": "server_tool_use", "id": "srvtoolu_3", "name": "web_fetch", "input": { "url": "https://linear.app/developers/oauth-2-0-authentication" } },
+    {
+      "type": "web_fetch_tool_result",
+      "tool_use_id": "srvtoolu_3",
+      "content": { "type": "web_fetch_result", "url": "https://linear.app/developers/oauth-2-0-authentication", "content": { "title": "OAuth 2.0 authentication" } }
+    },
+    {
+      "type": "text",
+      "text": "[{\"topic\":\"registration\",\"finding\":\"The authorization URL is https://linear.app/oauth/authorize.\",\"url\":\"https://linear.app/developers/oauth-2-0-authentication\",\"title\":\"OAuth 2.0 authentication\",\"quote\":\"The Linear OAuth2 authorization URL is https://linear.app/oauth/authorize, which you call with parameters such as response_type=code, client_id, redirect_uri and scope.\"},{\"topic\":\"scopes\",\"finding\":\"Actor authorization lets an app act as itself.\",\"url\":\"https://linear.app/developers/oauth-actor-authorization\",\"quote\":\"actor=app\"},{\"topic\":\"gotchas\",\"finding\":\"Hallucinated source not retrieved.\",\"url\":\"https://example.invalid/never-seen\",\"quote\":\"made up\"}]"
+    }
+  ]
+}

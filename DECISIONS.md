@@ -76,3 +76,8 @@ Consequence: agent tests are typechecked by `pnpm typecheck`.
 Context: probe runs in parallel with docs_research, so it can't use research URLs; all probe URLs are LLM-derived.
 Decision: intake puts up to 2 provider https URLs (console, OAuth docs) into `target.docsHints`. Probe GETs .well-known on website/api./auth. and HEADs the URL hints. Only https is allowed: no IP literals, localhost, .local, .internal or single-label hosts, and redirects are recorded, not followed. Composio slugs drop separators (`googlecalendar`; checked: `google_calendar` → 404).
 Consequence: draft turns ok probes into `tested` claims; rejected URLs show as `ok:false` "skipped: <reason>".
+
+### D-API-7 claude-sonnet-5-5 rejects non-default temperature
+Context: T12's live run through ChatAnthropic failed: "temperature is not supported for claude-sonnet-5-5 when set to non-default values".
+Decision: makeLlm() sets no temperature and takes `{maxTokens?, model?}` overrides. Nodes use makeLlm().
+Consequence: outputs are not temperature-pinned; determinism comes from fixtures in fake mode.

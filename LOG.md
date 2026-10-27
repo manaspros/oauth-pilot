@@ -54,3 +54,8 @@
 ## 2026-10-28T00:10+05:30 T11 PASS
 - intake (LLM with a deterministic fallback), composio_lookup (v3.1 toolkit + recommended scopes, with per-tool fallback), probe (well-known + HEAD). 15 tests, no network.
 - Goldfish FAIL → round 1: probe topology bug (read research in a parallel branch), SSRF guard, capped body read, Composio slug format (orchestrator verified googlecalendar). D-AGENT-2.
+
+## 2026-10-28T00:15+05:30 T12 PASS
+- docs_research: web_search (max 8) + web_fetch_20250910 (max 6), parser → ResearchNote[], one log per query, pause_turn handling. 8 research tests incl. a LIVE recorded Linear response.
+- Live numbers: 23 s, 170k input tokens (69k cache write, 101k cache read), 2.6k output, 13 notes. Watch the cost in T14/T21.
+- Goldfish FAIL → round 1 PASS. Found D-API-7 (temperature). The llm.ts fix landed as a T10 follow-up (31 agent tests).
