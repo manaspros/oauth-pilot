@@ -194,11 +194,11 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Notes:** agent:a1d71ef7a4638ad95. validate passes (plugin + marketplace); schema --check ok. `claude -p --plugin-dir` showed MCP connected, skill + agent loaded ($0.0055). .mcp.json DATA_DIR=${CLAUDE_PLUGIN_DATA} (expansion not directly observed). Goldfish PASS; added never-claim-tested rule.
 
 ### T20 · Plugin: oauth-setup skill, templates, Composio scripts
-- **Status:** in_progress · **Tier:** B · **Deps:** T19, T01 · **Est:** 40 min · **Agent:** sonnet
+- **Status:** done · **Tier:** B · **Deps:** T19, T01 · **Est:** 40 min · **Agent:** sonnet
 - **Files:** `plugin/oauth-pilot/{skills/oauth-setup,templates,scripts}/**`
 - **Spec:** 04_PLUGIN §oauth-setup; DECISIONS D-API-3/4
 - **Accept:** both scripts support `--help` and `--dry-run` (prints the exact request with the secret masked); SKILL.md contains the safety rules verbatim. If D-API-3 is unconfirmed, the scripts are replaced by printed manual steps and this is noted.
-- **Notes:** agent:ab445692c6286417c
+- **Notes:** agent:ab445692c6286417c. oauth-setup SKILL (safety rules verbatim, human gates), 2 dependency-free scripts (--help, --dry-run masked), 5 templates. Goldfish PASS; round 1 hardened redaction/mask/.env append. Live create path unexercised (T22).
 
 ## Phase 6 — Library + verification
 

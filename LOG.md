@@ -93,3 +93,7 @@
 ## 2026-10-27T23:06+05:30 T19 PASS
 - Plugin manifest + marketplace, oauth-guide skill (MCP first, in-session EGM fallback), oauth-goldfish agent, generated schema + --check. validate passes; live -p load: MCP connected, skill/agent registered.
 - Goldfish PASS. Orchestrator checked the SDK: an empty ANTHROPIC_BASE_URL falls back to api.anthropic.com (`baseURL || default`). Open: root README needs an install line (T25).
+
+## 2026-10-27T23:09+05:30 T20 PASS
+- oauth-setup skill + composio-auth-config.mjs / composio-connect.mjs (D-API-3/4 shapes, dry-run masks secrets) + templates (env, privacy policy, scope justification, demo script, console steps). validate passes.
+- Goldfish PASS; round 1: redact-before-slice incl. JSON-escaped secrets, short-secret mask, no duplicate .env keys. Live create path left for T22.
