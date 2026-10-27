@@ -88,7 +88,8 @@
         "c1",
         "c22",
         "c21",
-        "tc1"
+        "tc1",
+        "c25"
       ]
     },
     {
@@ -664,8 +665,8 @@
     },
     {
       "id": "c8",
-      "text": "A third-party security assessment applies only when restricted scope data is stored or transmitted on servers, so a sensitive-only app does not need one.",
-      "evidence": "sourced",
+      "text": "Google says a security assessment is needed if you store or transmit restricted scope data on servers. Calendar scopes are not on Google's restricted list, so a sensitive-only Calendar app is inferred not to need one.",
+      "evidence": "inferred",
       "sources": [
         {
           "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification",
@@ -674,10 +675,10 @@
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "medium",
+      "confidence": "low",
       "verifier": {
         "verdict": "partially_supported",
-        "note": "The page says storing or transmitting restricted scope data on servers requires a security assessment. It does not state 'only' or say that sensitive-only apps are exempt."
+        "note": "corrected in audit 2026-10-27: original added 'only' and an exemption the page does not state; split into sourced rule plus inference (pack f7)."
       }
     },
     {
@@ -737,19 +738,19 @@
     {
       "id": "c12",
       "text": "Web server apps create a client by clicking Create Client and selecting the Web application type.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://developers.google.com/identity/protocols/oauth2/web-server",
           "title": "Using OAuth 2.0 for Web Server Applications | Authorization | Google for Developers",
-          "quote": "Go to the Clients page. Click Create Client. Select the Web application application type. Fill in the form and click Create.",
+          "quote": "Click Create Client. ... Select the Web application application type.",
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "high",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: original quote merged two separate numbered steps into one sentence; page lists 'Click Create Client.' and 'Select the Web application application type.' as separate items."
       }
     },
     {
@@ -874,8 +875,8 @@
       ],
       "confidence": "high",
       "verifier": {
-        "verdict": "not_checked",
-        "note": "source could not be fetched or judged"
+        "verdict": "supported",
+        "note": "verified in audit 2026-10-27 via WebFetch (pipeline verifier could not fetch/judge the page)."
       }
     },
     {
@@ -892,8 +893,8 @@
       ],
       "confidence": "medium",
       "verifier": {
-        "verdict": "not_checked",
-        "note": "source could not be fetched or judged"
+        "verdict": "supported",
+        "note": "verified in audit 2026-10-27 via WebFetch (pipeline verifier could not fetch/judge the page)."
       }
     },
     {
@@ -910,8 +911,8 @@
       ],
       "confidence": "medium",
       "verifier": {
-        "verdict": "not_checked",
-        "note": "source could not be fetched or judged"
+        "verdict": "supported",
+        "note": "verified in audit 2026-10-27 via WebFetch (pipeline verifier could not fetch/judge the page)."
       }
     },
     {
@@ -928,8 +929,8 @@
       ],
       "confidence": "medium",
       "verifier": {
-        "verdict": "not_checked",
-        "note": "source could not be fetched or judged"
+        "verdict": "supported",
+        "note": "verified in audit 2026-10-27 via WebFetch (pipeline verifier could not fetch/judge the page)."
       }
     },
     {
@@ -960,6 +961,17 @@
         "verdict": "supported",
         "note": "The page says an org_internal error is displayed when authorization is requested from users outside the project's parent organization."
       }
+    },
+    {
+      "id": "c25",
+      "text": "Inference: calendar.events is a sensitive (not restricted) scope. Google's Calendar scope page gives no per-scope label; this rests on Google's example of reading Calendar events as sensitive plus a third-party table. Confirm in the Cloud Console scope picker.",
+      "evidence": "inferred",
+      "sources": [],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "not_checked",
+        "note": "no source cited"
+      }
     }
   ],
   "openQuestions": [
@@ -967,11 +979,6 @@
     "What sensitivity tier does calendar.calendars.readonly have? The Composio required-scope list includes it conditionally for GOOGLECALENDAR_CREATE_EVENT, but the Composio managed available scopes list only calendar and calendar.events.",
     "Would calendar.events.owned or calendar.app.created satisfy the scheduling use case with a lower sensitivity tier? The scope page does not state tiers.",
     "What are the numeric Calendar API per-minute quotas, and what will the planned 2026 overage charges be?",
-    "Does Google require the production publishing status to be set before data-access verification is requested, or can the request be made from Testing?",
-    "Unverified: Web server apps create a client by clicking Create Client and selecting the Web application type. (cited quote not found on the fetched page)",
-    "Could not check: Calendar rateLimitExceeded errors can return 403 or 429 and should be handled with exponential ba...",
-    "Could not check: Calendar API quotas are calculated per minute using a sliding window. The numeric limits were not...",
-    "Could not check: Narrower event scopes exist, such as calendar.events.owned for events on calendars the user owns....",
-    "Could not check: The Calendar scope page lists calendar.events.readonly as the read-only variant for viewing event..."
+    "Does Google require the production publishing status to be set before data-access verification is requested, or can the request be made from Testing?"
   ]
 }

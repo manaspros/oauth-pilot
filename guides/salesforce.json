@@ -20,10 +20,10 @@
     ]
   },
   "verdict": {
-    "tier": 1,
-    "tierLabel": "Self-serve",
-    "headline": "Connect today with Composio's managed OAuth app. For production, register your own External Client App, which is self-serve with no provider review unless you list on AgentExchange.",
-    "startToday": "Start the managed Composio connection now (minutes). Then create your own External Client App in Setup > App Manager. It is the slowest step but still takes only a few hours, and legacy Connected Apps can no longer be created.",
+    "tier": 2,
+    "tierLabel": "Light review",
+    "headline": "Connect today with Composio's managed OAuth app. For production in a customer org, register your own External Client App; no provider review is needed unless you list on AgentExchange, but the org admin must approve the app.",
+    "startToday": "Start the managed Composio connection now (minutes), and ask the customer's Salesforce org admin to approve or install the app early: that wait is outside your control. Then create your own External Client App in Setup > App Manager; Connected Apps may no longer be creatable (reported, low confidence).",
     "timeToFirstConnection": {
       "minHours": 0.1,
       "maxHours": 0.5,
@@ -34,14 +34,15 @@
       ]
     },
     "timeToProduction": {
-      "minHours": 1,
-      "maxHours": 4,
-      "label": "1-4 hours",
+      "minHours": 1.5,
+      "maxHours": 28,
+      "label": "1.5 hours to about a day (admin-dependent)",
       "basis": "estimate",
       "claimIds": [
         "c1",
         "c2",
-        "c17"
+        "c17",
+        "c19"
       ]
     },
     "activeEffort": {
@@ -61,7 +62,8 @@
       "c1",
       "c2",
       "c3",
-      "c17"
+      "c17",
+      "c19"
     ]
   },
   "composio": {
@@ -141,6 +143,16 @@
         "c2",
         "c16"
       ]
+    },
+    {
+      "id": "req4",
+      "item": "A Salesforce org admin in the customer org who approves/installs the app and sets its policies (Permitted Users, refresh-token policy)",
+      "owner": "admin",
+      "neededFor": "production",
+      "gate": false,
+      "claimIds": [
+        "c19"
+      ]
     }
   ],
   "steps": [
@@ -171,7 +183,7 @@
       "phase": "register",
       "title": "Create an External Client App",
       "actor": "developer",
-      "detail": "In Salesforce, go to Setup, search Quick Find for 'App Manager', click App Manager, then New External Client App. Fill in the app name and your contact email. Do not try to create a legacy Connected App, since new ones are blocked as of Spring '26.",
+      "detail": "In Salesforce, go to Setup, search Quick Find for 'App Manager', click App Manager, then New External Client App. Fill in the app name and your contact email. Do not try to create a legacy Connected App, since new ones are reportedly blocked as of Spring '26 (low-confidence sources).",
       "duration": {
         "minHours": 0.25,
         "maxHours": 0.5,
@@ -280,12 +292,35 @@
         "claimIds": []
       },
       "dependsOn": [
-        "s5"
+        "s5",
+        "s7"
       ],
       "links": [],
       "claimIds": [
         "c16",
         "c8"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s7",
+      "phase": "configure",
+      "title": "Org admin approves or installs the app",
+      "actor": "admin",
+      "detail": "Ask a Salesforce org admin to approve or install the app and set its policies. Until they do, authorization can fail with OAUTH_APPROVAL_ERROR_GENERIC. Provider gives no duration; the wait depends on your admin.",
+      "duration": {
+        "minHours": 0.25,
+        "maxHours": 24,
+        "label": "15 minutes to a day (provider gives no duration)",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s5"
+      ],
+      "links": [],
+      "claimIds": [
+        "c19"
       ],
       "optional": false
     }
@@ -297,7 +332,7 @@
       "severity": "warning",
       "gate": false,
       "symptom": "Old tutorials say to create a Connected App, but the option is missing or blocked in Setup.",
-      "fix": "Use an External Client App (Setup > App Manager > New External Client App). Salesforce Support can re-enable Connected App creation for now, but not in future releases.",
+      "fix": "Use an External Client App (Setup > App Manager > New External Client App). Reportedly Salesforce Support can re-enable Connected App creation for now, but not in future releases.",
       "claimIds": [
         "c3"
       ]
@@ -344,10 +379,11 @@
       "severity": "info",
       "gate": false,
       "symptom": "Only applies if you distribute a managed package or Platform API solution through Salesforce's marketplace.",
-      "fix": "For your own use or direct customer connections you do not need this. If you list, plan for security review. Salesforce's typical estimates are 1-2 weeks for submission verification, 3-4 weeks for the first Product Security test and 2-3 weeks for a resubmission, and they are only estimates.",
+      "fix": "For your own use or direct customer connections you do not need this. If you list, plan for security review. Salesforce's own pages conflict on duration (4-6 weeks vs 4-5 weeks) and on cost ($2,700 per paid app plus $150 per year vs $999 per submission), so confirm current figures with Salesforce.",
       "claimIds": [
         "c13",
-        "c14"
+        "c14",
+        "c18"
       ]
     },
     {
@@ -371,6 +407,17 @@
       "fix": "Recreate the ECA in the sandbox or package it.",
       "claimIds": [
         "c15"
+      ]
+    },
+    {
+      "id": "risk8",
+      "title": "Org admin must approve the app; only five refresh tokens per user",
+      "severity": "warning",
+      "gate": false,
+      "symptom": "OAUTH_APPROVAL_ERROR_GENERIC during authorization, or older connections failing after a sixth authorization by the same user.",
+      "fix": "Ask an org admin to approve or install the app. Reuse connections instead of re-authorizing; Salesforce keeps only five active refresh tokens per user per app.",
+      "claimIds": [
+        "c19"
       ]
     }
   ],
@@ -437,6 +484,12 @@
           "title": "Salesforce Platform: New Connected Apps Can No Longer Be Created in Spring '26 | Salesforce Help",
           "quote": "However, no new connected apps can be created with the Spring ‘26 release unless enabled by Salesforce Support. In future releases, Salesforce Support won’t be able to enable the creation of new connected apps.",
           "accessedAt": "2026-10-27"
+        },
+        {
+          "url": "https://striim.com/docs/en/salesforce-connected-apps-and-external-client-apps.html",
+          "title": "Salesforce connected apps and external client apps | Striim docs (third-party)",
+          "quote": "creation of new Connected Apps is disabled by default in all orgs, through both the UI and the API.",
+          "accessedAt": "2026-10-27"
         }
       ],
       "confidence": "low",
@@ -465,7 +518,7 @@
     },
     {
       "id": "c5",
-      "text": "Salesforce's Mobile SDK docs say that for most apps the refresh_token, web and api scopes are sufficient. Composio lists api as the required scope for this toolkit.",
+      "text": "Salesforce's Mobile SDK docs say that for most apps the refresh_token, web and api scopes are sufficient.",
       "evidence": "sourced",
       "sources": [
         {
@@ -478,7 +531,7 @@
       "confidence": "medium",
       "verifier": {
         "verdict": "partially_supported",
-        "note": "Mobile SDK sentence is confirmed, but the page says nothing about Composio listing api as the required scope."
+        "note": "corrected in audit 2026-10-27: removed the unbacked 'Composio lists api as the required scope' sentence"
       }
     },
     {
@@ -538,7 +591,7 @@
     {
       "id": "c9",
       "text": "Third-party source (Clientell): idle refresh tokens expire from 4 November 2026.",
-      "evidence": "sourced",
+      "evidence": "inferred",
       "sources": [
         {
           "url": "https://www.getclientell.com/salesforce-blogs/salesforce-connected-app-changes-spring-26",
@@ -547,10 +600,10 @@
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "medium",
+      "confidence": "low",
       "verifier": {
         "verdict": "supported",
-        "note": "Page states idle refresh tokens expire from 4 November 2026, attributed to Salesforce's security roadmap via Clientell."
+        "note": "corrected in audit 2026-10-27: third-party blog (rank 3), downgraded from sourced to inferred"
       }
     },
     {
@@ -627,7 +680,7 @@
     },
     {
       "id": "c14",
-      "text": "Salesforce says security review time frames are estimates and depend on submission completeness and submission volume. Its typical published figures are 1-2 weeks for submission verification, 3-4 weeks for the first Product Security test and 2-3 weeks for a resubmission.",
+      "text": "Salesforce says security review time frames are estimates and depend on submission completeness and volume. Salesforce pages disagree on the total: the partner page says about 4-6 weeks from a complete submission, the Trailhead page says typically 4-5 weeks. The packaging guide breaks it into 1-2 weeks verification, 3-4 weeks first test, 2-3 weeks resubmission.",
       "evidence": "sourced",
       "sources": [
         {
@@ -635,12 +688,24 @@
           "title": "How the AgentExchange Security Review Works | ISVforce Guide: Build and Distribute AgentExchange Solutions | ISVforce Guide | Salesforce Developers",
           "quote": "The time frames are estimates. Several factors affect the actual duration of your review, such as the completeness of your submission, and the total volume of submissions.",
           "accessedAt": "2026-10-27"
+        },
+        {
+          "url": "https://partners.salesforce.com/s/education/appinnovators/Security_Review?language=en",
+          "title": "Security Review | Salesforce Partner Education",
+          "quote": "The review process takes about 4-6 weeks from when we receive a complete submission.",
+          "accessedAt": "2026-10-27"
+        },
+        {
+          "url": "https://trailhead.salesforce.com/content/learn/modules/isv_security_review/isv_security_review_submit",
+          "title": "Submit your solution for security review | Trailhead",
+          "quote": "A solution typically takes 4–5 weeks to get through the review process.",
+          "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "high",
+      "confidence": "medium",
       "verifier": {
         "verdict": "supported",
-        "note": "Page says time frames are estimates affected by completeness and volume, and lists 1–2 weeks, 3–4 weeks and 2–3 weeks."
+        "note": "corrected in audit 2026-10-27: added the 4-6 vs 4-5 week conflict from the evidence pack"
       }
     },
     {
@@ -664,7 +729,7 @@
     {
       "id": "c16",
       "text": "A callback URL that does not match the configured one fails with error=redirect_uri_mismatch (from a PTC/ServiceMax support page).",
-      "evidence": "sourced",
+      "evidence": "inferred",
       "sources": [
         {
           "url": "https://support.ptc.com/help/servicemaxcore/en/articles/service_board/troubleshooting_oauth_redirect_uri_mismatch_errors.html",
@@ -673,10 +738,10 @@
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "medium",
+      "confidence": "low",
       "verifier": {
         "verdict": "not_checked",
-        "note": "source could not be fetched or judged"
+        "note": "corrected in audit 2026-10-27: source could not be fetched or judged; downgraded from sourced to inferred"
       }
     },
     {
@@ -689,6 +754,60 @@
         "verdict": "not_checked",
         "note": "no source cited"
       }
+    },
+    {
+      "id": "c18",
+      "text": "Salesforce's own pages conflict on security review cost: the partner education page says $2,700 per paid app (no fee for free apps) plus a $150 annual listing fee; the Trailhead page asks for $999 for the initial submission. Which is current is unresolved.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://partners.salesforce.com/s/education/appinnovators/Security_Review?language=en",
+          "title": "Security Review | Salesforce Partner Education",
+          "quote": "The initial Security Review fee is $2,700 USD for each paid app submitted (no fee for free apps).",
+          "accessedAt": "2026-10-27"
+        },
+        {
+          "url": "https://trailhead.salesforce.com/content/learn/modules/isv_security_review/isv_security_review_submit",
+          "title": "Submit your solution for security review | Trailhead",
+          "quote": "we ask for a $999 fee payment for the initial submission",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "medium",
+      "verifier": {
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: added from evidence pack f12/f13 (conflict presented, not resolved)"
+      }
+    },
+    {
+      "id": "c19",
+      "text": "Admin approval: Composio says to ask a Salesforce org admin to approve or install the app, and that Salesforce allows only five active refresh tokens per user per connected app. On External Client Apps, the org admin owns the Policies tab and may need to deploy a packaged app first.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://docs.composio.dev/toolkits/salesforce",
+          "title": "Salesforce toolkit | Composio docs",
+          "quote": "Ask a Salesforce org admin to approve or install the connected app.",
+          "accessedAt": "2026-10-27"
+        },
+        {
+          "url": "https://docs.composio.dev/toolkits/salesforce",
+          "title": "Salesforce toolkit | Composio docs",
+          "quote": "Salesforce allows only five active refresh tokens per user per connected app.",
+          "accessedAt": "2026-10-27"
+        },
+        {
+          "url": "https://trailhead.salesforce.com/content/learn/modules/external-client-app-basics/separate-developers-from-admins",
+          "title": "Separate developers from admins | Trailhead",
+          "quote": "gets admin permission for the external client app, so he can make edits to the policies.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "medium",
+      "verifier": {
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: added from evidence pack f6/f7/f18 (Composio docs are rank 3)"
+      }
     }
   ],
   "openQuestions": [
@@ -696,13 +815,9 @@
     "How long does a newly created External Client App take to become usable for authorization? Salesforce docs researched give no figure.",
     "Does the Composio managed app comply with Salesforce's refresh-token security changes, such as the idle TTL and the 4 November 2026 expiry reported by a third party? This was not confirmed.",
     "Should the assistant be distributed on AgentExchange, and if so, does Salesforce's security review apply to a Composio-backed integration?",
-    "Unverified: After selecting Enable OAuth on the external client app you enter a callback URL that Salesforce ... (cited quote not found on the fetched page)",
-    "Unverified: New legacy Connected Apps can no longer be created as of Spring '26 unless Salesforce Support ena... (cited quote not found on the fetched page)",
-    "Unverified: OAuth scopes are selected on the external client app and are granted as tokens after the app is a... (cited quote not found on the fetched page)",
-    "Unverified: AppExchange security review guidance says apps should apply least privilege to scopes and must no... (cited quote not found on the fetched page)",
-    "Unverified: The Enforce Refresh Token IP Allowlist option on an external client app restricts which IPs can c... (cited quote not found on the fetched page)",
-    "Unverified: Refreshing with an expired or revoked refresh token returns invalid_grant with 'expired access/re... (cited quote not found on the fetched page)",
-    "Unverified: Local external client apps are not copied when a sandbox is cloned or refreshed; only packaged on... (cited quote not found on the fetched page)",
-    "Could not check: A callback URL that does not match the configured one fails with error=redirect_uri_mismatch (fro..."
+    "Could not check: A callback URL that does not match the configured one fails with error=redirect_uri_mismatch (fro...",
+    "Does an admin need Permitted Users pre-authorization or per-org approval for an own External Client App beyond deploying it? Trailhead does not describe per-org approval and help pages were unfetchable.",
+    "Salesforce security review fee ($2,700 + $150/yr vs $999) and duration (4-6 vs 4-5 weeks) conflict between Salesforce pages.",
+    "Could not check claims c2, c3, c4, c6, c7, c8, c15: they cite help.salesforce.com articles (JS-rendered pages; quotes not confirmed). They stay inferred/low."
   ]
 }

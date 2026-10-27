@@ -564,44 +564,44 @@
     },
     {
       "id": "c2",
-      "text": "Redirect URIs for web server apps must use HTTPS.",
+      "text": "Redirect URIs for web server apps must use HTTPS, except localhost URIs.",
       "evidence": "sourced",
       "sources": [
         {
           "url": "https://support.google.com/cloud/answer/15549257?hl=en",
           "title": "Manage OAuth Clients - Google Cloud Platform Console Help",
-          "quote": "Redirect URIs must use the HTTPS scheme, not plain HTTP.",
+          "quote": "Redirect URIs must use the HTTPS scheme, not plain HTTP. Localhost URIs (including localhost IP address URIs) are exempt from this rule.",
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "medium",
+      "confidence": "high",
       "verifier": {
-        "verdict": "partially_supported",
-        "note": "The page says redirect URIs must use HTTPS, but localhost URIs are exempt, so the unqualified claim is too broad."
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: original claim omitted the localhost exemption; quote taken from the same page text as the Google Calendar guide's verified c14."
       }
     },
     {
       "id": "c3",
       "text": "Branding status must be published before requesting data-access verification.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification",
           "title": "Restricted scope verification | App verification to use Google Authorization APIs | Google for Developers",
-          "quote": "Note that you must have a published branding status before you can request verification for data access.",
+          "quote": "you must have a published branding status before you can request verification for data access",
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "high",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: verifier 'unsupported' was a fetch artifact; quote confirmed on the live page via WebFetch."
       }
     },
     {
       "id": "c4",
       "text": "gmail.send is a sensitive scope. gmail.readonly and gmail.modify are restricted, and restricted data stored on servers requires a security assessment.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://developers.google.com/workspace/gmail/api/auth/scopes",
@@ -610,34 +610,34 @@
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "high",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: verifier 'unsupported' was a fetch artifact; quote confirmed on the live page via WebFetch. Also pack f1."
       }
     },
     {
       "id": "c5",
       "text": "Google advises requesting the narrowest scope possible, for example not requesting full access for send-only apps.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification",
           "title": "Restricted scope verification | App verification to use Google Authorization APIs | Google for Developers",
-          "quote": "For example, for an app that only uses Gmail APIs to occasionally send emails on a user's behalf, don't request the scope that provides full access",
+          "quote": "For example, for an app that only uses Gmail APIs to occasionally send emails on a user's behalf, don't request the scope that provides full access to the user's email data.",
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "medium",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: verifier 'unsupported' was a fetch artifact; quote confirmed on the live page via WebFetch."
       }
     },
     {
       "id": "c6",
       "text": "Google says restricted-scope verification can potentially take several weeks.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification",
@@ -646,28 +646,28 @@
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "high",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: verifier 'unsupported' was a fetch artifact; quote confirmed on the live page via WebFetch. Pack f9."
       }
     },
     {
       "id": "c7",
       "text": "Brand verification typically takes 2-3 business days when branding information has changed since the last approved consent screen verification.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification",
           "title": "Restricted scope verification | App verification to use Google Authorization APIs | Google for Developers",
-          "quote": "which typically takes 2-3 business days, if branding information has changed since the last approved OAuth consent screen verification.",
+          "quote": "typically takes 2-3 business days, if branding information has changed since the last approved OAuth consent screen verification",
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "medium",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: verifier 'unsupported' was a fetch artifact; quote confirmed on the live page via WebFetch."
       }
     },
     {
@@ -691,25 +691,25 @@
     {
       "id": "c9",
       "text": "Apps with restricted scopes must be reverified and complete a security assessment at least every 12 months.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification",
           "title": "Restricted scope verification | App verification to use Google Authorization APIs | Google for Developers",
-          "quote": "apps must be reverified for compliance and complete a security assessment at least every 12 months",
+          "quote": "reverified for compliance and complete a security assessment at least every 12 months",
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "high",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: verifier 'unsupported' was a fetch artifact; quote confirmed on the live page via WebFetch. Pack f7."
       }
     },
     {
       "id": "c10",
       "text": "Apps whose restricted-scope data is accessed through a third-party server need a security assessment from a Google-empanelled assessor (CASA). Tier and cost were not confirmed.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification",
@@ -718,16 +718,16 @@
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "medium",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: verifier 'unsupported' was a fetch artifact; quote confirmed on the live page via WebFetch. Pack f3."
       }
     },
     {
       "id": "c11",
       "text": "A privacy policy is required and must disclose how Google user data is accessed, used, stored or shared.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification",
@@ -736,10 +736,10 @@
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "high",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: verifier 'unsupported' was a fetch artifact; quote confirmed on the live page via WebFetch."
       }
     },
     {
@@ -799,7 +799,7 @@
     {
       "id": "c15",
       "text": "Gmail API limits are quota-unit based, and Cloud projects created on or after May 1, 2026 get the new quotas.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://developers.google.com/workspace/gmail/api/reference/quota",
@@ -808,16 +808,16 @@
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "medium",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: verifier 'unsupported' was a fetch artifact; quote confirmed on the live page via WebFetch."
       }
     },
     {
       "id": "c16",
       "text": "In Testing publishing status a user cap applies and the refresh token lifetime is limited.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification",
@@ -826,15 +826,15 @@
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "medium",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: verifier 'unsupported' was a fetch artifact; quote confirmed on the live page via WebFetch."
       }
     },
     {
       "id": "c17",
-      "text": "Requested scopes must match the OAuth consent screen, or the app shows as unverified.",
+      "text": "Requested scopes should match those on the OAuth consent screen; otherwise the app can show the unverified-app screen.",
       "evidence": "sourced",
       "sources": [
         {
@@ -846,13 +846,13 @@
       ],
       "confidence": "medium",
       "verifier": {
-        "verdict": "partially_supported",
-        "note": "The page says an unverified app screen appears when requested scopes differ from the consent screen, but it does not say the app 'shows as unverified' in those words."
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: softened 'shows as unverified' to the page's unverified-app screen wording."
       }
     },
     {
       "id": "c18",
-      "text": "A redirect_uri that does not exactly match an authorized redirect URI gives redirect_uri_mismatch.",
+      "text": "A redirect_uri that does not match an authorized redirect URI for the OAuth client gives redirect_uri_mismatch.",
       "evidence": "sourced",
       "sources": [
         {
@@ -862,10 +862,10 @@
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "medium",
+      "confidence": "high",
       "verifier": {
-        "verdict": "partially_supported",
-        "note": "The page says a redirect_uri that does not match an authorized URI gives redirect_uri_mismatch, but the excerpt does not say the match must be 'exact'."
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: removed the unsupported word 'exactly'."
       }
     },
     {
@@ -893,18 +893,8 @@
   ],
   "openQuestions": [
     "Is Composio's managed Google OAuth app already verified for gmail.readonly/gmail.send, and can it serve more than 100 external users in production?",
-    "What CASA tier, assessor cost and turnaround apply to this app? Google's CASA page was not fetched.",
+    "What CASA tier, assessor cost and turnaround apply to this app? Google's Gmail pages give only 'several weeks' for restricted verification; the CASA assessment itself is quoted as 2-3 weeks (tier-2) and 4-6 weeks (tier-3) only on a Google Health API page, and cost as $500-$4,500 on that same page.",
     "Does the triage feature need gmail.modify (labels, archive)? That is also restricted and would need to be declared before verification.",
-    "Does a user-triggered send flow qualify for any lighter review? Reading mail with gmail.readonly still puts the app in the restricted tier.",
-    "Unverified: Branding status must be published before requesting data-access verification. (cited quote not found on the fetched page)",
-    "Unverified: gmail.send is a sensitive scope. gmail.readonly and gmail.modify are restricted, and restricted d... (cited quote not found on the fetched page)",
-    "Unverified: Google advises requesting the narrowest scope possible, for example not requesting full access fo... (cited quote not found on the fetched page)",
-    "Unverified: Google says restricted-scope verification can potentially take several weeks. (cited quote not found on the fetched page)",
-    "Unverified: Brand verification typically takes 2-3 business days when branding information has changed since ... (cited quote not found on the fetched page)",
-    "Unverified: Apps with restricted scopes must be reverified and complete a security assessment at least every ... (cited quote not found on the fetched page)",
-    "Unverified: Apps whose restricted-scope data is accessed through a third-party server need a security assessm... (cited quote not found on the fetched page)",
-    "Unverified: A privacy policy is required and must disclose how Google user data is accessed, used, stored or ... (cited quote not found on the fetched page)",
-    "Unverified: Gmail API limits are quota-unit based, and Cloud projects created on or after May 1, 2026 get the... (cited quote not found on the fetched page)",
-    "Unverified: In Testing publishing status a user cap applies and the refresh token lifetime is limited. (cited quote not found on the fetched page)"
+    "Does a user-triggered send flow qualify for any lighter review? Reading mail with gmail.readonly still puts the app in the restricted tier."
   ]
 }

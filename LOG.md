@@ -97,3 +97,7 @@
 ## 2026-10-27T23:09+05:30 T20 PASS
 - oauth-setup skill + composio-auth-config.mjs / composio-connect.mjs (D-API-3/4 shapes, dry-run masks secrets) + templates (env, privacy policy, scope justification, demo script, console steps). validate passes.
 - Goldfish PASS; round 1: redact-before-slice incl. JSON-escaped secrets, short-secret mask, no duplicate .env keys. Live create path left for T22.
+
+## 2026-10-27T23:14+05:30 T21 audit landed (card stays in_progress)
+- 3 Sonnet auditors corrected the 5 guides against the evidence packs and wrote docs/verification/<app>.md. Claims 113 → 118; sourced 66 → 86, inferred 36 → 21, tested 11 (unchanged, none added). Salesforce tier 1 → 2 (missed admin approval). Gmail = 3 as planned.
+- Unsupported verdicts: 28 → 7. 20 confirmed fetch artifacts, 7 probable (help.salesforce.com JS shell), 1 merged quote, 0 wrong claims. Goldfish spot-checked 14 upgraded quotes: all found. Verify fallback and prompt fixes are in progress.

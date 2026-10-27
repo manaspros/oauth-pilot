@@ -135,7 +135,7 @@
       "phase": "prepare",
       "title": "Confirm Linear workspace access",
       "actor": "developer",
-      "detail": "Sign in to Linear and confirm you belong to the workspace and team where the assistant will file issues. Note the team key you will use when creating issues. Default user-mode OAuth needs no admin rights, and issues are created as the authorizing user.",
+      "detail": "Sign in to Linear and confirm you belong to the workspace and team where the assistant will file issues. Note the team key you will use when creating issues. In the default user mode, resources are created as the authorizing user.",
       "duration": {
         "minHours": 0.05,
         "maxHours": 0.1,
@@ -273,7 +273,7 @@
   "risks": [
     {
       "id": "k1",
-      "title": "actor=app installs need a workspace admin",
+      "title": "Workspace-scope agent installs (actor=app) need a workspace admin",
       "severity": "info",
       "gate": false,
       "symptom": "Installation with actor=app fails for non-admin users.",
@@ -380,19 +380,19 @@
     {
       "id": "c2",
       "text": "Making an agent available to other workspaces is done by submitting it to Linear's integration directory, a separate optional step.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://linear.app/developers/agents",
           "title": "Getting Started – Linear Developers",
-          "quote": "To make your agent available to other workspaces, [submit](https://linear.app/docs/integration-directory#submit-your-integration) your agent to Linear’s integration directory.",
+          "quote": "To make your agent available to other workspaces, submit your agent to Linear",
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "medium",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: quote re-verified on the agents page; original quote carried markdown link syntax so the verifier's plain-text match failed"
       }
     },
     {
@@ -444,7 +444,7 @@
     },
     {
       "id": "c6",
-      "text": "Installing an app with actor=app uses a workspace scope and requires workspace admin permissions.",
+      "text": "Linear's agents guide says an agent app installed with workspace scope (actor=app) needs workspace admin permissions to complete the installation. Whether this applies to every actor=app install is unconfirmed.",
       "evidence": "sourced",
       "sources": [
         {
@@ -457,7 +457,7 @@
       "confidence": "high",
       "verifier": {
         "verdict": "supported",
-        "note": "The page says an actor=app install has workspace scope and requires admin permissions."
+        "note": "corrected in audit 2026-10-27: narrowed to the agent workspace-scope install the page describes"
       }
     },
     {
@@ -612,14 +612,14 @@
         {
           "url": "https://linear.app/docs/integration-directory",
           "title": "Integration Directory – Linear Docs",
-          "quote": "We generally do not accept scripts, low-effort/vibe coded or apps built by hobbyists, but feel free to reach out to integrations@linear.app",
+          "quote": "We generally do not accept scripts, low-effort/vibe coded or apps built by hobbyists",
           "accessedAt": "2026-10-27"
         }
       ],
       "confidence": "high",
       "verifier": {
         "verdict": "supported",
-        "note": "The page says Linear generally does not accept scripts, low-effort/vibe coded or hobbyist apps."
+        "note": "corrected in audit 2026-10-27: quote trimmed to the verified portion"
       }
     },
     {
@@ -663,6 +663,6 @@
     "Does Composio's managed Linear app have any workspace-level restrictions, or a rate-limit pool shared with other Composio tenants?",
     "Is there any published review timeline or approval criteria for the Linear integration directory? None was found, and it is not required for OAuth access.",
     "Does Linear impose any approval step on publicly distributed OAuth apps beyond the distribution setting? Docs show none, but this rests on absence of evidence.",
-    "Unverified: Making an agent available to other workspaces is done by submitting it to Linear's integration di... (cited quote not found on the fetched page)"
+    "Can a non-admin workspace member create an OAuth application under Settings > API? The OAuth page does not say."
   ]
 }

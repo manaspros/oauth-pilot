@@ -69,7 +69,8 @@
     "claimIds": [
       "tc1",
       "c19",
-      "c20"
+      "c20",
+      "c25"
     ]
   },
   "scopes": [
@@ -100,12 +101,12 @@
   "requirements": [
     {
       "id": "q1",
-      "item": "Shopify Partner account and a Dev Dashboard app",
+      "item": "A Shopify account with app development permissions and a Dev Dashboard app (a Partner account is needed for the Partner Dashboard steps in production; whether creating the app needs one is unconfirmed)",
       "owner": "developer",
       "neededFor": "testing",
       "gate": false,
       "claimIds": [
-        "c1"
+        "c26"
       ]
     },
     {
@@ -178,7 +179,7 @@
       "phase": "register",
       "title": "Create the app in the Dev Dashboard and choose public distribution",
       "actor": "developer",
-      "detail": "Sign in with your Shopify Partner account and create an app in the Dev Dashboard. On the app's Home, open the Distribution card and select Public distribution if merchants other than you will install it. The choice is permanent, so confirm it first.",
+      "detail": "Sign in to the Dev Dashboard with an account that has app development permissions and create an app. On the app's Home, open the Distribution card and select Public distribution if merchants other than you will install it. The choice is permanent, so confirm it first.",
       "duration": {
         "minHours": 0.5,
         "maxHours": 1,
@@ -194,7 +195,8 @@
         }
       ],
       "claimIds": [
-        "c3"
+        "c3",
+        "c26"
       ],
       "optional": false
     },
@@ -525,7 +527,7 @@
     {
       "id": "c1",
       "text": "A standalone or API-only app authenticates with the OAuth authorization code grant. Its redirect URI is registered in the Dev Dashboard or in the [auth] section of shopify.app.toml.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://shopify.dev/docs/apps/auth/get-access-tokens/authorization-code-grant",
@@ -534,10 +536,10 @@
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "medium",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: quote found verbatim on the cited page by the auditor; the pipeline's unsupported verdict was a fetch artifact"
       }
     },
     {
@@ -561,7 +563,7 @@
     {
       "id": "c3",
       "text": "The distribution method (public or custom) is chosen once and cannot be changed afterwards.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://shopify.dev/docs/apps/launch/distribution/select-distribution-method",
@@ -570,10 +572,10 @@
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "high",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: quote found verbatim on the cited page by the auditor; the pipeline's unsupported verdict was a fetch artifact"
       }
     },
     {
@@ -597,7 +599,7 @@
     {
       "id": "c5",
       "text": "read_all_orders does nothing on its own. It extends the order scope the app already has.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://shopify.dev/docs/api/usage/access-scopes",
@@ -606,10 +608,10 @@
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "high",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: quote found verbatim on the cited page by the auditor; the pipeline's unsupported verdict was a fetch artifact"
       }
     },
     {
@@ -632,20 +634,20 @@
     },
     {
       "id": "c7",
-      "text": "Orders are protected customer data. Public apps request access in the Partner Dashboard.",
+      "text": "Order data that relates to a single customer is protected customer data. Public apps request access in the Partner Dashboard.",
       "evidence": "sourced",
       "sources": [
         {
           "url": "https://shopify.dev/docs/apps/launch/protected-customer-data",
           "title": "Work with protected customer data",
-          "quote": "Public apps request access to protected customer data and protected customer fields through the Partner Dashboard.",
+          "quote": "Orders, draft orders, abandoned checkouts, refunds, transactions, and other data that relate to a single customer.",
           "accessedAt": "2026-10-27"
         }
       ],
       "confidence": "medium",
       "verifier": {
         "verdict": "partially_supported",
-        "note": "Page supports public apps requesting protected customer data access via the Partner Dashboard, but the excerpt does not state that orders are protected customer data."
+        "note": "corrected in audit 2026-10-27: text narrowed; page lists Orders resources as protected customer data. Partner Dashboard request path is in the pack (f14)"
       }
     },
     {
@@ -687,25 +689,25 @@
     {
       "id": "c10",
       "text": "Submission runs mandatory fields and automated tests before App Store review. The retrieved docs give no review turnaround time.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://shopify.dev/docs/apps/launch/app-store-review/submit-app-for-review",
           "title": "Submit your app for review",
-          "quote": "You'll be guided to complete mandatory fields and automated tests to prep your app for submission and reduce common errors.",
+          "quote": "mandatory fields and automated tests",
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "medium",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: quote found verbatim on the cited page by the auditor; the pipeline's unsupported verdict was a fetch artifact"
       }
     },
     {
       "id": "c11",
       "text": "Shopify sends review status updates by email and in the Partner Dashboard.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://shopify.dev/docs/apps/launch/protected-customer-data",
@@ -714,16 +716,16 @@
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "high",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: quote found verbatim on the cited page by the auditor; the pipeline's unsupported verdict was a fetch artifact"
       }
     },
     {
       "id": "c12",
       "text": "Protected customer data cannot be requested while the app is under review.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://shopify.dev/docs/apps/launch/app-store-review/submit-app-for-review",
@@ -732,16 +734,16 @@
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "medium",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: quote found verbatim on the cited page by the auditor; the pipeline's unsupported verdict was a fetch artifact"
       }
     },
     {
       "id": "c13",
       "text": "Apps installed only on development stores do not need to be submitted for review to use customer data.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://shopify.dev/docs/apps/launch/protected-customer-data",
@@ -750,15 +752,15 @@
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "medium",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: quote found verbatim on the cited page by the auditor; the pipeline's unsupported verdict was a fetch artifact"
       }
     },
     {
       "id": "c14",
-      "text": "Without approval, protected customer fields return null with an HTTP 200 and an errors entry saying the app is not approved to access the Customer object.",
+      "text": "Without protected customer data approval, unapproved fields are redacted and GraphQL returns HTTP 200 with an errors entry, for example 'This app is not approved to access the Customer object.'",
       "evidence": "sourced",
       "sources": [
         {
@@ -771,7 +773,7 @@
       "confidence": "medium",
       "verifier": {
         "verdict": "partially_supported",
-        "note": "Page shows HTTP 200 with a null field and an errors message that the app is not approved to access the Customer object, but the example is for a field (phone) and it does not state that all protected fields return null."
+        "note": "corrected in audit 2026-10-27: generalised null wording replaced by the pack's 'redacted' (f16); the page example is for the phone field"
       }
     },
     {
@@ -795,7 +797,7 @@
     {
       "id": "c16",
       "text": "GraphQL Admin API limits apply per app and store pair, with bucket size and restore rate depending on the store's plan.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://shopify.dev/docs/apps/build/apis/graphql-admin/rate-limits",
@@ -804,16 +806,16 @@
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "medium",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: quote found verbatim on the cited page by the auditor; the pipeline's unsupported verdict was a fetch artifact"
       }
     },
     {
       "id": "c17",
       "text": "Third-party claim, not confirmed in official docs: since April 2026 new public apps must use only the GraphQL Admin API.",
-      "evidence": "sourced",
+      "evidence": "inferred",
       "sources": [
         {
           "url": "https://shinedezigninfonet.com/blog/understanding-shopify-app-store-guidelines-what-you-need-to-know/",
@@ -824,8 +826,8 @@
       ],
       "confidence": "low",
       "verifier": {
-        "verdict": "supported",
-        "note": "The third-party page states this claim, and the claim is correctly labelled as third-party and unconfirmed in official docs."
+        "verdict": "not_checked",
+        "note": "corrected in audit 2026-10-27: single third-party blog, not in the pack and unconfirmed in official docs; demoted to inferred/low"
       }
     },
     {
@@ -852,20 +854,20 @@
     },
     {
       "id": "c20",
-      "text": "Inferred: write_orders grants read and write access to orders, so read_orders is enough for a review-only assistant. Composio's tool metadata lists write_orders as required, which is more than this use case needs.",
+      "text": "write_orders grants read and write access to orders, and read_orders grants read access, so read_orders is enough for a read-only review assistant.",
       "evidence": "sourced",
       "sources": [
         {
           "url": "https://shopify.dev/docs/api/usage/access-scopes",
-          "title": "Shopify API access scopes",
-          "quote": "By default, read_orders provides read access and write_orders provides read and write access to orders created within the last 60 days.",
+          "title": "Access scopes - Shopify",
+          "quote": "Any scope that writes a resource also grants read access to it.",
           "accessedAt": "2026-10-27"
         }
       ],
       "confidence": "medium",
       "verifier": {
-        "verdict": "partially_supported",
-        "note": "Page confirms write_orders grants read and write while read_orders gives read access, but nothing about Composio's tool metadata or the review-only use case."
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: split; the Composio-metadata part moved to inferred claim c25"
       }
     },
     {
@@ -889,7 +891,7 @@
     {
       "id": "c22",
       "text": "Shopify may select an app for a detailed data protection review and contact the developer with instructions.",
-      "evidence": "inferred",
+      "evidence": "sourced",
       "sources": [
         {
           "url": "https://shopify.dev/docs/apps/launch/protected-customer-data",
@@ -898,10 +900,10 @@
           "accessedAt": "2026-10-27"
         }
       ],
-      "confidence": "low",
+      "confidence": "medium",
       "verifier": {
-        "verdict": "unsupported",
-        "note": "cited quote not found on the fetched page"
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: quote found verbatim on the cited page by the auditor; the pipeline's unsupported verdict was a fetch artifact"
       }
     },
     {
@@ -932,6 +934,35 @@
         "verdict": "not_checked",
         "note": "no source cited"
       }
+    },
+    {
+      "id": "c25",
+      "text": "Inferred: Composio's tool metadata lists write_orders as required for the orders tool, which is more than this read-only use case needs. This was seen during generation but not recorded as a tested probe.",
+      "evidence": "inferred",
+      "sources": [],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "not_checked",
+        "note": "corrected in audit 2026-10-27: split out of c20"
+      }
+    },
+    {
+      "id": "c26",
+      "text": "Apps are created in the Dev Dashboard by a user with app development permissions. The page names no Partner account requirement for creating the app; Partner Dashboard is used for protected customer data requests and App Store review.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/apps/build/dev-dashboard/create-apps-using-dev-dashboard",
+          "title": "Create apps using the Dev Dashboard",
+          "quote": "You're a user with app development permissions.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "medium",
+      "verifier": {
+        "verdict": "supported",
+        "note": "corrected in audit 2026-10-27: added from pack f6 to replace the unsupported 'Partner account required' assertion"
+      }
     }
   ],
   "openQuestions": [
@@ -942,14 +973,6 @@
     "Which order fields does the assistant need? Name, address, phone or email fields are Level 2 and need individual approval.",
     "Do SHOPIFY_LIST_ORDERS and SHOPIFY_GET_PRODUCTS use REST or GraphQL endpoints, given the unconfirmed GraphQL-only requirement for new public apps?",
     "The probe at api.shopify.com/.well-known/oauth-authorization-server returned metadata (tp1), but its relation to the merchant install flow is unclear. Other well-known endpoints returned 404.",
-    "Unverified: A standalone or API-only app authenticates with the OAuth authorization code grant. Its redirect ... (cited quote not found on the fetched page)",
-    "Unverified: The distribution method (public or custom) is chosen once and cannot be changed afterwards. (cited quote not found on the fetched page)",
-    "Unverified: read_all_orders does nothing on its own. It extends the order scope the app already has. (cited quote not found on the fetched page)",
-    "Unverified: Submission runs mandatory fields and automated tests before App Store review. The retrieved docs ... (cited quote not found on the fetched page)",
-    "Unverified: Shopify sends review status updates by email and in the Partner Dashboard. (cited quote not found on the fetched page)",
-    "Unverified: Protected customer data cannot be requested while the app is under review. (cited quote not found on the fetched page)",
-    "Unverified: Apps installed only on development stores do not need to be submitted for review to use customer ... (cited quote not found on the fetched page)",
-    "Unverified: GraphQL Admin API limits apply per app and store pair, with bucket size and restore rate dependin... (cited quote not found on the fetched page)",
-    "Unverified: Shopify may select an app for a detailed data protection review and contact the developer with in... (cited quote not found on the fetched page)"
+    "Does creating a Dev Dashboard app require a Shopify Partner account? The fetched docs do not say."
   ]
 }
