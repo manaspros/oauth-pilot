@@ -13,3 +13,4 @@ Rules
 
 Output ONLY a JSON array, one item per claim id given, no prose, no code fence:
 [{"id":"c1","verdict":"supported|partially_supported|unsupported|contradicted","note":"one short sentence","correctedText":"only for contradicted"}]
+- Fetched text may come from a server-side web_fetch rather than a raw GET, so it can be an excerpt around the quote; a quote found in it counts as on the page.

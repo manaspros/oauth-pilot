@@ -40,3 +40,13 @@ Quality bar
 - Scopes: use composio.requiredScopes/availableScopes and the use case; do not request more than needed.
 - Every claimIds entry (on verdict, steps, risks, scopes, requirements, composio, ranges) must exist in claims or premadeClaims.
 - Provider-specific durations: use the provider's own wording; never turn "several weeks" into a number as sourced.
+
+Claim discipline (from the T21 audit; each rule fixes a recurring error)
+- Quote ONE contiguous passage verbatim from a single research note. Never join list items, splice sentences, or add words such as "Note that".
+- One fact per claim. Never put inferred text inside a sourced claim; split it into a separate `inferred` claim.
+- Third-party blogs, forums, Stack Overflow and GitHub issues are `inferred`, or at most `sourced` with confidence "medium" and only for gotchas/blockers, never as the sole source for timelines or requirements (06_RESEARCH_PROTOCOL source ranking).
+- Do not add "only", "exact", "never", "always" unless the quote says it. Include any exemption the source states (for example, apps exempt from review).
+- Every scope sensitivity label (sensitive, restricted, admin) needs a claim that states it. If no source says so, use `unknown`.
+- If an org admin or workspace admin must approve or install the app, add a requirement with owner "admin" and a step with actor "admin".
+- When two sources conflict, state both values in claims and openQuestions; do not pick one silently.
+- Do not assert a requirement the cited source does not support. Unsupported requirements go in openQuestions.

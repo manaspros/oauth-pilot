@@ -101,3 +101,8 @@
 ## 2026-10-27T23:14+05:30 T21 audit landed (card stays in_progress)
 - 3 Sonnet auditors corrected the 5 guides against the evidence packs and wrote docs/verification/<app>.md. Claims 113 → 118; sourced 66 → 86, inferred 36 → 21, tested 11 (unchanged, none added). Salesforce tier 1 → 2 (missed admin approval). Gmail = 3 as planned.
 - Unsupported verdicts: 28 → 7. 20 confirmed fetch artifacts, 7 probable (help.salesforce.com JS shell), 1 merged quote, 0 wrong claims. Goldfish spot-checked 14 upgraded quotes: all found. Verify fallback and prompt fixes are in progress.
+
+## 2026-10-27T23:17+05:30 T21 PASS
+- Verify fallback (D-AGENT-4): Goldfish caught a Blocker, where the fallback matched the model's own prose (echo → false supported). Fixed: tool-result text only, quote not in the prompt, 30 s timeout. 58 agent tests.
+- Live re-check of 5 unconfirmed Salesforce claims: 3 supported / 1 partial / 1 unsupported / 0 not_checked (identical before and after the Blocker fix, now on document text only). 13 s.
+- docs/verification/SUMMARY.md written. The MCP bundle is rebuilt with the audited guides and new prompts.

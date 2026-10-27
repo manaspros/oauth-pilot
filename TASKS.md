@@ -203,7 +203,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 ## Phase 6 — Library + verification
 
 ### T21 · Generate the 5 library guides + audit against evidence packs
-- **Status:** in_progress · **Tier:** A · **Deps:** T14, T05, T06, T07 · **Est:** 60 min · **Agent:** orchestrator generates; 3 sonnet auditors (gmail+google-calendar, linear+shopify, salesforce); orchestrator writes SUMMARY
+- **Status:** done · **Tier:** A · **Deps:** T14, T05, T06, T07 · **Est:** 60 min · **Agent:** orchestrator generates; 3 sonnet auditors (gmail+google-calendar, linear+shopify, salesforce); orchestrator writes SUMMARY
 - **Files:** `guides/{linear,google-calendar,gmail,salesforce,shopify}.json`, `docs/verification/{linear,google-calendar,gmail,salesforce,shopify}.md` (auditors), `docs/verification/SUMMARY.md` (orchestrator), `packages/agent/src/prompts/*.md` (systematic fixes only, each logged in DECISIONS)
 - **Spec:** 06_RESEARCH_PROTOCOL §Verification report
 - **Do:**
@@ -211,7 +211,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
   - Each auditor corrects only its own apps' JSON and writes its reports.
   - The Gmail guide must compute to tier 3; if the evidence disagrees, record why.
 - **Accept:** `pnpm validate:guides` passes on 5 guides; 6 verification files exist; each report has counts and ≥ 1 corrected/unverifiable entry, or says explicitly that there were none.
-- **Notes:** agent:abcbf9560a3fef986 (generation) Generated 5 guides (validate ok): linear t0, google-calendar t2, gmail t3, salesforce t1, shopify t3; 113 claims (11 tested/66 sourced/36 inferred); ~10 min wall.
+- **Notes:** agent:abcbf9560a3fef986 (generation) Generated 5 guides (validate ok): linear t0, google-calendar t2, gmail t3, salesforce t1, shopify t3; 113 claims (11 tested/66 sourced/36 inferred); ~10 min wall. Audited by 3 auditors: sourced 66→86, inferred 36→21; Salesforce tier 1→2. 20/28 unsupported were fetch artifacts → verify web_fetch fallback + draft rules (D-AGENT-4). SUMMARY.md written. MCP bundle rebuilt.
 
 ### T22 · HUMAN: real setup attempt via the plugin
 - **Status:** human · **Tier:** B · **Deps:** T20, T21 · **Est:** 30 min with the user

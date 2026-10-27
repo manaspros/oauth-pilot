@@ -3,13 +3,19 @@ import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import type { NodeFn } from "./common";
 import { log } from "./common";
 import { defaultInvoke, extractJson, promptPath, type InvokeText } from "./draft";
+import { makeLlm } from "../llm";
 import { rejectReason } from "./probe";
 import { fakeDelay, isFake, loadFixture } from "../fake";
 
 type Json = Record<string, any>;
-export type VerifyDeps = { fetch: typeof fetch; invoke: InvokeText };
+/** Server-tool fallback: returns the page text around `quote` if the page was read, null if it could not be read. */
+export type WebFetchFn = (url: string, quote: string, signal?: AbortSignal) => Promise<string | null>;
+export type VerifyDeps = { fetch: typeof fetch; invoke: InvokeText; webFetch?: WebFetchFn };
 
 export const MAX_FETCHES = 10;
+export const MAX_FALLBACK_FETCHES = 6;
+const MIN_PAGE_CHARS = 500;
+const SHELL_MARKERS = /css error|sorry to interrupt|enable javascript|javascript is (disabled|required)/i;
 const FETCH_TIMEOUT_MS = 10_000;
 const MAX_REDIRECTS = 3;
 const MAX_TEXT = 400_000;
@@ -34,7 +40,8 @@ export function htmlToText(html: string): string {
 }
 
 /** Lowercase, unify quotes/dashes, keep only letters and digits separated by single spaces. */
-export const normalize = (s: string) => s.normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+const stripMdLinks = (s: string) => s.replace(/!?\[([^\]]*)\]\([^)]*\)/g, "$1");
+export const normalize = (s: string) => stripMdLinks(s.normalize("NFKC")).toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
 
 const MIN_SEG_CHARS = 12;
 const MIN_SEG_WORDS = 3;
@@ -73,6 +80,8 @@ export async function fetchPageText(url: string, f: typeof fetch): Promise<Page>
       const body = (await res.text()).slice(0, 1_500_000);
       const ct = res.headers.get("content-type") ?? "";
       const text = /html|xml/i.test(ct) || /^\s*</.test(body) ? htmlToText(body) : body.replace(/\s+/g, " ");
+      // A shell / near-empty page (JS-rendered, error interstitial) says nothing about the quote: unavailable, not "absent".
+      if (text.length < MIN_PAGE_CHARS || SHELL_MARKERS.test(text.slice(0, 3000))) return { ok: false, reason: "page unavailable (shell or near-empty content)" };
       return { ok: true, text: text.slice(0, MAX_TEXT) };
     }
     return { ok: false, reason: "too many redirects" };
@@ -119,7 +128,38 @@ function repairReferences(g: Json, removed: Set<string>) {
   for (const k of ["timeToFirstConnection", "timeToProduction", "activeEffort"]) fixRange(g.verdict?.[k]);
 }
 
-export function makeVerify(getDeps: () => VerifyDeps = () => ({ fetch, invoke: defaultInvoke(8000) })): NodeFn {
+const WEB_FETCH_TIMEOUT_MS = 30_000;
+type WfLlm = { invoke: (m: any[], o?: any) => Promise<any> };
+const realWfLlm = (): WfLlm => makeLlm({ maxTokens: 1024 }).bindTools([{ type: "web_fetch_20250910", name: "web_fetch", max_uses: 1 }] as any) as any;
+
+/**
+ * web_fetch_20250910 through the proxy (D-API-5). Returns ONLY the document text from the web_fetch_tool_result block;
+ * the model's own text is never used (it could echo a quote), and the prompt does not contain the quote.
+ * Tool error, timeout, or a document under 500 chars = unread (null).
+ */
+export function makeWebFetch(getLlm: () => WfLlm = realWfLlm): WebFetchFn {
+  return async (url, _quote, signal) => {
+    const sig = signal ? AbortSignal.any([signal, AbortSignal.timeout(WEB_FETCH_TIMEOUT_MS)]) : AbortSignal.timeout(WEB_FETCH_TIMEOUT_MS);
+    try {
+      const res: any = await getLlm().invoke([new HumanMessage(`Fetch ${url} with the web_fetch tool. Reply only "done".`)], { signal: sig });
+      const blocks: any[] = Array.isArray(res.content) ? res.content : [];
+      let doc = "";
+      for (const b of blocks) {
+        if (b?.type !== "web_fetch_tool_result" || b.content?.type !== "web_fetch_result") continue;
+        const src = b.content.content?.source;
+        if (typeof src?.data === "string" && src.type !== "base64") doc += " " + (/^\s*</.test(src.data) ? htmlToText(src.data) : src.data);
+      }
+      doc = doc.replace(/\s+/g, " ").trim();
+      return doc.length < MIN_PAGE_CHARS ? null : doc.slice(0, MAX_TEXT);
+    } catch (e) {
+      if (signal?.aborted) throw e;
+      return null; // timeout or tool failure: unread
+    }
+  };
+}
+export const defaultWebFetch: WebFetchFn = makeWebFetch();
+
+export function makeVerify(getDeps: () => VerifyDeps = () => ({ fetch, invoke: defaultInvoke(8000), webFetch: defaultWebFetch })): NodeFn {
   return async (state, config) => {
     if (isFake()) {
       await fakeDelay();
@@ -144,20 +184,51 @@ export function makeVerify(getDeps: () => VerifyDeps = () => ({ fetch, invoke: d
     for (const u of urls.slice(MAX_FETCHES)) pages.set(u, { ok: false, reason: "fetch budget exceeded" });
     log(config, "verify", `fetched ${fetched.filter((u) => pages.get(u)?.ok).length}/${fetched.length} cited pages`);
 
-    // 2. Deterministic quote check. Absent from every fetched source = unsupported, whatever the LLM says.
-    type Check = { claim: Json; sources: { url: string; quote?: string; found: boolean | null; weak: boolean; text?: string }[]; absent: boolean };
+    // 2. Deterministic quote check, with a web_fetch server-tool fallback when the plain fetch failed or the quote was not found.
+    //    "absent" needs a page that was really read; an unreadable page is "not checked", never "unsupported".
+    type Src = { url: string; quote?: string; read: boolean; found: boolean | null; weak: boolean; text?: string };
+    type Check = { claim: Json; sources: Src[]; absent: boolean };
     const checks: Check[] = [];
+    let fallbacks = 0;
+    const wfCache = new Map<string, string | null>();
     for (const c of claims) {
       if (!c || c.evidence === "tested") continue;
-      const srcs = (Array.isArray(c.sources) ? c.sources : []).filter((s: Json) => typeof s?.url === "string").map((s: Json) => {
+      const srcs: Src[] = [];
+      for (const s of (Array.isArray(c.sources) ? c.sources : []).filter((x: Json) => typeof x?.url === "string")) {
         const p = pages.get(s.url);
         const quote = typeof s.quote === "string" && s.quote.trim() ? s.quote : undefined;
-        const found = p?.ok && quote ? quoteInPage(quote, p.text) : null;
-        return { url: s.url as string, quote, found, weak: !!(p?.ok && quote && found === null), text: p?.ok ? p.text : undefined };
-      });
-      const absent = srcs.length > 0 && srcs.every((s: { found: boolean | null }) => s.found === false);
+        let read = !!p?.ok;
+        let text = p?.ok ? p.text : undefined;
+        let found: boolean | null = text && quote ? quoteInPage(quote, text) : null;
+        const wantFallback = !!quote && d.webFetch && !rejectReason(s.url) && (!read || found !== true);
+        if (wantFallback) {
+          const key = `${s.url}\n${quote}`;
+          let wt: string | null | undefined = wfCache.get(key);
+          if (wt === undefined && fallbacks < MAX_FALLBACK_FETCHES) {
+            fallbacks++;
+            try {
+              wt = await d.webFetch!(s.url, quote!, config.signal);
+            } catch (e) {
+              if (config.signal?.aborted) throw e;
+              wt = null;
+            }
+            wfCache.set(key, wt);
+          }
+          if (typeof wt === "string") {
+            const f2 = quoteInPage(quote!, wt);
+            if (!read || f2 === true) {
+              read = true;
+              text = wt;
+              found = f2;
+            }
+          }
+        }
+        srcs.push({ url: s.url as string, quote, read, found, weak: !!(read && quote && found === null), text });
+      }
+      const absent = srcs.length > 0 && srcs.every((s) => s.read && s.found === false);
       checks.push({ claim: c, sources: srcs, absent });
     }
+    log(config, "verify", `web_fetch fallbacks used: ${fallbacks}/${MAX_FALLBACK_FETCHES}`);
 
     // 3. Fresh-context LLM judgement: ONLY claims + fetched source text. Skipped for deterministic failures.
     const judged = checks.filter((k) => !k.absent && k.sources.some((s) => s.text));
@@ -205,7 +276,15 @@ export function makeVerify(getDeps: () => VerifyDeps = () => ({ fetch, invoke: d
       if (!v) {
         c.verifier = { verdict: "not_checked", note: k.sources.length ? "source could not be fetched or judged" : "no source cited" };
         stats.notChecked++;
-        if (c.evidence === "sourced") open.push(`Could not check: ${short(String(c.text))}`);
+        if (c.evidence === "sourced") {
+          c.confidence = capConfidence(c.confidence, "medium"); // evidence and confidence otherwise unchanged: no demotion
+          const unread = k.sources.filter((x) => !x.read).map((x) => x.url);
+          for (const u of unread) {
+            const q = `Could not check: ${u}`;
+            if (!open.includes(q)) open.push(q);
+          }
+          if (!unread.length) open.push(`Could not check: ${short(String(c.text))}`);
+        }
         continue;
       }
       const note = typeof v.note === "string" ? v.note : undefined;
