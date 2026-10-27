@@ -198,7 +198,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Files:** `plugin/oauth-pilot/{skills/oauth-setup,templates,scripts}/**`
 - **Spec:** 04_PLUGIN §oauth-setup; DECISIONS D-API-3/4
 - **Accept:** both scripts support `--help` and `--dry-run` (prints the exact request with the secret masked); SKILL.md contains the safety rules verbatim. If D-API-3 is unconfirmed, the scripts are replaced by printed manual steps and this is noted.
-- **Notes:**
+- **Notes:** agent:ab445692c6286417c
 
 ## Phase 6 — Library + verification
 
@@ -211,7 +211,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
   - Each auditor corrects only its own apps' JSON and writes its reports.
   - The Gmail guide must compute to tier 3; if the evidence disagrees, record why.
 - **Accept:** `pnpm validate:guides` passes on 5 guides; 6 verification files exist; each report has counts and ≥ 1 corrected/unverifiable entry, or says explicitly that there were none.
-- **Notes:** agent:abcbf9560a3fef986 (generation)
+- **Notes:** agent:abcbf9560a3fef986 (generation) Generated 5 guides (validate ok): linear t0, google-calendar t2, gmail t3, salesforce t1, shopify t3; 113 claims (11 tested/66 sourced/36 inferred); ~10 min wall.
 
 ### T22 · HUMAN: real setup attempt via the plugin
 - **Status:** human · **Tier:** B · **Deps:** T20, T21 · **Est:** 30 min with the user

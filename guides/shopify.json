@@ -1,0 +1,955 @@
+{
+  "schemaVersion": 1,
+  "slug": "shopify",
+  "app": {
+    "name": "Shopify",
+    "website": "https://www.shopify.com",
+    "composioToolkit": "shopify",
+    "developerConsoleUrl": "https://partners.shopify.com"
+  },
+  "generatedAt": "2026-10-27T17:37:33.643Z",
+  "generator": {
+    "kind": "live",
+    "model": "claude-sonnet-5-5",
+    "runId": "cli-mvqyutpt-0b6e72"
+  },
+  "useCase": {
+    "summary": "AI assistant that reads store orders and products so it can review them for merchants. Read-only access is enough.",
+    "tools": [
+      "SHOPIFY_LIST_ORDERS",
+      "SHOPIFY_GET_PRODUCTS"
+    ]
+  },
+  "verdict": {
+    "tier": 3,
+    "tierLabel": "Heavy review",
+    "headline": "You can connect a development store within hours. Production on merchant stores needs protected customer data approval and Shopify App Store review, and Shopify documents no turnaround time.",
+    "startToday": "Create the Dev Dashboard app and file the protected customer data request now. Shopify's review is the slowest step and cannot start until the request is filed, the compliance webhooks are in place and the app is submitted. Protected customer data cannot be requested once the app is under review.",
+    "timeToFirstConnection": {
+      "minHours": 2,
+      "maxHours": 6,
+      "label": "2-6 hours",
+      "basis": "estimate",
+      "claimIds": [
+        "c13"
+      ]
+    },
+    "timeToProduction": {
+      "minHours": 170,
+      "maxHours": 672,
+      "label": "about 1-4 weeks",
+      "basis": "estimate",
+      "claimIds": [
+        "c10",
+        "c18"
+      ]
+    },
+    "activeEffort": {
+      "minHours": 6,
+      "maxHours": 20,
+      "label": "6-20 hours",
+      "basis": "estimate",
+      "claimIds": []
+    },
+    "confidence": "low",
+    "claimIds": [
+      "c7",
+      "c10",
+      "c18",
+      "c13",
+      "tc1"
+    ]
+  },
+  "composio": {
+    "toolkitFound": true,
+    "managedAvailable": false,
+    "recommendation": "own_app_now",
+    "why": "The Composio toolkit exists but lists no managed auth schemes and no managed scopes, so you need your own Shopify app. Use the Composio callback URL as its redirect URI. Composio's metadata lists write_orders as required for the orders tool. Read access is enough for this use case, so request read_orders instead.",
+    "callbackUrl": "https://backend.composio.dev/api/v1/auth-apps/add",
+    "claimIds": [
+      "tc1",
+      "c19",
+      "c20"
+    ]
+  },
+  "scopes": [
+    {
+      "scope": "read_orders",
+      "sensitivity": "sensitive",
+      "neededFor": [
+        "SHOPIFY_LIST_ORDERS"
+      ],
+      "claimIds": [
+        "c4",
+        "c7",
+        "c8",
+        "c20"
+      ]
+    },
+    {
+      "scope": "read_products",
+      "sensitivity": "basic",
+      "neededFor": [
+        "SHOPIFY_GET_PRODUCTS"
+      ],
+      "claimIds": [
+        "c24"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "q1",
+      "item": "Shopify Partner account and a Dev Dashboard app",
+      "owner": "developer",
+      "neededFor": "testing",
+      "gate": false,
+      "claimIds": [
+        "c1"
+      ]
+    },
+    {
+      "id": "q2",
+      "item": "Public distribution selected for the app (needed to serve merchants beyond your own store)",
+      "owner": "developer",
+      "neededFor": "production",
+      "gate": false,
+      "claimIds": [
+        "c3"
+      ]
+    },
+    {
+      "id": "q3",
+      "item": "Protected customer data access approved for the order data you read, justified as the minimum needed",
+      "owner": "developer",
+      "neededFor": "production",
+      "gate": false,
+      "claimIds": [
+        "c7",
+        "c8",
+        "c22"
+      ]
+    },
+    {
+      "id": "q4",
+      "item": "Compliance webhooks subscribed",
+      "owner": "developer",
+      "neededFor": "production",
+      "gate": false,
+      "claimIds": [
+        "c9"
+      ]
+    },
+    {
+      "id": "q5",
+      "item": "App icon, API contact details and an emergency developer contact",
+      "owner": "developer",
+      "neededFor": "production",
+      "gate": false,
+      "claimIds": [
+        "c9"
+      ]
+    },
+    {
+      "id": "q6",
+      "item": "A development store to install and test the app",
+      "owner": "developer",
+      "neededFor": "testing",
+      "gate": false,
+      "claimIds": [
+        "c13"
+      ]
+    },
+    {
+      "id": "q7",
+      "item": "A Composio custom auth config holding your Shopify client ID and secret",
+      "owner": "developer",
+      "neededFor": "testing",
+      "gate": false,
+      "claimIds": [
+        "c19",
+        "tc1"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "phase": "register",
+      "title": "Create the app in the Dev Dashboard and choose public distribution",
+      "actor": "developer",
+      "detail": "Sign in with your Shopify Partner account and create an app in the Dev Dashboard. On the app's Home, open the Distribution card and select Public distribution if merchants other than you will install it. The choice is permanent, so confirm it first.",
+      "duration": {
+        "minHours": 0.5,
+        "maxHours": 1,
+        "label": "30-60 minutes",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [],
+      "links": [
+        {
+          "label": "Select a distribution method",
+          "url": "https://shopify.dev/docs/apps/launch/distribution/select-distribution-method"
+        }
+      ],
+      "claimIds": [
+        "c3"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s2",
+      "phase": "configure",
+      "title": "Set the redirect URI and scopes",
+      "actor": "developer",
+      "detail": "In the app's settings in the Dev Dashboard, or in the [auth] section of shopify.app.toml, add the redirect URI https://backend.composio.dev/api/v1/auth-apps/add. Declare the scopes read_orders and read_products. Do not add read_all_orders unless you need orders older than 60 days.",
+      "duration": {
+        "minHours": 0.25,
+        "maxHours": 1,
+        "label": "15-60 minutes",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s1"
+      ],
+      "links": [
+        {
+          "label": "Authorization code grant",
+          "url": "https://shopify.dev/docs/apps/auth/get-access-tokens/authorization-code-grant"
+        },
+        {
+          "label": "Access scopes",
+          "url": "https://shopify.dev/docs/api/usage/access-scopes"
+        }
+      ],
+      "claimIds": [
+        "c1",
+        "c4",
+        "c5",
+        "c20"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s3",
+      "phase": "configure",
+      "title": "Request protected customer data access",
+      "actor": "developer",
+      "detail": "In the Partner Dashboard, open the app's API access requests and request protected customer data. Request only the fields the assistant needs. Fields such as name, address, phone or email are Level 2 and need individual approval. Complete the Data protection details. Do this before submitting the app, because it cannot be requested while the app is under review.",
+      "duration": {
+        "minHours": 1,
+        "maxHours": 4,
+        "label": "1-4 hours",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s1"
+      ],
+      "links": [
+        {
+          "label": "Work with protected customer data",
+          "url": "https://shopify.dev/docs/apps/launch/protected-customer-data"
+        }
+      ],
+      "claimIds": [
+        "c7",
+        "c8",
+        "c12"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s4",
+      "phase": "connect",
+      "title": "Connect a development store through Composio",
+      "actor": "developer",
+      "detail": "Create a Composio custom auth config for the shopify toolkit with your app's client ID and secret. Install the app on a development store. After the install, check the granted scopes in the token response, since merchants can edit them on the authorize screen. Run SHOPIFY_LIST_ORDERS and SHOPIFY_GET_PRODUCTS. Apps installed only on development stores can use customer data without a review.",
+      "duration": {
+        "minHours": 1,
+        "maxHours": 4,
+        "label": "1-4 hours",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s2"
+      ],
+      "links": [],
+      "claimIds": [
+        "c13",
+        "c19",
+        "c6",
+        "c2"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s5",
+      "phase": "prepare",
+      "title": "Prepare App Store submission requirements",
+      "actor": "developer",
+      "detail": "Subscribe to the compliance webhooks. Add the app icon, the API contact details and an emergency developer contact in the app's submission setup.",
+      "duration": {
+        "minHours": 2,
+        "maxHours": 8,
+        "label": "2-8 hours",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s2"
+      ],
+      "links": [
+        {
+          "label": "Submit your app for review",
+          "url": "https://shopify.dev/docs/apps/launch/app-store-review/submit-app-for-review"
+        }
+      ],
+      "claimIds": [
+        "c9"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s6",
+      "phase": "review",
+      "title": "Submit the app for App Store review",
+      "actor": "developer",
+      "detail": "Open the Shopify App Store review page in the Partner Dashboard. Fill in the mandatory fields and fix anything the automated checks flag, then submit. Your protected customer data request must already be filed.",
+      "duration": {
+        "minHours": 0.5,
+        "maxHours": 1,
+        "label": "30-60 minutes",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s3",
+        "s4",
+        "s5"
+      ],
+      "links": [
+        {
+          "label": "Submit your app for review",
+          "url": "https://shopify.dev/docs/apps/launch/app-store-review/submit-app-for-review"
+        }
+      ],
+      "claimIds": [
+        "c10",
+        "c12"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s7",
+      "phase": "review",
+      "title": "Wait for Shopify's review",
+      "actor": "provider",
+      "detail": "The app moves through Draft, Submitted, Reviewed and Published. Shopify emails status updates and shows them in the Partner Dashboard. Shopify may also select the app for a detailed data protection review and ask for evidence of compliance. The documentation gives no turnaround time, so the duration here is a guess.",
+      "duration": {
+        "minHours": 168,
+        "maxHours": 504,
+        "label": "1-3 weeks (unconfirmed estimate)",
+        "basis": "estimate",
+        "claimIds": [
+          "c18",
+          "c10"
+        ]
+      },
+      "dependsOn": [
+        "s6"
+      ],
+      "links": [
+        {
+          "label": "Shopify Help Center: building apps",
+          "url": "https://help.shopify.com/en/partners/build-integrate/making-apps"
+        }
+      ],
+      "claimIds": [
+        "c10",
+        "c11",
+        "c21",
+        "c22",
+        "c18"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s8",
+      "phase": "launch",
+      "title": "Go live on merchant stores",
+      "actor": "developer",
+      "detail": "Once the app is published and protected customer data is approved, install it on a real merchant store. Check that order fields return real values instead of null. Verify the granted scopes and make sure the app handles THROTTLED responses.",
+      "duration": {
+        "minHours": 0.5,
+        "maxHours": 1,
+        "label": "30-60 minutes",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s7"
+      ],
+      "links": [],
+      "claimIds": [
+        "c14",
+        "c15",
+        "c6"
+      ],
+      "optional": false
+    }
+  ],
+  "risks": [
+    {
+      "id": "k1",
+      "title": "Order data comes back null without protected customer data approval",
+      "severity": "warning",
+      "gate": false,
+      "symptom": "HTTP 200 with null customer fields and an errors entry: \"This app is not approved to access the Customer object.\"",
+      "fix": "Request protected customer data access in the Partner Dashboard and complete the Data protection details. Request only the fields you need.",
+      "claimIds": [
+        "c14",
+        "c7"
+      ]
+    },
+    {
+      "id": "k2",
+      "title": "Protected customer data cannot be requested while the app is under review",
+      "severity": "warning",
+      "gate": false,
+      "fix": "File the protected customer data request before you submit the app for review.",
+      "claimIds": [
+        "c12"
+      ]
+    },
+    {
+      "id": "k3",
+      "title": "read_orders only returns the last 60 days of orders",
+      "severity": "info",
+      "gate": false,
+      "symptom": "Older orders are missing from SHOPIFY_LIST_ORDERS results.",
+      "fix": "If the assistant needs older orders, declare read_all_orders alongside read_orders. It does nothing on its own and needs Shopify approval, which would raise the review burden.",
+      "claimIds": [
+        "c4",
+        "c5"
+      ]
+    },
+    {
+      "id": "k4",
+      "title": "Merchants can change the scopes at authorization",
+      "severity": "warning",
+      "gate": false,
+      "symptom": "The token comes back with fewer scopes than you declared.",
+      "fix": "Check the granted scopes in the token response before storing the token, and prompt the merchant to reinstall if any are missing.",
+      "claimIds": [
+        "c6"
+      ]
+    },
+    {
+      "id": "k5",
+      "title": "Public distribution is a permanent choice",
+      "severity": "warning",
+      "gate": false,
+      "fix": "Decide between public and custom distribution before you create the app. You cannot change it afterwards.",
+      "claimIds": [
+        "c3"
+      ]
+    },
+    {
+      "id": "k6",
+      "title": "New public apps must use expiring offline access tokens",
+      "severity": "warning",
+      "gate": false,
+      "symptom": "Access tokens expire and requests fail until you refresh them.",
+      "fix": "Exchange the authorization code with expiring=1 and store the refresh token. Check that your Composio auth config handles refreshing.",
+      "claimIds": [
+        "c2"
+      ]
+    },
+    {
+      "id": "k7",
+      "title": "REST endpoints may be rejected for new public apps (unconfirmed)",
+      "severity": "warning",
+      "gate": false,
+      "fix": "Confirm whether the two Composio tools call REST or GraphQL Admin API endpoints. If you build custom calls, use GraphQL.",
+      "claimIds": [
+        "c17"
+      ]
+    },
+    {
+      "id": "k8",
+      "title": "API rate limits throttle bulk order reads",
+      "severity": "info",
+      "gate": false,
+      "symptom": "GraphQL returns a THROTTLED error, possibly with HTTP 200. REST returns HTTP 429.",
+      "fix": "Back off and retry. Limits apply per app and store pair and depend on the store's plan. Use pagination and keep each query's cost low.",
+      "claimIds": [
+        "c15",
+        "c16",
+        "c23"
+      ]
+    },
+    {
+      "id": "k9",
+      "title": "Review turnaround is not documented",
+      "severity": "info",
+      "gate": false,
+      "fix": "Plan for a multi-week wait and submit early. Use a development store for demos and testing while you wait.",
+      "claimIds": [
+        "c10",
+        "c18",
+        "c13"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "id": "tp1",
+      "text": "oauth-authorization-server well-known: HTTP 200, metadata JSON with 4 keys (https://api.shopify.com/.well-known/oauth-authorization-server)",
+      "evidence": "tested",
+      "sources": [],
+      "testedHow": "oauth-authorization-server well-known against https://api.shopify.com/.well-known/oauth-authorization-server at 2026-10-27T17:35:31.076Z: HTTP 200, metadata JSON with 4 keys",
+      "confidence": "high"
+    },
+    {
+      "id": "tc1",
+      "text": "Composio toolkit \"shopify\" exists; managed auth schemes: none listed; 0 managed scopes available.",
+      "evidence": "tested",
+      "sources": [],
+      "testedHow": "GET /api/v3.1/toolkits/shopify on the Composio API at 2026-10-27T17:36:13.646Z: toolkit found",
+      "confidence": "high"
+    },
+    {
+      "id": "c1",
+      "text": "A standalone or API-only app authenticates with the OAuth authorization code grant. Its redirect URI is registered in the Dev Dashboard or in the [auth] section of shopify.app.toml.",
+      "evidence": "inferred",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/apps/auth/get-access-tokens/authorization-code-grant",
+          "title": "Authenticate a standalone or API-only app",
+          "quote": "You've added your app's redirect URI to your app's settings in the Dev Dashboard, or to the [auth] section of your shopify.app.toml.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "unsupported",
+        "note": "cited quote not found on the fetched page"
+      }
+    },
+    {
+      "id": "c2",
+      "text": "New public apps must use expiring offline access tokens for GraphQL Admin API requests.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/apps/auth/get-access-tokens/authorization-code-grant",
+          "title": "Authenticate a standalone or API-only app",
+          "quote": "New public apps must use expiring offline access tokens for GraphQL Admin API requests.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "Page states exactly that new public apps must use expiring offline access tokens for GraphQL Admin API requests."
+      }
+    },
+    {
+      "id": "c3",
+      "text": "The distribution method (public or custom) is chosen once and cannot be changed afterwards.",
+      "evidence": "inferred",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/apps/launch/distribution/select-distribution-method",
+          "title": "Select a distribution method",
+          "quote": "You can't change the method after you select it, so review the capabilities and requirements before continuing.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "unsupported",
+        "note": "cited quote not found on the fetched page"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "By default read_orders only covers orders created in the last 60 days. Older orders need read_all_orders, which needs Shopify approval.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/api/usage/access-scopes",
+          "title": "Shopify API access scopes",
+          "quote": "By default, read_orders provides read access and write_orders provides read and write access to orders created within the last 60 days.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "Page states the 60-day default for read_orders, that read_all_orders extends access to older orders, and that it is a Shopify approval scope (Dev Dashboard merchant-org apps are exempt)."
+      }
+    },
+    {
+      "id": "c5",
+      "text": "read_all_orders does nothing on its own. It extends the order scope the app already has.",
+      "evidence": "inferred",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/api/usage/access-scopes",
+          "title": "Shopify API access scopes",
+          "quote": "read_all_orders doesn't grant access on its own.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "unsupported",
+        "note": "cited quote not found on the fetched page"
+      }
+    },
+    {
+      "id": "c6",
+      "text": "Merchants can change the requested scopes during authorization, so the granted scopes must be verified before storing the token.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/apps/auth/get-access-tokens/authorization-code-grant",
+          "title": "Authenticate a standalone or API-only app",
+          "quote": "Merchants can modify requested scopes during authorization, so always verify before storing the token.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "Page says merchants can modify requested scopes during authorization, so verify the granted scope before storing the token."
+      }
+    },
+    {
+      "id": "c7",
+      "text": "Orders are protected customer data. Public apps request access in the Partner Dashboard.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/apps/launch/protected-customer-data",
+          "title": "Work with protected customer data",
+          "quote": "Public apps request access to protected customer data and protected customer fields through the Partner Dashboard.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "medium",
+      "verifier": {
+        "verdict": "partially_supported",
+        "note": "Page supports public apps requesting protected customer data access via the Partner Dashboard, but the excerpt does not state that orders are protected customer data."
+      }
+    },
+    {
+      "id": "c8",
+      "text": "Shopify approves protected customer data only for the minimum data the app needs to provide its merchant-facing functionality.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/apps/launch/protected-customer-data",
+          "title": "Work with protected customer data",
+          "quote": "Shopify will approve your app to use protected customer data if the requested data is the minimum amount required by your app to provide the merchant with the app functionality.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "Page says Shopify approves the app if the requested data is the minimum needed to provide merchant app functionality."
+      }
+    },
+    {
+      "id": "c9",
+      "text": "Apps distributed through the Shopify App Store must subscribe to compliance webhooks. Submission setup also requires an app icon, API contact details and an emergency developer contact.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/apps/launch/app-store-review/submit-app-for-review",
+          "title": "Submit your app for review",
+          "quote": "Apps that are distributed through the Shopify App Store must subscribe to compliance webhooks.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "Page states compliance webhooks are required for App Store apps and lists the app icon, API contact details and emergency contact in the configuration setup."
+      }
+    },
+    {
+      "id": "c10",
+      "text": "Submission runs mandatory fields and automated tests before App Store review. The retrieved docs give no review turnaround time.",
+      "evidence": "inferred",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/apps/launch/app-store-review/submit-app-for-review",
+          "title": "Submit your app for review",
+          "quote": "You'll be guided to complete mandatory fields and automated tests to prep your app for submission and reduce common errors.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "unsupported",
+        "note": "cited quote not found on the fetched page"
+      }
+    },
+    {
+      "id": "c11",
+      "text": "Shopify sends review status updates by email and in the Partner Dashboard.",
+      "evidence": "inferred",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/apps/launch/protected-customer-data",
+          "title": "Work with protected customer data",
+          "quote": "You'll receive updates about the status of your review by email and through your Partner Dashboard.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "unsupported",
+        "note": "cited quote not found on the fetched page"
+      }
+    },
+    {
+      "id": "c12",
+      "text": "Protected customer data cannot be requested while the app is under review.",
+      "evidence": "inferred",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/apps/launch/app-store-review/submit-app-for-review",
+          "title": "Submit your app for review",
+          "quote": "Applying for protected customer data isn't possible while the app is under review.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "unsupported",
+        "note": "cited quote not found on the fetched page"
+      }
+    },
+    {
+      "id": "c13",
+      "text": "Apps installed only on development stores do not need to be submitted for review to use customer data.",
+      "evidence": "inferred",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/apps/launch/protected-customer-data",
+          "title": "Work with protected customer data",
+          "quote": "You don't need to submit a request for review for apps that are installed only on development stores.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "unsupported",
+        "note": "cited quote not found on the fetched page"
+      }
+    },
+    {
+      "id": "c14",
+      "text": "Without approval, protected customer fields return null with an HTTP 200 and an errors entry saying the app is not approved to access the Customer object.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/apps/launch/protected-customer-data",
+          "title": "Work with protected customer data",
+          "quote": "This app is not approved to access the Customer object. See https://partners.shopify.com/123/apps/456/customer_data for more details.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "medium",
+      "verifier": {
+        "verdict": "partially_supported",
+        "note": "Page shows HTTP 200 with a null field and an errors message that the app is not approved to access the Customer object, but the example is for a field (phone) and it does not state that all protected fields return null."
+      }
+    },
+    {
+      "id": "c15",
+      "text": "GraphQL returns the THROTTLED error code when the rate limit is exceeded.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/api/admin-graphql/latest",
+          "title": "GraphQL Admin API reference",
+          "quote": "The client has exceeded the rate limit.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "Page lists the THROTTLED error code as meaning the client has exceeded the rate limit."
+      }
+    },
+    {
+      "id": "c16",
+      "text": "GraphQL Admin API limits apply per app and store pair, with bucket size and restore rate depending on the store's plan.",
+      "evidence": "inferred",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/apps/build/apis/graphql-admin/rate-limits",
+          "title": "GraphQL Admin API rate limits",
+          "quote": "Each combination of app and store is given a bucket size and restore rate based on the store's plan.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "unsupported",
+        "note": "cited quote not found on the fetched page"
+      }
+    },
+    {
+      "id": "c17",
+      "text": "Third-party claim, not confirmed in official docs: since April 2026 new public apps must use only the GraphQL Admin API.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://shinedezigninfonet.com/blog/understanding-shopify-app-store-guidelines-what-you-need-to-know/",
+          "title": "Shopify App Store Guidelines: Full Approval Checklist",
+          "quote": "Since April 2026, all new public apps must be built exclusively with the GraphQL Admin API, with the REST Admin API now considered legacy.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The third-party page states this claim, and the claim is correctly labelled as third-party and unconfirmed in official docs."
+      }
+    },
+    {
+      "id": "c18",
+      "text": "Guess, not sourced: App Store review plus the protected customer data review will take roughly 1-3 weeks. Shopify's retrieved documentation gives no turnaround time.",
+      "evidence": "inferred",
+      "sources": [],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "not_checked",
+        "note": "no source cited"
+      }
+    },
+    {
+      "id": "c19",
+      "text": "Inferred: because Composio lists no managed auth scheme for shopify, you must create a Composio custom auth config with your own Shopify app's client ID and secret. The Composio callback URL goes in the Shopify redirect settings.",
+      "evidence": "inferred",
+      "sources": [],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "not_checked",
+        "note": "no source cited"
+      }
+    },
+    {
+      "id": "c20",
+      "text": "Inferred: write_orders grants read and write access to orders, so read_orders is enough for a review-only assistant. Composio's tool metadata lists write_orders as required, which is more than this use case needs.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/api/usage/access-scopes",
+          "title": "Shopify API access scopes",
+          "quote": "By default, read_orders provides read access and write_orders provides read and write access to orders created within the last 60 days.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "medium",
+      "verifier": {
+        "verdict": "partially_supported",
+        "note": "Page confirms write_orders grants read and write while read_orders gives read access, but nothing about Composio's tool metadata or the review-only use case."
+      }
+    },
+    {
+      "id": "c21",
+      "text": "During App Store review an app's status changes through Draft, Submitted, Reviewed and Published.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://help.shopify.com/en/partners/build-integrate/making-apps",
+          "title": "Shopify Help Center | Building and monetizing apps with Shopify's APIs",
+          "quote": "During the review process your app changes status: Draft, Submitted, Reviewed, and Published.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "Page states the app status changes through Draft, Submitted, Reviewed and Published during review."
+      }
+    },
+    {
+      "id": "c22",
+      "text": "Shopify may select an app for a detailed data protection review and contact the developer with instructions.",
+      "evidence": "inferred",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/apps/launch/protected-customer-data",
+          "title": "Work with protected customer data",
+          "quote": "If we select your app for a data protection review, then we'll contact you with instructions on how to proceed.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "unsupported",
+        "note": "cited quote not found on the fetched page"
+      }
+    },
+    {
+      "id": "c23",
+      "text": "REST Admin API requests over the rate limit are throttled and return HTTP 429.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://shopify.dev/docs/api/admin-rest/usage/rate-limits",
+          "title": "REST Admin API rate limits",
+          "quote": "All requests that are made after rate limits have been exceeded are throttled and an HTTP 429 Too Many Requests error is returned.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "Page states requests after exceeding rate limits are throttled and return HTTP 429 Too Many Requests."
+      }
+    },
+    {
+      "id": "c24",
+      "text": "Inferred: read_products is the scope for product reads. Composio's tool metadata lists it as required for SHOPIFY_GET_PRODUCTS, and we found no source that addresses it separately.",
+      "evidence": "inferred",
+      "sources": [],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "not_checked",
+        "note": "no source cited"
+      }
+    }
+  ],
+  "openQuestions": [
+    "How long does Shopify's App Store review take, and how long does protected customer data approval take? The retrieved docs give no turnaround time.",
+    "Does the Composio shopify toolkit support custom auth configs with your own client ID and secret? Does it handle expiring offline tokens and refresh tokens?",
+    "Will this be used on one merchant's store only? If so, custom distribution might avoid App Store review, but we found no source on its review or protected customer data requirements.",
+    "Does the assistant need orders older than 60 days? That would require read_all_orders and Shopify approval.",
+    "Which order fields does the assistant need? Name, address, phone or email fields are Level 2 and need individual approval.",
+    "Do SHOPIFY_LIST_ORDERS and SHOPIFY_GET_PRODUCTS use REST or GraphQL endpoints, given the unconfirmed GraphQL-only requirement for new public apps?",
+    "The probe at api.shopify.com/.well-known/oauth-authorization-server returned metadata (tp1), but its relation to the merchant install flow is unclear. Other well-known endpoints returned 404.",
+    "Unverified: A standalone or API-only app authenticates with the OAuth authorization code grant. Its redirect ... (cited quote not found on the fetched page)",
+    "Unverified: The distribution method (public or custom) is chosen once and cannot be changed afterwards. (cited quote not found on the fetched page)",
+    "Unverified: read_all_orders does nothing on its own. It extends the order scope the app already has. (cited quote not found on the fetched page)",
+    "Unverified: Submission runs mandatory fields and automated tests before App Store review. The retrieved docs ... (cited quote not found on the fetched page)",
+    "Unverified: Shopify sends review status updates by email and in the Partner Dashboard. (cited quote not found on the fetched page)",
+    "Unverified: Protected customer data cannot be requested while the app is under review. (cited quote not found on the fetched page)",
+    "Unverified: Apps installed only on development stores do not need to be submitted for review to use customer ... (cited quote not found on the fetched page)",
+    "Unverified: GraphQL Admin API limits apply per app and store pair, with bucket size and restore rate dependin... (cited quote not found on the fetched page)",
+    "Unverified: Shopify may select an app for a detailed data protection review and contact the developer with in... (cited quote not found on the fetched page)"
+  ]
+}

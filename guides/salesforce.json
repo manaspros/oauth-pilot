@@ -1,0 +1,708 @@
+{
+  "schemaVersion": 1,
+  "slug": "salesforce",
+  "app": {
+    "name": "Salesforce",
+    "website": "https://www.salesforce.com",
+    "composioToolkit": "salesforce"
+  },
+  "generatedAt": "2026-10-27T17:33:28.782Z",
+  "generator": {
+    "kind": "live",
+    "model": "claude-sonnet-5-5",
+    "runId": "cli-mvqypmer-af7f34"
+  },
+  "useCase": {
+    "summary": "AI sales assistant that queries and creates CRM records in a customer's Salesforce org via SOQL queries and record creation.",
+    "tools": [
+      "SALESFORCE_RUN_SOQL_QUERY",
+      "SALESFORCE_CREATE_A_RECORD"
+    ]
+  },
+  "verdict": {
+    "tier": 1,
+    "tierLabel": "Self-serve",
+    "headline": "Connect today with Composio's managed OAuth app. For production, register your own External Client App, which is self-serve with no provider review unless you list on AgentExchange.",
+    "startToday": "Start the managed Composio connection now (minutes). Then create your own External Client App in Setup > App Manager. It is the slowest step but still takes only a few hours, and legacy Connected Apps can no longer be created.",
+    "timeToFirstConnection": {
+      "minHours": 0.1,
+      "maxHours": 0.5,
+      "label": "5-30 minutes",
+      "basis": "estimate",
+      "claimIds": [
+        "tc1"
+      ]
+    },
+    "timeToProduction": {
+      "minHours": 1,
+      "maxHours": 4,
+      "label": "1-4 hours",
+      "basis": "estimate",
+      "claimIds": [
+        "c1",
+        "c2",
+        "c17"
+      ]
+    },
+    "activeEffort": {
+      "minHours": 1,
+      "maxHours": 3,
+      "label": "1-3 hours",
+      "basis": "estimate",
+      "claimIds": [
+        "c1",
+        "c2"
+      ]
+    },
+    "confidence": "medium",
+    "claimIds": [
+      "tc1",
+      "tp1",
+      "c1",
+      "c2",
+      "c3",
+      "c17"
+    ]
+  },
+  "composio": {
+    "toolkitFound": true,
+    "managedAvailable": true,
+    "recommendation": "managed_then_own",
+    "why": "Composio offers a managed OAUTH2 app for Salesforce, so you can connect in minutes. For production, an own External Client App gives you control over refresh-token policies (idle TTL, IP allowlist) and your own branding. Creating one is self-serve and needs no provider review for your own use.",
+    "callbackUrl": "https://backend.composio.dev/api/v1/auth-apps/add",
+    "claimIds": [
+      "tc1",
+      "c1",
+      "c7",
+      "c17"
+    ]
+  },
+  "scopes": [
+    {
+      "scope": "api",
+      "sensitivity": "basic",
+      "neededFor": [
+        "SALESFORCE_RUN_SOQL_QUERY",
+        "SALESFORCE_CREATE_A_RECORD"
+      ],
+      "claimIds": [
+        "c5"
+      ]
+    },
+    {
+      "scope": "refresh_token",
+      "sensitivity": "basic",
+      "neededFor": [
+        "Long-lived offline access so the assistant can refresh tokens without re-prompting the user"
+      ],
+      "claimIds": [
+        "c5"
+      ]
+    },
+    {
+      "scope": "full",
+      "sensitivity": "unknown",
+      "neededFor": [
+        "Not needed for this use case; skip it"
+      ],
+      "claimIds": [
+        "c6"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "req1",
+      "item": "A Salesforce org where you can create External Client Apps (Setup access to App Manager)",
+      "owner": "developer",
+      "neededFor": "production",
+      "gate": false,
+      "claimIds": [
+        "c1"
+      ]
+    },
+    {
+      "id": "req2",
+      "item": "A Composio project to hold the auth config (managed or custom OAuth2 credentials)",
+      "owner": "developer",
+      "neededFor": "testing",
+      "gate": false,
+      "claimIds": [
+        "tc1"
+      ]
+    },
+    {
+      "id": "req3",
+      "item": "Callback URL configured on the External Client App; with Composio it is https://backend.composio.dev/api/v1/auth-apps/add",
+      "owner": "developer",
+      "neededFor": "production",
+      "gate": false,
+      "claimIds": [
+        "c2",
+        "c16"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "phase": "connect",
+      "title": "Try the managed Composio connection",
+      "actor": "developer",
+      "detail": "Create a Salesforce connection using Composio's managed OAUTH2 auth config (toolkit 'salesforce'). Log in to Salesforce, approve access, and run SALESFORCE_RUN_SOQL_QUERY once to confirm it works.",
+      "duration": {
+        "minHours": 0.1,
+        "maxHours": 0.5,
+        "label": "5-30 minutes",
+        "basis": "estimate",
+        "claimIds": [
+          "tc1"
+        ]
+      },
+      "dependsOn": [],
+      "links": [],
+      "claimIds": [
+        "tc1"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s2",
+      "phase": "register",
+      "title": "Create an External Client App",
+      "actor": "developer",
+      "detail": "In Salesforce, go to Setup, search Quick Find for 'App Manager', click App Manager, then New External Client App. Fill in the app name and your contact email. Do not try to create a legacy Connected App, since new ones are blocked as of Spring '26.",
+      "duration": {
+        "minHours": 0.25,
+        "maxHours": 0.5,
+        "label": "15-30 minutes",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [],
+      "links": [
+        {
+          "label": "Create an External Client App",
+          "url": "https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_eca.htm"
+        }
+      ],
+      "claimIds": [
+        "c1",
+        "c3"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s3",
+      "phase": "configure",
+      "title": "Enable OAuth, set callback URL and scopes",
+      "actor": "developer",
+      "detail": "In the External Client App's OAuth Settings, select Enable OAuth. Enter the callback URL https://backend.composio.dev/api/v1/auth-apps/add. Select only the scopes 'api' and 'refresh_token'. Skip 'full' and 'web'.",
+      "duration": {
+        "minHours": 0.25,
+        "maxHours": 0.5,
+        "label": "15-30 minutes",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s2"
+      ],
+      "links": [
+        {
+          "label": "Configure External Client App OAuth Settings",
+          "url": "https://help.salesforce.com/s/articleView?language=en_US&id=sf.configure_external_client_app_oauth_settings.htm&type=5"
+        }
+      ],
+      "claimIds": [
+        "c2",
+        "c4",
+        "c5"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s4",
+      "phase": "configure",
+      "title": "Set refresh-token security policies",
+      "actor": "developer",
+      "detail": "Review the refresh-token options on the app. If you enable Enforce Refresh Token IP Allowlist, add the egress IP ranges of the service that refreshes tokens, or refreshes will fail. Decide the idle refresh-token TTL (30-day option) and plan for re-authorization when tokens go idle.",
+      "duration": {
+        "minHours": 0.25,
+        "maxHours": 0.5,
+        "label": "15-30 minutes",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s3"
+      ],
+      "links": [],
+      "claimIds": [
+        "c7",
+        "c8"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s5",
+      "phase": "connect",
+      "title": "Add your Consumer Key and Secret to a Composio auth config",
+      "actor": "developer",
+      "detail": "Copy the Consumer Key and Consumer Secret from the External Client App's OAuth settings. Create a custom OAUTH2 auth config for the 'salesforce' toolkit in Composio with those credentials and the scopes api and refresh_token.",
+      "duration": {
+        "minHours": 0.25,
+        "maxHours": 0.5,
+        "label": "15-30 minutes",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s4"
+      ],
+      "links": [],
+      "claimIds": [
+        "tc1"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s6",
+      "phase": "connect",
+      "title": "Connect an account and test both tools",
+      "actor": "developer",
+      "detail": "Authorize a Salesforce user through the new auth config, then run SALESFORCE_RUN_SOQL_QUERY (a simple SELECT on Account) and SALESFORCE_CREATE_A_RECORD (a test Lead or Account). Check that refreshing the token works. A redirect_uri_mismatch error means the callback URL does not match the app's configuration.",
+      "duration": {
+        "minHours": 0.25,
+        "maxHours": 1,
+        "label": "15-60 minutes",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s5"
+      ],
+      "links": [],
+      "claimIds": [
+        "c16",
+        "c8"
+      ],
+      "optional": false
+    }
+  ],
+  "risks": [
+    {
+      "id": "risk1",
+      "title": "Legacy Connected Apps can no longer be created",
+      "severity": "warning",
+      "gate": false,
+      "symptom": "Old tutorials say to create a Connected App, but the option is missing or blocked in Setup.",
+      "fix": "Use an External Client App (Setup > App Manager > New External Client App). Salesforce Support can re-enable Connected App creation for now, but not in future releases.",
+      "claimIds": [
+        "c3"
+      ]
+    },
+    {
+      "id": "risk2",
+      "title": "Refresh tokens can expire or be revoked",
+      "severity": "warning",
+      "gate": false,
+      "symptom": "Token refresh returns HTTP 400 invalid_grant with 'expired access/refresh token'.",
+      "fix": "Prompt the user to re-authorize and surface a reconnect flow. Check the idle TTL and IP allowlist settings on the app. A third-party source says idle refresh tokens begin expiring on 4 November 2026, so keep integrations active.",
+      "claimIds": [
+        "c7",
+        "c8",
+        "c9"
+      ]
+    },
+    {
+      "id": "risk3",
+      "title": "API limits are shared across the customer's whole org",
+      "severity": "warning",
+      "gate": false,
+      "symptom": "Requests fail once the org's daily API allocation is used up by your assistant plus other integrations.",
+      "fix": "Batch where possible, cache query results, and avoid chatty SOQL loops. Allocation is per org, not per user, and paid editions such as Enterprise start at 100,000 requests per 24 hours. Monitor usage.",
+      "claimIds": [
+        "c10",
+        "c11"
+      ]
+    },
+    {
+      "id": "risk4",
+      "title": "Concurrent long-running requests are capped",
+      "severity": "info",
+      "gate": false,
+      "symptom": "REQUEST_LIMIT_EXCEEDED once too many requests that run 20 seconds or longer are in flight.",
+      "fix": "Keep SOQL queries selective and limit parallel heavy queries.",
+      "claimIds": [
+        "c12"
+      ]
+    },
+    {
+      "id": "risk5",
+      "title": "Listing on AgentExchange/AppExchange triggers a security review",
+      "severity": "info",
+      "gate": false,
+      "symptom": "Only applies if you distribute a managed package or Platform API solution through Salesforce's marketplace.",
+      "fix": "For your own use or direct customer connections you do not need this. If you list, plan for security review. Salesforce's typical estimates are 1-2 weeks for submission verification, 3-4 weeks for the first Product Security test and 2-3 weeks for a resubmission, and they are only estimates.",
+      "claimIds": [
+        "c13",
+        "c14"
+      ]
+    },
+    {
+      "id": "risk6",
+      "title": "Redirect URI mismatch",
+      "severity": "warning",
+      "gate": false,
+      "symptom": "error=redirect_uri_mismatch during authorization.",
+      "fix": "Make the callback URL on the External Client App exactly match the one used by Composio: https://backend.composio.dev/api/v1/auth-apps/add.",
+      "claimIds": [
+        "c16",
+        "c2"
+      ]
+    },
+    {
+      "id": "risk7",
+      "title": "Sandbox does not receive local External Client Apps",
+      "severity": "info",
+      "gate": false,
+      "symptom": "After a sandbox clone or refresh, your ECA is missing.",
+      "fix": "Recreate the ECA in the sandbox or package it.",
+      "claimIds": [
+        "c15"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "id": "tp1",
+      "text": "oauth-authorization-server well-known: HTTP 200, metadata JSON with 9 keys (https://api.salesforce.com/.well-known/oauth-authorization-server)",
+      "evidence": "tested",
+      "sources": [],
+      "testedHow": "oauth-authorization-server well-known against https://api.salesforce.com/.well-known/oauth-authorization-server at 2026-10-27T17:31:28.420Z: HTTP 200, metadata JSON with 9 keys",
+      "confidence": "high"
+    },
+    {
+      "id": "tc1",
+      "text": "Composio toolkit \"salesforce\" exists; managed auth schemes: OAUTH2; 3 managed scopes available.",
+      "evidence": "tested",
+      "sources": [],
+      "testedHow": "GET /api/v3.1/toolkits/salesforce on the Composio API at 2026-10-27T17:32:23.657Z: toolkit found",
+      "confidence": "high"
+    },
+    {
+      "id": "c1",
+      "text": "New OAuth clients are registered as External Client Apps via Setup > App Manager > New External Client App.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_eca.htm",
+          "title": "Create an External Client App in Your Org | Authorization | Salesforce DX Developer Guide | Salesforce Developers",
+          "quote": "From the Quick Find box in Setup, enter App Manager, then click App Manager. Click New External Client App. Update the basic information as needed, such as the external client app name and your contact email address.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "Page gives steps: Setup > App Manager > New External Client App."
+      }
+    },
+    {
+      "id": "c2",
+      "text": "After selecting Enable OAuth on the external client app you enter a callback URL that Salesforce redirects to during OAuth.",
+      "evidence": "inferred",
+      "sources": [
+        {
+          "url": "https://help.salesforce.com/s/articleView?language=en_US&id=sf.configure_external_client_app_oauth_settings.htm&type=5",
+          "title": "Configure the External Client App OAuth Settings | Salesforce Help",
+          "quote": "In the OAuth Settings area of the page, select Enable OAuth. The OAuth Settings area expands and the OAuth settings fields are visible. Enter the callback URL (endpoint) that Salesforce calls back to your application during OAuth.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "unsupported",
+        "note": "cited quote not found on the fetched page"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "New legacy Connected Apps can no longer be created as of Spring '26 unless Salesforce Support enables it, and Support will not be able to in future releases.",
+      "evidence": "inferred",
+      "sources": [
+        {
+          "url": "https://help.salesforce.com/s/articleView?language=en_US&id=005228017&amp=&type=1",
+          "title": "Salesforce Platform: New Connected Apps Can No Longer Be Created in Spring '26 | Salesforce Help",
+          "quote": "However, no new connected apps can be created with the Spring ‘26 release unless enabled by Salesforce Support. In future releases, Salesforce Support won’t be able to enable the creation of new connected apps.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "unsupported",
+        "note": "cited quote not found on the fetched page"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "OAuth scopes are selected on the external client app and are granted as tokens after the app is authorized.",
+      "evidence": "inferred",
+      "sources": [
+        {
+          "url": "https://help.salesforce.com/s/articleView?language=en_US&id=sf.configure_external_client_app_oauth_settings.htm&type=5",
+          "title": "Configure the External Client App OAuth Settings | Salesforce Help",
+          "quote": "Select the OAuth scopes to apply to the external client app. OAuth scopes define permissions for the external client app, which are granted as tokens after the app is authorized.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "unsupported",
+        "note": "cited quote not found on the fetched page"
+      }
+    },
+    {
+      "id": "c5",
+      "text": "Salesforce's Mobile SDK docs say that for most apps the refresh_token, web and api scopes are sufficient. Composio lists api as the required scope for this toolkit.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developer.salesforce.com/docs/platform/mobile-sdk/guide/oauth-scope-parameter-values.html",
+          "title": "Scope Parameter Values | Authentication, Security, and Identity in Mobile Apps | Mobile SDK Development Guide | Salesforce Developers",
+          "quote": "For most apps, refresh_token, web, and api are sufficient.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "medium",
+      "verifier": {
+        "verdict": "partially_supported",
+        "note": "Mobile SDK sentence is confirmed, but the page says nothing about Composio listing api as the required scope."
+      }
+    },
+    {
+      "id": "c6",
+      "text": "AppExchange security review guidance says apps should apply least privilege to scopes and must not rely on device, implicit or username/password flows.",
+      "evidence": "inferred",
+      "sources": [
+        {
+          "url": "https://help.salesforce.com/s/articleView?id=005318040&language=en_US&type=1",
+          "title": "Connected Apps (CAs) and External Client Apps (ECAs) AppExchange Security Review Submission Guidance | Salesforce Help",
+          "quote": "Apps must not rely on these OAuth flows: device flow; implicit grant flow; username/password flow (retiring in Winter '27). Apply the principle of least privilege when using scopes.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "unsupported",
+        "note": "cited quote not found on the fetched page"
+      }
+    },
+    {
+      "id": "c7",
+      "text": "The Enforce Refresh Token IP Allowlist option on an external client app restricts which IPs can complete the web server or refresh token flow.",
+      "evidence": "inferred",
+      "sources": [
+        {
+          "url": "https://help.salesforce.com/s/articleView?language=en_US&id=sf.configure_external_client_app_oauth_settings.htm&type=5",
+          "title": "Configure the External Client App OAuth Settings | Salesforce Help",
+          "quote": "When you turn on Enforce Refresh Token IP Allowlist, only IPs in allowed ranges can complete the OAuth web server flow or the refresh token flow.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "unsupported",
+        "note": "cited quote not found on the fetched page"
+      }
+    },
+    {
+      "id": "c8",
+      "text": "Refreshing with an expired or revoked refresh token returns invalid_grant with 'expired access/refresh token'.",
+      "evidence": "inferred",
+      "sources": [
+        {
+          "url": "https://help.salesforce.com/s/articleView?id=sf.remoteaccess_oauth_flow_errors.htm&language=en_US&type=5",
+          "title": "OAuth 2.0 Authorization Errors | Salesforce Help",
+          "quote": "{\"error\":\"invalid_grant\",\"error_description\":\"expired access/refresh token\"}",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "unsupported",
+        "note": "cited quote not found on the fetched page"
+      }
+    },
+    {
+      "id": "c9",
+      "text": "Third-party source (Clientell): idle refresh tokens expire from 4 November 2026.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://www.getclientell.com/salesforce-blogs/salesforce-connected-app-changes-spring-26",
+          "title": "Salesforce Connected App Changes: Spring '26 | Clientell AI",
+          "quote": "Idle refresh tokens expire from 4 November 2026.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "medium",
+      "verifier": {
+        "verdict": "supported",
+        "note": "Page states idle refresh tokens expire from 4 November 2026, attributed to Salesforce's security roadmap via Clientell."
+      }
+    },
+    {
+      "id": "c10",
+      "text": "API limits are enforced against the aggregate of all API calls to the org in 24 hours, not per user.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developer.salesforce.com/docs/platform/salesforce-app-limits-cheatsheet/guide/salesforce-app-limits-platform-api.html",
+          "title": "API Request Limits and Allocations | Salesforce Developer Limits and Allocations Quick Reference | Salesforce Developers",
+          "quote": "Limits and allocations are enforced against the aggregate of all API calls made to the org in a 24-hour period. Limits and allocations are not on a per-user basis.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "Page states limits are enforced against the aggregate of all API calls in 24 hours, not per user."
+      }
+    },
+    {
+      "id": "c11",
+      "text": "Paid editions such as Enterprise start at 100,000 API requests per 24 hours, increasing with licenses.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developer.salesforce.com/blogs/2024/11/api-limits-and-monitoring-your-api-usage",
+          "title": "API Limits and Monitoring Your API Usage | Salesforce Developers Blog",
+          "quote": "For paid org editions, such as Enterprise Edition, this starts at 100,000 requests per 24-hour period and increases based on the licenses your org is provisioned with.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "Page says paid editions such as Enterprise start at 100,000 requests per 24 hours and increase with licenses."
+      }
+    },
+    {
+      "id": "c12",
+      "text": "In a production org, no new concurrent requests are allowed until there are fewer than 25 long-running requests; exceeding it returns REQUEST_LIMIT_EXCEEDED.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developer.salesforce.com/docs/platform/salesforce-app-limits-cheatsheet/guide/salesforce-app-limits-platform-api.html",
+          "title": "API Request Limits and Allocations | Salesforce Developer Limits and Allocations Quick Reference | Salesforce Developers",
+          "quote": "For example, in a production org, no new concurrent requests are allowed until there are fewer than 25 long running requests.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "Page states no new concurrent requests until fewer than 25 long-running requests in production, and that REQUEST_LIMIT_EXCEEDED is returned."
+      }
+    },
+    {
+      "id": "c13",
+      "text": "Distributing managed packages or Platform API solutions on AgentExchange requires passing Salesforce's security review.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developer.salesforce.com/docs/atlas.en-us.packagingGuide.meta/packagingGuide/security_review_how_it_works.htm",
+          "title": "How the AgentExchange Security Review Works | ISVforce Guide: Build and Distribute AgentExchange Solutions | ISVforce Guide | Salesforce Developers",
+          "quote": "To distribute managed packages, Salesforce Platform API solutions, or Marketing Cloud Engagement API solutions on AgentExchange, they must pass our security review.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "Page states these solutions must pass security review to be distributed on AgentExchange."
+      }
+    },
+    {
+      "id": "c14",
+      "text": "Salesforce says security review time frames are estimates and depend on submission completeness and submission volume. Its typical published figures are 1-2 weeks for submission verification, 3-4 weeks for the first Product Security test and 2-3 weeks for a resubmission.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developer.salesforce.com/docs/atlas.en-us.packagingGuide.meta/packagingGuide/security_review_how_it_works.htm",
+          "title": "How the AgentExchange Security Review Works | ISVforce Guide: Build and Distribute AgentExchange Solutions | ISVforce Guide | Salesforce Developers",
+          "quote": "The time frames are estimates. Several factors affect the actual duration of your review, such as the completeness of your submission, and the total volume of submissions.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "Page says time frames are estimates affected by completeness and volume, and lists 1–2 weeks, 3–4 weeks and 2–3 weeks."
+      }
+    },
+    {
+      "id": "c15",
+      "text": "Local external client apps are not copied when a sandbox is cloned or refreshed; only packaged ones are.",
+      "evidence": "inferred",
+      "sources": [
+        {
+          "url": "https://help.salesforce.com/s/articleView?language=en_US&id=005228017&amp=&type=1",
+          "title": "Salesforce Platform: New Connected Apps Can No Longer Be Created in Spring '26 | Salesforce Help",
+          "quote": "Local ECAs cannot be refreshed. Local external client apps aren’t copied to a new sandbox when you clone or refresh a sandbox. Only packaged external client apps are copied to the sandbox.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "unsupported",
+        "note": "cited quote not found on the fetched page"
+      }
+    },
+    {
+      "id": "c16",
+      "text": "A callback URL that does not match the configured one fails with error=redirect_uri_mismatch (from a PTC/ServiceMax support page).",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://support.ptc.com/help/servicemaxcore/en/articles/service_board/troubleshooting_oauth_redirect_uri_mismatch_errors.html",
+          "title": "Troubleshooting OAuth Redirect URI Mismatch Errors",
+          "quote": "error=redirect_uri_mismatch&error_description=redirect_uri must match configuration",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "medium",
+      "verifier": {
+        "verdict": "not_checked",
+        "note": "source could not be fetched or judged"
+      }
+    },
+    {
+      "id": "c17",
+      "text": "Inferred: the research found a security review only for AgentExchange/AppExchange distribution, and no provider review for connecting an own External Client App for the stated use case. Customer-org admin policies could still add approval steps. This was not verified.",
+      "evidence": "inferred",
+      "sources": [],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "not_checked",
+        "note": "no source cited"
+      }
+    }
+  ],
+  "openQuestions": [
+    "Does the Composio managed Salesforce app work in customer orgs whose admins restrict which external client apps may be used? Admin approval could add a wait, and no source was found.",
+    "How long does a newly created External Client App take to become usable for authorization? Salesforce docs researched give no figure.",
+    "Does the Composio managed app comply with Salesforce's refresh-token security changes, such as the idle TTL and the 4 November 2026 expiry reported by a third party? This was not confirmed.",
+    "Should the assistant be distributed on AgentExchange, and if so, does Salesforce's security review apply to a Composio-backed integration?",
+    "Unverified: After selecting Enable OAuth on the external client app you enter a callback URL that Salesforce ... (cited quote not found on the fetched page)",
+    "Unverified: New legacy Connected Apps can no longer be created as of Spring '26 unless Salesforce Support ena... (cited quote not found on the fetched page)",
+    "Unverified: OAuth scopes are selected on the external client app and are granted as tokens after the app is a... (cited quote not found on the fetched page)",
+    "Unverified: AppExchange security review guidance says apps should apply least privilege to scopes and must no... (cited quote not found on the fetched page)",
+    "Unverified: The Enforce Refresh Token IP Allowlist option on an external client app restricts which IPs can c... (cited quote not found on the fetched page)",
+    "Unverified: Refreshing with an expired or revoked refresh token returns invalid_grant with 'expired access/re... (cited quote not found on the fetched page)",
+    "Unverified: Local external client apps are not copied when a sandbox is cloned or refreshed; only packaged on... (cited quote not found on the fetched page)",
+    "Could not check: A callback URL that does not match the configured one fails with error=redirect_uri_mismatch (fro..."
+  ]
+}

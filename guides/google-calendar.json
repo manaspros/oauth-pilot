@@ -1,0 +1,977 @@
+{
+  "schemaVersion": 1,
+  "slug": "google-calendar",
+  "app": {
+    "name": "Google Calendar",
+    "website": "https://calendar.google.com",
+    "composioToolkit": "googlecalendar",
+    "developerConsoleUrl": "https://console.cloud.google.com/apis/credentials"
+  },
+  "generatedAt": "2026-10-27T17:35:15.283Z",
+  "generator": {
+    "kind": "live",
+    "model": "claude-sonnet-5-5",
+    "runId": "cli-mvqypmdn-bf3b0e"
+  },
+  "useCase": {
+    "summary": "AI scheduling assistant that reads and creates calendar events on behalf of users",
+    "tools": [
+      "GOOGLECALENDAR_EVENTS_LIST",
+      "GOOGLECALENDAR_CREATE_EVENT"
+    ]
+  },
+  "verdict": {
+    "tier": 2,
+    "tierLabel": "Light review",
+    "headline": "You can connect today through Composio's managed auth. Production on your own Google OAuth app needs sensitive-scope verification, which Google says typically takes 3-5 business days.",
+    "startToday": "Start the domain, homepage and privacy policy work (s2) now. Branding verification (s8) cannot be requested without them, and scope verification (s9) cannot be requested until branding is verified. These form the longest wait. Connect through Composio managed auth in parallel so you can build.",
+    "timeToFirstConnection": {
+      "minHours": 0.25,
+      "maxHours": 1,
+      "label": "15-60 minutes",
+      "basis": "estimate",
+      "claimIds": [
+        "tc1"
+      ]
+    },
+    "timeToProduction": {
+      "minHours": 124,
+      "maxHours": 240,
+      "label": "about 5-10 days typical; Google warns it can take months",
+      "basis": "estimate",
+      "claimIds": [
+        "c2",
+        "c3",
+        "c4"
+      ]
+    },
+    "activeEffort": {
+      "minHours": 8,
+      "maxHours": 20,
+      "label": "8-20 hours of your own work",
+      "basis": "estimate",
+      "claimIds": [
+        "c5",
+        "c6",
+        "c7"
+      ]
+    },
+    "confidence": "medium",
+    "claimIds": [
+      "c1",
+      "c2",
+      "c3",
+      "c8",
+      "tc1"
+    ]
+  },
+  "composio": {
+    "toolkitFound": true,
+    "managedAvailable": true,
+    "recommendation": "managed_then_own",
+    "why": "Composio offers a managed OAUTH2 app for googlecalendar, so you can get a first connection immediately. For production under your own brand and consent screen, create your own Google OAuth client and verify it. Whether Composio's managed app is verified for your user count is not confirmed here.",
+    "callbackUrl": "https://backend.composio.dev/api/v1/auth-apps/add",
+    "claimIds": [
+      "tc1",
+      "c23"
+    ]
+  },
+  "scopes": [
+    {
+      "scope": "https://www.googleapis.com/auth/calendar.events",
+      "sensitivity": "sensitive",
+      "neededFor": [
+        "GOOGLECALENDAR_EVENTS_LIST",
+        "GOOGLECALENDAR_CREATE_EVENT"
+      ],
+      "claimIds": [
+        "c1",
+        "c22",
+        "c21",
+        "tc1"
+      ]
+    },
+    {
+      "scope": "https://www.googleapis.com/auth/calendar.calendars.readonly",
+      "sensitivity": "unknown",
+      "neededFor": [
+        "GOOGLECALENDAR_CREATE_EVENT"
+      ],
+      "claimIds": [
+        "tc1"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "q1",
+      "item": "Google Cloud project (use separate dev and prod projects)",
+      "owner": "developer",
+      "neededFor": "testing",
+      "gate": false,
+      "claimIds": [
+        "c15"
+      ]
+    },
+    {
+      "id": "q2",
+      "item": "OAuth Web application client with the Composio callback URL as an authorized redirect URI",
+      "owner": "developer",
+      "neededFor": "testing",
+      "gate": false,
+      "claimIds": [
+        "c11",
+        "c12",
+        "c14"
+      ]
+    },
+    {
+      "id": "q3",
+      "item": "Authorized domain verified in Google Search Console by a project Owner or Editor",
+      "owner": "developer",
+      "neededFor": "production",
+      "gate": false,
+      "claimIds": [
+        "c6"
+      ]
+    },
+    {
+      "id": "q4",
+      "item": "Public homepage on the verified domain describing the app, with links to terms of service and privacy policy",
+      "owner": "developer",
+      "neededFor": "production",
+      "gate": false,
+      "claimIds": [
+        "c7"
+      ]
+    },
+    {
+      "id": "q5",
+      "item": "Unlisted YouTube demo video showing the OAuth grant flow and in-app use of the scopes",
+      "owner": "developer",
+      "neededFor": "production",
+      "gate": false,
+      "claimIds": [
+        "c5"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "phase": "prepare",
+      "title": "Create a Google Cloud project and enable the Calendar API",
+      "actor": "developer",
+      "detail": "Open the Cloud console (https://console.cloud.google.com/apis/credentials, which redirects to Google sign-in). Create a dedicated project for production and keep a separate one for development. Enable the Google Calendar API for it.",
+      "duration": {
+        "minHours": 0.25,
+        "maxHours": 0.5,
+        "label": "15-30 minutes",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [],
+      "links": [
+        {
+          "label": "Cloud console credentials",
+          "url": "https://console.cloud.google.com/apis/credentials"
+        }
+      ],
+      "claimIds": [
+        "c15",
+        "tp7"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s2",
+      "phase": "prepare",
+      "title": "Verify your domain and publish a homepage, privacy policy and terms",
+      "actor": "developer",
+      "detail": "Add and verify the domain in Google Search Console with an account that is Owner or Editor of the Cloud project. Publish a public homepage on that domain describing the assistant's functionality and linking to your terms of service and privacy policy.",
+      "duration": {
+        "minHours": 2,
+        "maxHours": 8,
+        "label": "2-8 hours",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [],
+      "links": [
+        {
+          "label": "Sensitive scope verification",
+          "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification"
+        }
+      ],
+      "claimIds": [
+        "c6",
+        "c7"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s3",
+      "phase": "connect",
+      "title": "Make a first connection with Composio managed auth",
+      "actor": "agent",
+      "detail": "Use the Composio managed googlecalendar OAUTH2 toolkit to authorize a test account and run GOOGLECALENDAR_EVENTS_LIST and GOOGLECALENDAR_CREATE_EVENT. No Google console setup is needed for this.",
+      "duration": {
+        "minHours": 0.25,
+        "maxHours": 1,
+        "label": "15-60 minutes",
+        "basis": "estimate",
+        "claimIds": [
+          "tc1"
+        ]
+      },
+      "dependsOn": [],
+      "links": [],
+      "claimIds": [
+        "tc1"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s4",
+      "phase": "register",
+      "title": "Create the OAuth client (Web application)",
+      "actor": "developer",
+      "detail": "In the Cloud console go to Google Auth platform > Clients > Create Client and select the Web application type. Add the authorized redirect URI https://backend.composio.dev/api/v1/auth-apps/add (it must be HTTPS and match exactly). Since the app takes actions on users' behalf, tick 'Use this client for an AI-powered agent'. Google says this cannot be changed after creation, so use a separate client for non-agent flows.",
+      "duration": {
+        "minHours": 0.25,
+        "maxHours": 0.5,
+        "label": "15-30 minutes",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s1"
+      ],
+      "links": [
+        {
+          "label": "Create access credentials",
+          "url": "https://developers.google.com/workspace/guides/create-credentials"
+        }
+      ],
+      "claimIds": [
+        "c11",
+        "c12",
+        "c13",
+        "c14"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s5",
+      "phase": "configure",
+      "title": "Configure branding, audience and scopes",
+      "actor": "developer",
+      "detail": "In Google Auth platform set the app name, support email, homepage, privacy policy and terms links, and authorized domain. Choose audience External. Add scope https://www.googleapis.com/auth/calendar.events, plus calendar.calendars.readonly if Composio asks for it. Keep status Testing and add test users (limit 100).",
+      "duration": {
+        "minHours": 0.5,
+        "maxHours": 1,
+        "label": "30-60 minutes",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s4"
+      ],
+      "links": [],
+      "claimIds": [
+        "c9",
+        "c24",
+        "c22"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s6",
+      "phase": "connect",
+      "title": "Connect Composio using your own OAuth client in Testing mode",
+      "actor": "agent",
+      "detail": "Create a Composio custom auth config for googlecalendar with your client ID and secret, then authorize a test user and run both tools. This confirms the redirect URI and scopes before you submit for review.",
+      "duration": {
+        "minHours": 0.5,
+        "maxHours": 1,
+        "label": "30-60 minutes",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s5"
+      ],
+      "links": [],
+      "claimIds": [
+        "tc1",
+        "c18"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s7",
+      "phase": "prepare",
+      "title": "Record the demo video",
+      "actor": "developer",
+      "detail": "Record a video of a user starting and granting the OAuth flow, then using the granted calendar scopes in the app. Upload it to YouTube as Unlisted.",
+      "duration": {
+        "minHours": 2,
+        "maxHours": 4,
+        "label": "2-4 hours",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s6"
+      ],
+      "links": [],
+      "claimIds": [
+        "c5"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s8",
+      "phase": "review",
+      "title": "Wait for brand verification",
+      "actor": "provider",
+      "detail": "Publish the branding in Google Auth platform and request brand verification. Google must verify branding before you can request data-access verification. Watch the OAuth Verification Center and your email for Trust & Safety follow-ups. Google's page gives roughly 2-3 business days, but that figure is not in the quoted snippet.",
+      "duration": {
+        "minHours": 48,
+        "maxHours": 72,
+        "label": "2-3 business days",
+        "basis": "estimate",
+        "claimIds": [
+          "c4"
+        ]
+      },
+      "dependsOn": [
+        "s2",
+        "s5"
+      ],
+      "links": [
+        {
+          "label": "Brand verification",
+          "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/brand-verification"
+        }
+      ],
+      "claimIds": [
+        "c4"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s9",
+      "phase": "review",
+      "title": "Wait for sensitive scope verification",
+      "actor": "provider",
+      "detail": "Submit the data-access verification with the scope justification and the demo video. Respond quickly to any reviewer email. Google says the process typically takes 3-5 business days, but also warns that verification can take months depending on data sensitivity.",
+      "duration": {
+        "minHours": 72,
+        "maxHours": 120,
+        "label": "3-5 business days",
+        "basis": "sourced",
+        "claimIds": [
+          "c2"
+        ]
+      },
+      "dependsOn": [
+        "s7",
+        "s8"
+      ],
+      "links": [
+        {
+          "label": "Sensitive scope verification",
+          "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification"
+        }
+      ],
+      "claimIds": [
+        "c2",
+        "c3",
+        "c5"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s10",
+      "phase": "launch",
+      "title": "Move to production and switch Composio to the verified client",
+      "actor": "developer",
+      "detail": "Set the publishing status to In production, keep the redirect URI unchanged, and point the production Composio auth config at the verified client. Once the scopes are approved, the unverified-app 100-user cap no longer applies.",
+      "duration": {
+        "minHours": 0.25,
+        "maxHours": 0.5,
+        "label": "15-30 minutes",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s9"
+      ],
+      "links": [],
+      "claimIds": [
+        "c10",
+        "c15"
+      ],
+      "optional": false
+    }
+  ],
+  "risks": [
+    {
+      "id": "k1",
+      "title": "Verification can take far longer than the typical 3-5 days",
+      "severity": "warning",
+      "gate": false,
+      "symptom": "Verification stays in review or Trust & Safety asks for more information",
+      "fix": "Submit early, make the scope justification and demo video complete, ask only for needed scopes, and watch the email on the project's contacts.",
+      "claimIds": [
+        "c2",
+        "c3"
+      ]
+    },
+    {
+      "id": "k2",
+      "title": "Testing mode caps users at 100 and the unverified cap is permanent",
+      "severity": "warning",
+      "gate": false,
+      "symptom": "The unverified-app warning screen appears, or new users cannot be added",
+      "fix": "Use Testing only for development. The unverified-user cap lasts the lifetime of the project and cannot be reset, so keep production on a project that has not been used for large unverified rollouts. Google's page also notes test authorizations expire after 7 days.",
+      "claimIds": [
+        "c9",
+        "c10"
+      ]
+    },
+    {
+      "id": "k3",
+      "title": "Shipping new scopes before they are approved",
+      "severity": "warning",
+      "gate": false,
+      "symptom": "Users see the unverified-app screen and hit the 100-user cap",
+      "fix": "Get the scopes approved before releasing code that requests them, and keep dev and prod Cloud projects separate.",
+      "claimIds": [
+        "c15"
+      ]
+    },
+    {
+      "id": "k4",
+      "title": "Workspace admins can block your app even when it is verified",
+      "severity": "warning",
+      "gate": false,
+      "symptom": "Users in a Google Workspace org cannot grant the sensitive scope",
+      "fix": "Give customers' admins your OAuth client ID so they can mark it as trusted.",
+      "claimIds": [
+        "c16"
+      ]
+    },
+    {
+      "id": "k5",
+      "title": "Changing redirect URIs or the product name forces re-verification",
+      "severity": "warning",
+      "gate": false,
+      "fix": "Settle the Composio callback URL and the app name before you submit, and avoid changing them afterwards.",
+      "claimIds": [
+        "c17"
+      ]
+    },
+    {
+      "id": "k6",
+      "title": "redirect_uri_mismatch during authorization",
+      "severity": "info",
+      "gate": false,
+      "symptom": "Error redirect_uri_mismatch",
+      "fix": "Register https://backend.composio.dev/api/v1/auth-apps/add on the OAuth client exactly as Composio sends it.",
+      "claimIds": [
+        "c18",
+        "c14"
+      ]
+    },
+    {
+      "id": "k7",
+      "title": "Calendar API rate limits",
+      "severity": "info",
+      "gate": false,
+      "symptom": "403 or 429 with rateLimitExceeded or userRateLimitExceeded",
+      "fix": "Retry with exponential backoff. Quotas are per project and per user over a per-minute sliding window, and Google says overage charges are planned later in 2026.",
+      "claimIds": [
+        "c19",
+        "c20"
+      ]
+    },
+    {
+      "id": "k8",
+      "title": "The AI-agent client setting is permanent",
+      "severity": "info",
+      "gate": false,
+      "fix": "Decide before creating the client. Use separate OAuth clients for agent and non-agent flows.",
+      "claimIds": [
+        "c13"
+      ]
+    },
+    {
+      "id": "k9",
+      "title": "Internal audience blocks outside users",
+      "severity": "info",
+      "gate": false,
+      "symptom": "org_internal authorization error",
+      "fix": "Choose the External audience, because users from outside your organization will connect.",
+      "claimIds": [
+        "c24"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "id": "tp7",
+      "text": "HEAD docs/console URL: HTTP 302 redirect to accounts.google.com (not followed) (https://console.cloud.google.com/apis/credentials)",
+      "evidence": "tested",
+      "sources": [],
+      "testedHow": "HEAD docs/console URL against https://console.cloud.google.com/apis/credentials at 2026-10-27T17:31:28.474Z: HTTP 302 redirect to accounts.google.com (not followed)",
+      "confidence": "high"
+    },
+    {
+      "id": "tc1",
+      "text": "Composio toolkit \"googlecalendar\" exists; managed auth schemes: OAUTH2; 2 managed scopes available.",
+      "evidence": "tested",
+      "sources": [],
+      "testedHow": "GET /api/v3.1/toolkits/googlecalendar on the Composio API at 2026-10-27T17:33:52.993Z: toolkit found",
+      "confidence": "high"
+    },
+    {
+      "id": "c1",
+      "text": "Google lists reading events in Google Calendar as an example of a sensitive scope.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification",
+          "title": "Sensitive scope verification | App verification to use Google Authorization APIs | Google for Developers",
+          "quote": "Examples of sensitive scopes include reading events stored in Google Calendar, storing a new contact in Google Contacts, or deleting a YouTube video.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page lists reading events in Google Calendar as an example of a sensitive scope."
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Google says the sensitive scope verification process typically takes 3-5 business days.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification",
+          "title": "Sensitive scope verification | App verification to use Google Authorization APIs | Google for Developers",
+          "quote": "The sensitive scope verification process typically takes 3-5 business days to complete.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page says the sensitive scope verification process typically takes 3-5 business days."
+      }
+    },
+    {
+      "id": "c3",
+      "text": "A separate Google help page says verification might take several months depending on the sensitivity of the data requested.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://support.google.com/cloud/answer/7454865?hl=en",
+          "title": "Unverified apps - Google Cloud Platform Console Help",
+          "quote": "Depending on the sensitivity of the data being requested, verification might require several months for the app to complete.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The help page says verification might require several months depending on the sensitivity of the data requested."
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Branding must have a published status before you can request verification for data access.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/brand-verification",
+          "title": "Submit for brand verification | App verification to use Google Authorization APIs | Google for Developers",
+          "quote": "Note that you must have a published branding status before you can request verification for data access.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page says a published branding status is required before requesting data access verification."
+      }
+    },
+    {
+      "id": "c5",
+      "text": "Verification requires a video that demonstrates how a user grants access and shows the use of the sensitive scopes in the app.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification",
+          "title": "Sensitive scope verification | App verification to use Google Authorization APIs | Google for Developers",
+          "quote": "Prepare a video that fully demonstrates how a user initiates and grants access to the requested scopes and shows, in detail, the usage of the granted sensitive and restricted scopes in the app.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page describes a video showing how a user grants access and how the sensitive scopes are used."
+      }
+    },
+    {
+      "id": "c6",
+      "text": "Authorized domains must be verified in Google Search Console.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification",
+          "title": "Sensitive scope verification | App verification to use Google Authorization APIs | Google for Developers",
+          "quote": "Verify ownership of your project's authorized domains within the Google Search Console.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page says to verify ownership of authorized domains in Google Search Console."
+      }
+    },
+    {
+      "id": "c7",
+      "text": "The app homepage must describe the app's functionality and link to terms of service and a privacy policy.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.google.com/identity/protocols/oauth2/policies",
+          "title": "OAuth 2.0 Policies | Google for Developers",
+          "quote": "The homepage must include a description of the app's functionality, as well as links to terms of service and a privacy policy.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The policies page states the homepage requirement almost verbatim."
+      }
+    },
+    {
+      "id": "c8",
+      "text": "A third-party security assessment applies only when restricted scope data is stored or transmitted on servers, so a sensitive-only app does not need one.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification",
+          "title": "Restricted scope verification | App verification to use Google Authorization APIs | Google for Developers",
+          "quote": "If you store or transmit restricted scope data on servers, then you need to complete a security assessment.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "medium",
+      "verifier": {
+        "verdict": "partially_supported",
+        "note": "The page says storing or transmitting restricted scope data on servers requires a security assessment. It does not state 'only' or say that sensitive-only apps are exempt."
+      }
+    },
+    {
+      "id": "c9",
+      "text": "Projects with Testing publishing status are limited to 100 test users.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://support.google.com/cloud/answer/15549945?hl=en",
+          "title": "Manage App Audience - Google Cloud Platform Console Help",
+          "quote": "Projects configured with a publishing status of Testing are limited to up to 100 test users listed in the OAuth consent screen.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page says Testing status is limited to up to 100 test users."
+      }
+    },
+    {
+      "id": "c10",
+      "text": "The unverified-app user cap applies over the entire lifetime of the project and cannot be reset.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://support.google.com/cloud/answer/15549945?hl=en",
+          "title": "Manage App Audience - Google Cloud Platform Console Help",
+          "quote": "The user cap applies over the entire lifetime of the project, and it cannot be reset or changed.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page says the user cap applies over the entire project lifetime and cannot be reset or changed."
+      }
+    },
+    {
+      "id": "c11",
+      "text": "OAuth clients are created in the Cloud console under Google Auth platform > Clients.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.google.com/workspace/guides/create-credentials",
+          "title": "Create access credentials | Google Workspace | Google for Developers",
+          "quote": "In the Google Cloud Console, go to Menu menu > Google Auth platform > Clients.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page gives the path Google Auth platform > Clients for creating OAuth clients."
+      }
+    },
+    {
+      "id": "c12",
+      "text": "Web server apps create a client by clicking Create Client and selecting the Web application type.",
+      "evidence": "inferred",
+      "sources": [
+        {
+          "url": "https://developers.google.com/identity/protocols/oauth2/web-server",
+          "title": "Using OAuth 2.0 for Web Server Applications | Authorization | Google for Developers",
+          "quote": "Go to the Clients page. Click Create Client. Select the Web application application type. Fill in the form and click Create.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "unsupported",
+        "note": "cited quote not found on the fetched page"
+      }
+    },
+    {
+      "id": "c13",
+      "text": "The client creation form has an option to mark the client as used for an AI-powered agent that takes actions on behalf of users.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.google.com/workspace/guides/create-credentials",
+          "title": "Create access credentials | Google Workspace | Google for Developers",
+          "quote": "Optional: If your app is an AI agent that takes actions on behalf of users, select Use this client for an AI-powered agent.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page describes an optional 'Use this client for an AI-powered agent' setting during client creation."
+      }
+    },
+    {
+      "id": "c14",
+      "text": "Redirect URIs must use HTTPS, except localhost URIs.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://support.google.com/cloud/answer/15549257?hl=en",
+          "title": "Manage OAuth Clients - Google Cloud Platform Console Help",
+          "quote": "Redirect URIs must adhere to the following rules : Redirect URIs must use the HTTPS scheme, not plain HTTP. Localhost URIs (including localhost IP address URIs) are exempt from this rule.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page says redirect URIs must use HTTPS and that localhost URIs are exempt."
+      }
+    },
+    {
+      "id": "c15",
+      "text": "Google strongly recommends getting an app verified for new scopes before making code changes that use them.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://support.google.com/cloud/answer/13464018?hl=en",
+          "title": "Changes to approved app - Google Cloud Platform Console Help",
+          "quote": "We strongly recommend you get your app verified and approved for the new scopes, before making code changes to use the scopes.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page strongly recommends getting the app verified and approved for new scopes before making code changes that use them."
+      }
+    },
+    {
+      "id": "c16",
+      "text": "Google Workspace admins can restrict sensitive scopes to OAuth client IDs they have marked as trusted, so verified status does not guarantee access.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification",
+          "title": "Sensitive scope verification | App verification to use Google Authorization APIs | Google for Developers",
+          "quote": "Google Workspace organization administrators might restrict access to sensitive scopes to prevent access by OAuth client IDs that the organization doesn't explicitly mark as trusted.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page says Workspace admins might restrict sensitive scopes to client IDs they mark as trusted. The conclusion about verified status follows from this."
+      }
+    },
+    {
+      "id": "c17",
+      "text": "Adding redirect URLs or JavaScript origins, or changing the product name, after verification requires verification again.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://support.google.com/cloud/answer/7454865?hl=en",
+          "title": "Unverified apps - Google Cloud Platform Console Help",
+          "quote": "If you add any new redirect URLs or JavaScript origins, or if you change your product name after verification, you have to go through verification again.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page says adding redirect URLs or JavaScript origins, or changing the product name, after verification requires verification again."
+      }
+    },
+    {
+      "id": "c18",
+      "text": "A redirect_uri_mismatch error occurs when the request's redirect_uri does not match an authorized redirect URI on the client.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://support.google.com/cloud/answer/15549257?hl=en",
+          "title": "Manage OAuth Clients - Google Cloud Platform Console Help",
+          "quote": "If the redirect_uri passed in the authorization request does not match an authorized redirect URI for the OAuth client ID, you will receive a redirect_uri_mismatch error.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page states the redirect_uri_mismatch condition directly."
+      }
+    },
+    {
+      "id": "c19",
+      "text": "Calendar rateLimitExceeded errors can return 403 or 429 and should be handled with exponential backoff.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.google.com/workspace/calendar/api/guides/errors",
+          "title": "Handle API errors | Google Calendar | Google for Developers",
+          "quote": "rateLimitExceeded errors can return either 403 or 429 error codes—currently they are functionally similar and should be responded to in the same way, by using exponential backoff.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "not_checked",
+        "note": "source could not be fetched or judged"
+      }
+    },
+    {
+      "id": "c20",
+      "text": "Calendar API quotas are calculated per minute using a sliding window. The numeric limits were not captured in the research.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.google.com/workspace/calendar/api/guides/quota",
+          "title": "Usage limits | Google Calendar | Google for Developers",
+          "quote": "Quotas are calculated per minute using a sliding window.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "medium",
+      "verifier": {
+        "verdict": "not_checked",
+        "note": "source could not be fetched or judged"
+      }
+    },
+    {
+      "id": "c21",
+      "text": "Narrower event scopes exist, such as calendar.events.owned for events on calendars the user owns. Their sensitivity tier is not stated on the scope page.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.google.com/workspace/calendar/api/auth",
+          "title": "Choose Google Calendar API scopes | Google for Developers",
+          "quote": "https://www.googleapis.com/auth/calendar.events.owned | See, create, change, and delete events on Google calendars you own.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "medium",
+      "verifier": {
+        "verdict": "not_checked",
+        "note": "source could not be fetched or judged"
+      }
+    },
+    {
+      "id": "c22",
+      "text": "The Calendar scope page lists calendar.events.readonly as the read-only variant for viewing events on all calendars. The calendar.events scope is the read-and-write one this use case needs.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://developers.google.com/workspace/calendar/api/auth",
+          "title": "Choose Google Calendar API scopes | Google for Developers",
+          "quote": "https://www.googleapis.com/auth/calendar.events.readonly | View events on all your calendars.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "medium",
+      "verifier": {
+        "verdict": "not_checked",
+        "note": "source could not be fetched or judged"
+      }
+    },
+    {
+      "id": "c23",
+      "text": "Inferred, not sourced: Composio's managed app is suitable for prototyping, but for production under your own brand and consent screen you should register your own verified Google OAuth client. Whether the managed app is itself verified is unknown.",
+      "evidence": "inferred",
+      "sources": [],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "not_checked",
+        "note": "no source cited"
+      }
+    },
+    {
+      "id": "c24",
+      "text": "An org_internal error appears when an app configured as Internal receives authorization requests from users outside the project's organization.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://support.google.com/cloud/answer/15549945?hl=en",
+          "title": "Manage App Audience - Google Cloud Platform Console Help",
+          "quote": "An org_internal authorization error is displayed when authorization is requested from users outside the Google Cloud project's parent.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page says an org_internal error is displayed when authorization is requested from users outside the project's parent organization."
+      }
+    }
+  ],
+  "openQuestions": [
+    "Is Composio's managed Google OAuth app verified for production use, and what user cap or branding does it have?",
+    "What sensitivity tier does calendar.calendars.readonly have? The Composio required-scope list includes it conditionally for GOOGLECALENDAR_CREATE_EVENT, but the Composio managed available scopes list only calendar and calendar.events.",
+    "Would calendar.events.owned or calendar.app.created satisfy the scheduling use case with a lower sensitivity tier? The scope page does not state tiers.",
+    "What are the numeric Calendar API per-minute quotas, and what will the planned 2026 overage charges be?",
+    "Does Google require the production publishing status to be set before data-access verification is requested, or can the request be made from Testing?",
+    "Unverified: Web server apps create a client by clicking Create Client and selecting the Web application type. (cited quote not found on the fetched page)",
+    "Could not check: Calendar rateLimitExceeded errors can return 403 or 429 and should be handled with exponential ba...",
+    "Could not check: Calendar API quotas are calculated per minute using a sliding window. The numeric limits were not...",
+    "Could not check: Narrower event scopes exist, such as calendar.events.owned for events on calendars the user owns....",
+    "Could not check: The Calendar scope page lists calendar.events.readonly as the read-only variant for viewing event..."
+  ]
+}

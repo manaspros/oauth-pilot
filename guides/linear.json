@@ -1,0 +1,668 @@
+{
+  "schemaVersion": 1,
+  "slug": "linear",
+  "app": {
+    "name": "Linear",
+    "website": "https://linear.app",
+    "composioToolkit": "linear",
+    "developerConsoleUrl": "https://linear.app/settings/api"
+  },
+  "generatedAt": "2026-10-27T17:28:42.756Z",
+  "generator": {
+    "kind": "live",
+    "model": "claude-sonnet-5-5",
+    "runId": "cli-mvqykk0f-426caf"
+  },
+  "useCase": {
+    "summary": "AI assistant that lists and files issues for a team in Linear.",
+    "tools": [
+      "LINEAR_LIST_LINEAR_ISSUES",
+      "LINEAR_CREATE_LINEAR_ISSUE"
+    ]
+  },
+  "verdict": {
+    "tier": 0,
+    "tierLabel": "Instant",
+    "headline": "Linear needs no approval for this use case. Connect through Composio's managed OAuth2 with read and write scopes and you can list and file issues the same day.",
+    "startToday": "There is no provider wait, so start with the Composio managed Linear connection (s2). If you later want your own branded OAuth app, register it in Linear at the same time (optional s5). Linear documents no review for that either.",
+    "timeToFirstConnection": {
+      "minHours": 0.1,
+      "maxHours": 0.5,
+      "label": "5-30 minutes",
+      "basis": "estimate",
+      "claimIds": [
+        "tc1",
+        "c3"
+      ]
+    },
+    "timeToProduction": {
+      "minHours": 0.25,
+      "maxHours": 2,
+      "label": "under 2 hours",
+      "basis": "estimate",
+      "claimIds": [
+        "tc1",
+        "c3"
+      ]
+    },
+    "activeEffort": {
+      "minHours": 0.25,
+      "maxHours": 2,
+      "label": "15 minutes to 2 hours",
+      "basis": "estimate",
+      "claimIds": [
+        "tc1"
+      ]
+    },
+    "confidence": "medium",
+    "claimIds": [
+      "tc1",
+      "c3",
+      "c4",
+      "c2"
+    ]
+  },
+  "composio": {
+    "toolkitFound": true,
+    "managedAvailable": true,
+    "recommendation": "use_managed",
+    "why": "Composio has a managed Linear toolkit with OAUTH2 and the required scopes (read, write). Linear docs describe no review gate for OAuth apps, so the managed app is enough for production. Register your own app only if you need your own branding or workspace-level actor=app installs.",
+    "callbackUrl": "https://backend.composio.dev/api/v1/auth-apps/add",
+    "claimIds": [
+      "tc1",
+      "c3",
+      "c4"
+    ]
+  },
+  "scopes": [
+    {
+      "scope": "read",
+      "sensitivity": "basic",
+      "neededFor": [
+        "LINEAR_LIST_LINEAR_ISSUES"
+      ],
+      "claimIds": [
+        "c4"
+      ]
+    },
+    {
+      "scope": "write",
+      "sensitivity": "basic",
+      "neededFor": [
+        "LINEAR_CREATE_LINEAR_ISSUE"
+      ],
+      "claimIds": [
+        "c4"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "q1",
+      "item": "A Linear account that is a member of the target workspace and team, with permission to create issues",
+      "owner": "developer",
+      "neededFor": "testing",
+      "gate": false,
+      "claimIds": [
+        "c6"
+      ]
+    },
+    {
+      "id": "q2",
+      "item": "A Composio project and API key with the Linear toolkit enabled",
+      "owner": "developer",
+      "neededFor": "testing",
+      "gate": false,
+      "claimIds": [
+        "tc1"
+      ]
+    },
+    {
+      "id": "q3",
+      "item": "Optional: a Linear OAuth2 app (client ID and secret) if you bring your own app instead of Composio's managed one",
+      "owner": "developer",
+      "neededFor": "production",
+      "gate": false,
+      "claimIds": [
+        "c1",
+        "c14"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "phase": "prepare",
+      "title": "Confirm Linear workspace access",
+      "actor": "developer",
+      "detail": "Sign in to Linear and confirm you belong to the workspace and team where the assistant will file issues. Note the team key you will use when creating issues. Default user-mode OAuth needs no admin rights, and issues are created as the authorizing user.",
+      "duration": {
+        "minHours": 0.05,
+        "maxHours": 0.1,
+        "label": "3-6 minutes",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [],
+      "links": [
+        {
+          "label": "Linear API settings",
+          "url": "https://linear.app/settings/api"
+        }
+      ],
+      "claimIds": [
+        "c6",
+        "tp7"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s2",
+      "phase": "connect",
+      "title": "Authorize Linear through Composio managed OAuth2",
+      "actor": "developer",
+      "detail": "In Composio, create a connection for the `linear` toolkit using the managed OAUTH2 auth config, requesting scopes `read` and `write`. Open the returned redirect link, pick the workspace on Linear's consent screen and approve. The connection becomes ACTIVE with no Linear app registration or review.",
+      "duration": {
+        "minHours": 0.05,
+        "maxHours": 0.25,
+        "label": "3-15 minutes",
+        "basis": "estimate",
+        "claimIds": [
+          "tc1"
+        ]
+      },
+      "dependsOn": [
+        "s1"
+      ],
+      "links": [],
+      "claimIds": [
+        "tc1",
+        "c4"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s3",
+      "phase": "connect",
+      "title": "Run LINEAR_LIST_LINEAR_ISSUES and LINEAR_CREATE_LINEAR_ISSUE",
+      "actor": "agent",
+      "detail": "Execute both tools against the new connection. List issues with an explicit page size and a team filter, then create a test issue in a sandbox team and confirm it appears in Linear.",
+      "duration": {
+        "minHours": 0.05,
+        "maxHours": 0.25,
+        "label": "3-15 minutes",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s2"
+      ],
+      "links": [],
+      "claimIds": [
+        "c10"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s4",
+      "phase": "launch",
+      "title": "Harden for production traffic",
+      "actor": "agent",
+      "detail": "Set `first` explicitly and use filters when listing issues. Prefer webhooks over polling. Retry on HTTP 429 using the `Retry-After` header. Let Composio handle the 24-hour access token refresh.",
+      "duration": {
+        "minHours": 0.25,
+        "maxHours": 0.5,
+        "label": "15-30 minutes",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s3"
+      ],
+      "links": [
+        {
+          "label": "Linear rate limiting",
+          "url": "https://linear.app/developers/rate-limiting"
+        }
+      ],
+      "claimIds": [
+        "c7",
+        "c8",
+        "c9",
+        "c10",
+        "c12"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s5",
+      "phase": "register",
+      "title": "Optional: register your own Linear OAuth2 app and use it in Composio",
+      "actor": "developer",
+      "detail": "Go to linear.app/settings/api/applications/new, create an OAuth2 application, and set the redirect callback URL to https://backend.composio.dev/api/v1/auth-apps/add. Prefer a dedicated workspace to own the app so every admin has access. Choose private or public distribution. Copy the client ID and secret into a custom Composio auth config for `linear`, then reconnect. Skip this if the managed app is enough.",
+      "duration": {
+        "minHours": 0.25,
+        "maxHours": 0.5,
+        "label": "15-30 minutes",
+        "basis": "estimate",
+        "claimIds": [
+          "c1"
+        ]
+      },
+      "dependsOn": [
+        "s1"
+      ],
+      "links": [
+        {
+          "label": "New Linear OAuth application",
+          "url": "https://linear.app/settings/api/applications/new"
+        },
+        {
+          "label": "Linear OAuth 2.0 docs",
+          "url": "https://linear.app/developers/oauth-2-0-authentication"
+        }
+      ],
+      "claimIds": [
+        "c1",
+        "c14",
+        "c13"
+      ],
+      "optional": true
+    }
+  ],
+  "risks": [
+    {
+      "id": "k1",
+      "title": "actor=app installs need a workspace admin",
+      "severity": "info",
+      "gate": false,
+      "symptom": "Installation with actor=app fails for non-admin users.",
+      "fix": "Use the default user actor, which creates issues as the authorizing user. If you want issues filed as the assistant itself, have a workspace admin do the install.",
+      "claimIds": [
+        "c6",
+        "c5"
+      ]
+    },
+    {
+      "id": "k2",
+      "title": "Access tokens expire after 24 hours",
+      "severity": "info",
+      "gate": false,
+      "symptom": "401 errors a day after connecting if tokens are not refreshed.",
+      "fix": "Rely on Composio's managed refresh. If you run your own app, store the refresh token and refresh before expiry.",
+      "claimIds": [
+        "c8"
+      ]
+    },
+    {
+      "id": "k3",
+      "title": "Rate and complexity limits",
+      "severity": "warning",
+      "gate": false,
+      "symptom": "HTTP 429 with a RATELIMITED error code, or queries rejected for exceeding 10,000 complexity points.",
+      "fix": "Set `first` explicitly, filter issue lists, avoid polling, honour `Retry-After`, and ask Linear support for a temporary limit increase if needed.",
+      "claimIds": [
+        "c7",
+        "c9",
+        "c10",
+        "c12",
+        "c17"
+      ]
+    },
+    {
+      "id": "k4",
+      "title": "Changing client-credentials scopes revokes existing app tokens",
+      "severity": "info",
+      "gate": false,
+      "symptom": "Existing app-actor tokens stop working after you request a token with different scopes.",
+      "fix": "Only relevant if you run your own app with client credentials. Keep the scope set fixed, and enable the client_credentials grant in the app settings if you see the unsupported-grant error.",
+      "claimIds": [
+        "c11",
+        "c16"
+      ]
+    },
+    {
+      "id": "k5",
+      "title": "Integration directory listing is selective",
+      "severity": "info",
+      "gate": false,
+      "symptom": "Linear may decline directory submissions from scripts or hobbyist apps.",
+      "fix": "Listing is optional and not needed for OAuth access. Submit only if you want discoverability in other workspaces, and email integrations@linear.app if unsure.",
+      "claimIds": [
+        "c2",
+        "c15"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "id": "tp1",
+      "text": "oauth-authorization-server well-known: HTTP 200, metadata JSON with 8 keys (https://api.linear.app/.well-known/oauth-authorization-server)",
+      "evidence": "tested",
+      "sources": [],
+      "testedHow": "oauth-authorization-server well-known against https://api.linear.app/.well-known/oauth-authorization-server at 2026-10-27T17:27:32.405Z: HTTP 200, metadata JSON with 8 keys",
+      "confidence": "high"
+    },
+    {
+      "id": "tp7",
+      "text": "HEAD docs/console URL: HTTP 200 (https://linear.app/settings/api)",
+      "evidence": "tested",
+      "sources": [],
+      "testedHow": "HEAD docs/console URL against https://linear.app/settings/api at 2026-10-27T17:27:33.883Z: HTTP 200",
+      "confidence": "high"
+    },
+    {
+      "id": "tc1",
+      "text": "Composio toolkit \"linear\" exists; managed auth schemes: OAUTH2; 5 managed scopes available.",
+      "evidence": "tested",
+      "sources": [],
+      "testedHow": "GET /api/v3.1/toolkits/linear on the Composio API at 2026-10-27T17:27:53.261Z: toolkit found",
+      "confidence": "high"
+    },
+    {
+      "id": "c1",
+      "text": "Linear OAuth2 apps are registered by creating a new OAuth2 Application and configuring the redirect callback URLs.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/oauth-2-0-authentication",
+          "title": "OAuth 2.0 authentication – Linear Developers",
+          "quote": "Create a new OAuth2 Application and configure the redirect callback URLs to your application.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page says to create a new OAuth2 Application and configure the redirect callback URLs."
+      }
+    },
+    {
+      "id": "c2",
+      "text": "Making an agent available to other workspaces is done by submitting it to Linear's integration directory, a separate optional step.",
+      "evidence": "inferred",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/agents",
+          "title": "Getting Started – Linear Developers",
+          "quote": "To make your agent available to other workspaces, [submit](https://linear.app/docs/integration-directory#submit-your-integration) your agent to Linear’s integration directory.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "unsupported",
+        "note": "cited quote not found on the fetched page"
+      }
+    },
+    {
+      "id": "c3",
+      "text": "Inferred: Linear's documentation describes no review or verification gate for OAuth apps, so no provider wait is expected for this use case. This rests on the absence of a documented gate.",
+      "evidence": "inferred",
+      "sources": [],
+      "confidence": "low",
+      "verifier": {
+        "verdict": "not_checked",
+        "note": "no source cited"
+      }
+    },
+    {
+      "id": "c4",
+      "text": "Linear scopes include `read` (default), `write` and the narrower `issues:create`, which allows creating new issues and their attachments. `read` plus `write` covers listing and filing issues.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/oauth-2-0-authentication",
+          "title": "OAuth 2.0 authentication – Linear Developers",
+          "quote": "`issues:create` - Allows creating new issues and their attachments",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page lists read (default), write and issues:create with the stated description. Read plus write covering listing and filing issues is a reasonable reading of those scope descriptions."
+      }
+    },
+    {
+      "id": "c5",
+      "text": "Integrations using actor=app cannot also request the `admin` scope.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/agents",
+          "title": "Getting Started – Linear Developers",
+          "quote": "Note that integrations using the `actor=app` mode are not able to also request `admin` scope.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page states that integrations using actor=app cannot also request the admin scope."
+      }
+    },
+    {
+      "id": "c6",
+      "text": "Installing an app with actor=app uses a workspace scope and requires workspace admin permissions.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/agents",
+          "title": "Getting Started – Linear Developers",
+          "quote": "Because this will be installed with a workspace scope *admin permissions are required* to complete the installation.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page says an actor=app install has workspace scope and requires admin permissions."
+      }
+    },
+    {
+      "id": "c7",
+      "text": "OAuth apps are limited to 5,000 requests per hour per user (or app user).",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/rate-limiting",
+          "title": "Rate limiting – Linear Developers",
+          "quote": "| OAuth App       | 5,000 | User (or App User) | 1 hour |",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The rate-limit table shows OAuth App at 5,000 requests per user (or app user) per hour."
+      }
+    },
+    {
+      "id": "c8",
+      "text": "Linear access tokens are valid for 24 hours and must be refreshed.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/oauth-2-0-authentication",
+          "title": "OAuth 2.0 authentication – Linear Developers",
+          "quote": "The access token is valid for 24 hours and will need to be refreshed when it expires.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page says the access token is valid for 24 hours and must be refreshed when it expires."
+      }
+    },
+    {
+      "id": "c9",
+      "text": "A single query is capped at 10,000 complexity points and is rejected if it exceeds that.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/rate-limiting",
+          "title": "Rate limiting – Linear Developers",
+          "quote": "We also enforce a maximum complexity of a single query at any time to **10,000 points**. Your query will always get rejected if it exceeds that.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page sets a 10,000-point maximum for a single query and says the query is always rejected above it."
+      }
+    },
+    {
+      "id": "c10",
+      "text": "Linear discourages polling for updates and recommends webhooks. The default page size multiplies complexity, so set `first` explicitly and filter issue lists.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/rate-limiting",
+          "title": "Rate limiting – Linear Developers",
+          "quote": "One thing that we especially discourage is polling the API to fetch updates.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page discourages polling, recommends webhooks, and says the default 50-record pagination multiplies complexity, so specify the record count and use filters."
+      }
+    },
+    {
+      "id": "c11",
+      "text": "Requesting a client-credentials token with different scopes revokes and replaces all existing app-actor tokens for the app.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/oauth-2-0-authentication",
+          "title": "OAuth 2.0 authentication – Linear Developers",
+          "quote": "If you request a client credentials token with different scopes, all existing `app` actor tokens for the app are revoked and replaced",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page says requesting a client credentials token with different scopes revokes and replaces all existing app actor tokens."
+      }
+    },
+    {
+      "id": "c12",
+      "text": "Rate-limited GraphQL requests return HTTP 429; the Retry-After header gives the wait in seconds.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/rate-limiting",
+          "title": "Rate limiting – Linear Developers",
+          "quote": "GraphQL requests that exceed a rate limit return HTTP status code `429`.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page says rate-limited requests return HTTP 429 and that Retry-After gives the seconds to wait."
+      }
+    },
+    {
+      "id": "c13",
+      "text": "An OAuth app can be created from a JSON manifest whose distribution field sets it as private to one workspace or publicly installable.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/oauth-app-manifests",
+          "title": "OAuth application manifests – Linear Developers",
+          "quote": "Whether the application is private to one workspace or publicly installable.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The manifest's distribution field is private or public, and the manifest can be passed to the app create page."
+      }
+    },
+    {
+      "id": "c14",
+      "text": "Linear strongly recommends creating a dedicated workspace to manage the OAuth2 application, so each admin has access.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/oauth-2-0-authentication",
+          "title": "OAuth 2.0 authentication – Linear Developers",
+          "quote": "It is **highly recommended** you create a workspace for the purpose of managing the OAuth2 Application, as each admin user will have access.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page says it is highly recommended to create a workspace for managing the OAuth2 app, as each admin gets access."
+      }
+    },
+    {
+      "id": "c15",
+      "text": "Linear generally does not accept scripts, low-effort or hobbyist apps into its integration directory.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/docs/integration-directory",
+          "title": "Integration Directory – Linear Docs",
+          "quote": "We generally do not accept scripts, low-effort/vibe coded or apps built by hobbyists, but feel free to reach out to integrations@linear.app",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page says Linear generally does not accept scripts, low-effort/vibe coded or hobbyist apps."
+      }
+    },
+    {
+      "id": "c16",
+      "text": "A client-credentials token request fails with 'Client does not support the client_credentials grant type' unless the grant is enabled in the app settings.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/oauth-2-0-authentication",
+          "title": "OAuth 2.0 authentication – Linear Developers",
+          "quote": "\"error_description\":\"Client does not support the client_credentials grant type\"",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page shows this error for apps without client credentials tokens enabled, and says the toggle is in the app settings."
+      }
+    },
+    {
+      "id": "c17",
+      "text": "Linear dynamically raises rate limits for workspace-level OAuth apps that use Actor Authorization.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/rate-limiting",
+          "title": "Rate limiting – Linear Developers",
+          "quote": "We dynamically increase rate limits for workspace level OAuth apps using [Actor Authorization]",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "medium",
+      "verifier": {
+        "verdict": "supported",
+        "note": "The page says rate limits are dynamically increased for workspace-level OAuth apps using Actor Authorization."
+      }
+    }
+  ],
+  "openQuestions": [
+    "Does Composio's managed Linear app have any workspace-level restrictions, or a rate-limit pool shared with other Composio tenants?",
+    "Is there any published review timeline or approval criteria for the Linear integration directory? None was found, and it is not required for OAuth access.",
+    "Does Linear impose any approval step on publicly distributed OAuth apps beyond the distribution setting? Docs show none, but this rests on absence of evidence.",
+    "Unverified: Making an agent available to other workspaces is done by submitting it to Linear's integration di... (cited quote not found on the fetched page)"
+  ]
+}
