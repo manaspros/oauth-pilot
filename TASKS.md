@@ -187,14 +187,14 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Notes:** agent:a1910cab9d440618b. 4 tools; tsup bundles everything (3.6 MB) and inlines prompts, fixtures and library guides via an fs shim (D-MCP-1). e2e: repo dir + empty GUIDES_DIR (embedded). Live standalone Linear run 90 s → Done. MUST rebuild the bundle after T21.
 
 ### T19 · Plugin: manifest, marketplace, oauth-guide skill, goldfish agent
-- **Status:** in_progress · **Tier:** A · **Deps:** T18 · **Est:** 40 min · **Agent:** sonnet
+- **Status:** done · **Tier:** A · **Deps:** T18 · **Est:** 40 min · **Agent:** sonnet
 - **Files:** `.claude-plugin/marketplace.json`, `plugin/oauth-pilot/{.claude-plugin/plugin.json,.mcp.json,skills/oauth-guide/**,agents/oauth-goldfish.md,schema/guide.schema.json}`, `scripts/gen-plugin-schema.mjs`
 - **Spec:** 04_PLUGIN; `docs/research/egm-notes.md`; DECISIONS D-API-6
 - **Accept:** the D-API-6 validate command passes; `node scripts/gen-plugin-schema.mjs --check` exits 0 (the schema file matches core).
-- **Notes:**
+- **Notes:** agent:a1d71ef7a4638ad95. validate passes (plugin + marketplace); schema --check ok. `claude -p --plugin-dir` showed MCP connected, skill + agent loaded ($0.0055). .mcp.json DATA_DIR=${CLAUDE_PLUGIN_DATA} (expansion not directly observed). Goldfish PASS; added never-claim-tested rule.
 
 ### T20 · Plugin: oauth-setup skill, templates, Composio scripts
-- **Status:** todo · **Tier:** B · **Deps:** T19, T01 · **Est:** 40 min · **Agent:** sonnet
+- **Status:** in_progress · **Tier:** B · **Deps:** T19, T01 · **Est:** 40 min · **Agent:** sonnet
 - **Files:** `plugin/oauth-pilot/{skills/oauth-setup,templates,scripts}/**`
 - **Spec:** 04_PLUGIN §oauth-setup; DECISIONS D-API-3/4
 - **Accept:** both scripts support `--help` and `--dry-run` (prints the exact request with the secret masked); SKILL.md contains the safety rules verbatim. If D-API-3 is unconfirmed, the scripts are replaced by printed manual steps and this is noted.

@@ -1,0 +1,552 @@
+{
+  "$ref": "#/definitions/Guide",
+  "definitions": {
+    "Guide": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "type": "number",
+          "const": 1
+        },
+        "slug": {
+          "type": "string"
+        },
+        "app": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "website": {
+              "type": "string",
+              "format": "uri"
+            },
+            "composioToolkit": {
+              "type": "string"
+            },
+            "developerConsoleUrl": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "additionalProperties": false
+        },
+        "generatedAt": {
+          "type": "string"
+        },
+        "generator": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "library",
+                "live",
+                "plugin"
+              ]
+            },
+            "model": {
+              "type": "string"
+            },
+            "runId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "model"
+          ],
+          "additionalProperties": false
+        },
+        "useCase": {
+          "type": "object",
+          "properties": {
+            "summary": {
+              "type": "string"
+            },
+            "tools": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            }
+          },
+          "required": [
+            "summary"
+          ],
+          "additionalProperties": false
+        },
+        "verdict": {
+          "type": "object",
+          "properties": {
+            "tier": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4
+            },
+            "tierLabel": {
+              "type": "string",
+              "enum": [
+                "Instant",
+                "Self-serve",
+                "Light review",
+                "Heavy review",
+                "Gated"
+              ]
+            },
+            "headline": {
+              "type": "string"
+            },
+            "startToday": {
+              "type": "string"
+            },
+            "timeToFirstConnection": {
+              "type": "object",
+              "properties": {
+                "minHours": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "maxHours": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "label": {
+                  "type": "string"
+                },
+                "basis": {
+                  "type": "string",
+                  "enum": [
+                    "sourced",
+                    "estimate"
+                  ]
+                },
+                "claimIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "default": []
+                }
+              },
+              "required": [
+                "minHours",
+                "maxHours",
+                "label",
+                "basis"
+              ],
+              "additionalProperties": false
+            },
+            "timeToProduction": {
+              "$ref": "#/definitions/Guide/properties/verdict/properties/timeToFirstConnection"
+            },
+            "activeEffort": {
+              "$ref": "#/definitions/Guide/properties/verdict/properties/timeToFirstConnection"
+            },
+            "confidence": {
+              "type": "string",
+              "enum": [
+                "high",
+                "medium",
+                "low"
+              ]
+            },
+            "claimIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            }
+          },
+          "required": [
+            "tier",
+            "tierLabel",
+            "headline",
+            "startToday",
+            "timeToFirstConnection",
+            "timeToProduction",
+            "activeEffort",
+            "confidence"
+          ],
+          "additionalProperties": false
+        },
+        "composio": {
+          "type": "object",
+          "properties": {
+            "toolkitFound": {
+              "type": "boolean"
+            },
+            "managedAvailable": {
+              "type": "boolean"
+            },
+            "recommendation": {
+              "type": "string",
+              "enum": [
+                "use_managed",
+                "managed_then_own",
+                "own_app_now"
+              ]
+            },
+            "why": {
+              "type": "string"
+            },
+            "callbackUrl": {
+              "type": "string"
+            },
+            "claimIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "default": []
+            }
+          },
+          "required": [
+            "toolkitFound",
+            "managedAvailable",
+            "recommendation",
+            "why",
+            "callbackUrl"
+          ],
+          "additionalProperties": false
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "scope": {
+                "type": "string"
+              },
+              "sensitivity": {
+                "type": "string",
+                "enum": [
+                  "basic",
+                  "sensitive",
+                  "restricted",
+                  "admin",
+                  "unknown"
+                ]
+              },
+              "neededFor": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "default": []
+              },
+              "claimIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "default": []
+              }
+            },
+            "required": [
+              "scope",
+              "sensitivity"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "requirements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "item": {
+                "type": "string"
+              },
+              "owner": {
+                "type": "string",
+                "enum": [
+                  "agent",
+                  "developer",
+                  "admin",
+                  "provider"
+                ]
+              },
+              "neededFor": {
+                "type": "string",
+                "enum": [
+                  "testing",
+                  "production"
+                ]
+              },
+              "gate": {
+                "type": "boolean",
+                "default": false
+              },
+              "claimIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "default": []
+              }
+            },
+            "required": [
+              "id",
+              "item",
+              "owner",
+              "neededFor"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "phase": {
+                "type": "string",
+                "enum": [
+                  "prepare",
+                  "register",
+                  "configure",
+                  "connect",
+                  "review",
+                  "launch"
+                ]
+              },
+              "title": {
+                "type": "string"
+              },
+              "actor": {
+                "$ref": "#/definitions/Guide/properties/requirements/items/properties/owner"
+              },
+              "detail": {
+                "type": "string"
+              },
+              "duration": {
+                "$ref": "#/definitions/Guide/properties/verdict/properties/timeToFirstConnection"
+              },
+              "dependsOn": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "default": []
+              },
+              "links": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "url": {
+                      "type": "string",
+                      "format": "uri"
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "url"
+                  ],
+                  "additionalProperties": false
+                },
+                "default": []
+              },
+              "claimIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "default": []
+              },
+              "optional": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "required": [
+              "id",
+              "phase",
+              "title",
+              "actor",
+              "detail",
+              "duration"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "risks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "severity": {
+                "type": "string",
+                "enum": [
+                  "info",
+                  "warning",
+                  "blocker"
+                ]
+              },
+              "gate": {
+                "type": "boolean",
+                "default": false
+              },
+              "symptom": {
+                "type": "string"
+              },
+              "fix": {
+                "type": "string"
+              },
+              "claimIds": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "default": []
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "severity",
+              "fix"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "claims": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              },
+              "evidence": {
+                "type": "string",
+                "enum": [
+                  "tested",
+                  "sourced",
+                  "inferred"
+                ]
+              },
+              "sources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "quote": {
+                      "type": "string",
+                      "maxLength": 400
+                    },
+                    "accessedAt": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "url",
+                    "title",
+                    "accessedAt"
+                  ],
+                  "additionalProperties": false
+                },
+                "default": []
+              },
+              "testedHow": {
+                "type": "string"
+              },
+              "confidence": {
+                "type": "string",
+                "enum": [
+                  "high",
+                  "medium",
+                  "low"
+                ]
+              },
+              "verifier": {
+                "type": "object",
+                "properties": {
+                  "verdict": {
+                    "type": "string",
+                    "enum": [
+                      "supported",
+                      "partially_supported",
+                      "unsupported",
+                      "contradicted",
+                      "not_checked"
+                    ]
+                  },
+                  "note": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "verdict"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "text",
+              "evidence",
+              "confidence"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "openQuestions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "slug",
+        "app",
+        "generatedAt",
+        "generator",
+        "useCase",
+        "verdict",
+        "composio",
+        "scopes",
+        "requirements",
+        "steps",
+        "risks",
+        "claims"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}

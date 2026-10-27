@@ -89,3 +89,7 @@
 - MCP stdio server: oauth_guide_list/get/start/status, in-process runGuide, shared DATA_DIR. Bundle 3.6 MB, build ~90 ms. e2e: repo dir and embedded-only cases.
 - Goldfish PASS; round 1: live proof from a standalone copy (Linear, 90 s, tier 0), unhandled-rejection handlers, embedded-guides e2e. D-MCP-1.
 - Committed bundle embeds un-audited linear+gmail from in-flight T21; rebuild after the audit.
+
+## 2026-10-27T23:06+05:30 T19 PASS
+- Plugin manifest + marketplace, oauth-guide skill (MCP first, in-session EGM fallback), oauth-goldfish agent, generated schema + --check. validate passes; live -p load: MCP connected, skill/agent registered.
+- Goldfish PASS. Orchestrator checked the SDK: an empty ANTHROPIC_BASE_URL falls back to api.anthropic.com (`baseURL || default`). Open: root README needs an install line (T25).

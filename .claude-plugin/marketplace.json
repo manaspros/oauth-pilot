@@ -1,0 +1,12 @@
+{
+  "name": "oauth-pilot",
+  "description": "OAuth Pilot: source-cited OAuth setup guides for Claude Code.",
+  "owner": { "name": "manaspros" },
+  "plugins": [
+    {
+      "name": "oauth-pilot",
+      "source": "./plugin/oauth-pilot",
+      "description": "Researched, source-cited OAuth setup guides for any app, with a difficulty verdict and a plan for what to do today."
+    }
+  ]
+}

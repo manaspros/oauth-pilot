@@ -1,0 +1,7 @@
+{
+  "name": "oauth-pilot",
+  "version": "0.1.0",
+  "description": "How hard is it to get production OAuth for an app, and what to do next. Source-cited guides, a bundled MCP server, and a fresh-context verifier agent.",
+  "author": { "name": "manaspros" },
+  "license": "MIT"
+}

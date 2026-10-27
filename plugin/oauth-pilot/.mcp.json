@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "oauth-pilot": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/bin/mcp.mjs"],
+      "env": {
+        "DATA_DIR": "${CLAUDE_PLUGIN_DATA}",
+        "ANTHROPIC_BASE_URL": "${ANTHROPIC_BASE_URL:-}",
+        "ANTHROPIC_API_KEY": "${ANTHROPIC_API_KEY:-}",
+        "COMPOSIO_API_KEY": "${COMPOSIO_API_KEY:-}"
+      }
+    }
+  }
+}
