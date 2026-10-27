@@ -155,15 +155,15 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 ## Phase 4 — Web
 
 ### T15 · Web scaffold, library page, API routes, Playwright setup
-- **Status:** in_progress · **Tier:** A · **Deps:** T10 · **Est:** 40 min · **Agent:** sonnet (use the frontend-design skill)
+- **Status:** done · **Tier:** A · **Deps:** T10 · **Est:** 40 min · **Agent:** sonnet (use the frontend-design skill)
 - **Files:** `apps/web/**` except `apps/web/src/app/{guides,runs}/**` and the components owned by T16/T17; `playwright.config.ts`, `e2e/web/library.spec.ts`
 - **Spec:** 05_WEB §`/`, §Data access, §Visual direction; 03_AGENT_GRAPH §HTTP API; 01_ARCHITECTURE §How packages consume each other
 - **Do:** install all web deps up front: next, react, tailwind, `@xyflow/react`, `@dagrejs/dagre`, `@playwright/test` (root devDep allowed). Add all `/api/*` routes, `GuideCard`, `TierBadge` and `SubmitBox`. SubmitBox posts and navigates to `/runs/<id>`; the page itself comes in T17.
 - **Accept:** `pnpm --filter web build` passes; with `GUIDES_DIR=packages/core/fixtures OAUTH_PILOT_FAKE=1`, `/api/guides` lists linear, and POST `/api/runs {app:"Linear"}` returns a runId whose SSE ends with `done`; `pnpm e2e:web` (library.spec) passes.
-- **Notes:** agent:aa9c9a3909813959b
+- **Notes:** agent:aa9c9a3909813959b. Next 15.5, React 19, Tailwind 4. 6 API routes, library + filters, SubmitBox. e2e 3/3. Orchestrator ran POST /api/runs → SSE ends `done`. Goldfish PASS (nits). Max 2 concurrent runs (429).
 
 ### T16 · Guide page: verdict, Start today, timeline, React Flow, evidence ledger
-- **Status:** todo · **Tier:** A (React Flow part is B) · **Deps:** T15 · **Est:** 60 min · **Agent:** sonnet (frontend-design skill)
+- **Status:** in_progress · **Tier:** A (React Flow part is B) · **Deps:** T15 · **Est:** 60 min · **Agent:** sonnet (frontend-design skill)
 - **Files:** `apps/web/src/app/guides/**`, `apps/web/src/components/{ClockTiles,StartToday,Timeline,CriticalPathFlow,StepNode,LaneNode,StepPanel,EvidenceLedger,RiskTable}.tsx`, `e2e/web/guide.spec.ts`, `docs/screenshots/guide.png`
 - **Spec:** 05_WEB §`/guides/[slug]`
 - **Do:** build the timeline and ledger first and get the spec green. Then React Flow. If React Flow runs past 75 min, ship timeline-only and report it.

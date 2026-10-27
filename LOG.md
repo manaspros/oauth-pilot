@@ -59,3 +59,7 @@
 - docs_research: web_search (max 8) + web_fetch_20250910 (max 6), parser → ResearchNote[], one log per query, pause_turn handling. 8 research tests incl. a LIVE recorded Linear response.
 - Live numbers: 23 s, 170k input tokens (69k cache write, 101k cache read), 2.6k output, 13 notes. Watch the cost in T14/T21.
 - Goldfish FAIL → round 1 PASS. Found D-API-7 (temperature). The llm.ts fix landed as a T10 follow-up (31 agent tests).
+
+## 2026-10-28T00:25+05:30 T15 PASS
+- Web scaffold: Next 15.5 / React 19 / Tailwind 4; /api/guides, /api/guides/:slug(+markdown), /api/runs (+:id, SSE); library page with tier filter; Playwright (build + next start, fake mode). Build ~9 s; e2e 3/3 in 8 s.
+- Orchestrator ran Accept 5b by hand: POST /api/runs {Linear} → SSE ended with `done`. Goldfish PASS. Chore: *.tsbuildinfo added to .gitignore.
