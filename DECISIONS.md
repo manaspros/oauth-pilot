@@ -91,3 +91,8 @@ Consequence: JS-rendered pages can produce false `unsupported`; if T14/T21 show 
 Context: excluding live.test.ts with a plain `exclude` would also block `pnpm test:live`, which passes the file as a filter.
 Decision: vitest.config.ts (a T10 file) excludes live.test.ts unless argv contains "live.test". Accepted by the orchestrator.
 Consequence: `pnpm test` never hits the network; `pnpm --filter @oauth-pilot/agent test:live` runs the live test (skips without a key).
+
+### D-MCP-1 Self-contained MCP bundle
+Context: an installed plugin has no node_modules or repo files, and the agent reads prompts and fixtures via fs at runtime.
+Decision: tsup bundles all deps into plugin/oauth-pilot/bin/mcp.mjs. A virtual module inlines prompts/*.md, fixtures/runs/** and guides/*.json, and a shim patches fs.promises.readFile/access (syncBuiltinESMExports) for those paths only. On-disk GUIDES_DIR/DATA_DIR guides win over embedded ones. console.log goes to stderr. Crash handlers keep stdio alive.
+Consequence: the bundle must be rebuilt and recommitted whenever guides/ or prompts change (T21, T23). T19's .mcp.json must set DATA_DIR (the default resolves relative to the bundle).

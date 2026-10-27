@@ -180,14 +180,14 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 ## Phase 5 — MCP + plugin
 
 ### T18 · MCP server (in-process agent, bundled into the plugin)
-- **Status:** in_progress · **Tier:** A · **Deps:** T14 · **Est:** 35 min · **Agent:** sonnet
+- **Status:** done · **Tier:** A · **Deps:** T14 · **Est:** 35 min · **Agent:** sonnet
 - **Files:** `packages/mcp/**`, `plugin/oauth-pilot/bin/mcp.mjs`, `e2e/mcp.e2e.mjs`
 - **Spec:** 03_AGENT_GRAPH §MCP server
 - **Accept:** `pnpm e2e:mcp` passes with these interim asserts: list includes `linear`; `get linear` contains "Evidence"; start `calendly` → status reaches done in ≤ 30 s (fake mode) and contains "tier". T23 switches the asserts to `gmail`.
-- **Notes:** agent:a1910cab9d440618b
+- **Notes:** agent:a1910cab9d440618b. 4 tools; tsup bundles everything (3.6 MB) and inlines prompts, fixtures and library guides via an fs shim (D-MCP-1). e2e: repo dir + empty GUIDES_DIR (embedded). Live standalone Linear run 90 s → Done. MUST rebuild the bundle after T21.
 
 ### T19 · Plugin: manifest, marketplace, oauth-guide skill, goldfish agent
-- **Status:** todo · **Tier:** A · **Deps:** T18 · **Est:** 40 min · **Agent:** sonnet
+- **Status:** in_progress · **Tier:** A · **Deps:** T18 · **Est:** 40 min · **Agent:** sonnet
 - **Files:** `.claude-plugin/marketplace.json`, `plugin/oauth-pilot/{.claude-plugin/plugin.json,.mcp.json,skills/oauth-guide/**,agents/oauth-goldfish.md,schema/guide.schema.json}`, `scripts/gen-plugin-schema.mjs`
 - **Spec:** 04_PLUGIN; `docs/research/egm-notes.md`; DECISIONS D-API-6
 - **Accept:** the D-API-6 validate command passes; `node scripts/gen-plugin-schema.mjs --check` exits 0 (the schema file matches core).

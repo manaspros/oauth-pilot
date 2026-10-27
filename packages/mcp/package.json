@@ -4,9 +4,21 @@
   "private": true,
   "type": "module",
   "main": "./src/index.ts",
-  "exports": { ".": "./src/index.ts" },
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "build": "tsup"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "@oauth-pilot/agent": "workspace:*",
+    "@oauth-pilot/core": "workspace:*",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "tsup": "^9.0.0"
   }
 }
