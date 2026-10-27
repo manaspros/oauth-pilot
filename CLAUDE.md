@@ -105,7 +105,7 @@ Commit TASKS.md and LOG.md updates in the same commit as the task.
 ## Human gates (Status = human)
 
 Stop and ask the user. Never fake or skip these:
-- Missing `ANTHROPIC_API_KEY` / `COMPOSIO_API_KEY` in `.env` (T01, T14, T21). Tell the user: copy `.env.example` to `.env` and fill it in.
+- Missing or invalid `ANTHROPIC_API_KEY` (LiteLLM key) / `COMPOSIO_API_KEY` in `.env` (T01, T14, T21). Check them with T01's spike scripts. Ask the user for a new key; never hunt for keys in other projects without the user asking.
 - Anything needing their login, 2FA, payment or terms acceptance (T22)
 - Deploying or creating cloud resources (T24)
 - Changing a locked product decision in 00_PLAN

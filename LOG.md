@@ -10,3 +10,4 @@
   fixed file ownership (T10/T11/T13, T15–T17 e2e files, root scripts in T00), deps (T10←T03, T18←T14, T22←T21),
   CLI flags, LangGraph fan-in, explicit-pathspec commits, git status snapshot check, secret check exits non-zero.
   Kept against advice: plugin oauth-setup skill (user asked for Claude-driven setup) but moved to Tier B.
+- 2026-10-27: .env created (gitignored). LLM = LiteLLM proxy (D-ARCH-2, web_search confirmed through it). Composio key → 401, waiting on the user (D-OPS-1).

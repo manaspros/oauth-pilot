@@ -19,3 +19,11 @@ Consequence: no serverless deploy; filesystem storage only.
 Context: zoom-out reviewer estimated 10–12 h for the original scope; readiness reviewer found 5 blockers in task ownership/protocol.
 Decision: cut-line tiers in 00_PLAN; MCP in-process + bundled; schema trimmed; 5 guides; plugin oauth-setup kept as Tier B.
 Consequence: Tier A alone is a complete submission; B/C are cut by rule (CLAUDE.md step 7), not by mood.
+
+### D-ARCH-2 LLM through a LiteLLM proxy (Anthropic-compatible)
+Context: the user's LiteLLM key is used instead of a direct Anthropic key. Probe on 2026-10-27: the proxy lists claude-sonnet-5-5 / opus-5-5 / haiku-5-5; POST /v1/messages with web_search_20250305 returned server_tool_use + web_search_tool_result + text (1 search request).
+Decision: keep the Anthropic SDK path; set ANTHROPIC_BASE_URL + ANTHROPIC_API_KEY in .env. The proxy URL is never committed.
+Consequence: no code changes vs the plan; T01 still confirms the LangChain client and web fetch through the proxy.
+
+### D-OPS-1 Composio key status
+2026-10-27: the key the user supplied returned 401 "Invalid API key" on /api/v3.1 and /api/v3 (both x-api-key and x-user-api-key). T01 items 1–4 stay blocked until a valid key is in .env; composio_lookup degrades gracefully without it.

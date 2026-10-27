@@ -43,7 +43,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
   2. **D-API-2** The "required scopes for tools" endpoint (docs name `recommendToolkitScopes`): find the path and try it for `GMAIL_FETCH_EMAILS`.
   3. **D-API-3** `POST /api/v3.1/auth_configs` body for **custom OAuth credentials**. Get it from the API reference or the `@composio/core` npm source; do not guess.
   4. **D-API-4** Connected-account initiate and status poll (v3.1).
-  5. **D-API-5** `@langchain/anthropic` with Anthropic server tools web search + web fetch on `claude-sonnet-5-5`: the exact tool `type` strings (check the claude-api skill). One tiny call; confirm source URLs come back.
+  5. **D-API-5** LLM goes through the LiteLLM proxy (`ANTHROPIC_BASE_URL`, see D-ARCH-2). Raw `/v1/messages` + `web_search_20250305` is already confirmed. Still to confirm: (a) `@langchain/anthropic` `ChatAnthropic` honours the base URL from env and returns `server_tool_use` / `web_search_tool_result` blocks with URLs; (b) the web fetch server tool type string works through the proxy (check the claude-api skill). If (b) fails, the verify node fetches URLs with plain `fetch()` + HTML-to-text and passes the text in; record that.
   6. **D-API-6** Claude Code plugin facts: `.mcp.json` format and `${CLAUDE_PLUGIN_ROOT}`, `claude -p --plugin-dir`, and `claude plugin validate` (or the equivalent check command).
 - **Accept:** DECISIONS.md has D-API-1…6, each "confirmed" with evidence or "not possible → fallback". If keys are missing: do 5–6 and the doc-only parts of 1–4, mark the rest "unverified", and the orchestrator sets the card to `human`.
 - **Notes:**

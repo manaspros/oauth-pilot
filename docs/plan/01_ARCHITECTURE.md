@@ -81,6 +81,7 @@ sequenceDiagram
 |---|---|---|
 | Language | TypeScript monorepo, pnpm workspaces | One schema shared by agent, web, MCP and plugin scripts |
 | Agent framework | `@langchain/langgraph` + `@langchain/anthropic` | User asked for a LangGraph-style autonomous agent. Gives a typed state graph and parallel fan-out |
+| LLM gateway | LiteLLM proxy via `ANTHROPIC_BASE_URL` + `ANTHROPIC_API_KEY`. `ChatAnthropic` gets `anthropicApiUrl`/`clientOptions.baseURL` from env | Confirmed 2026-10-27: the proxy serves `claude-sonnet-5-5` and passes Anthropic server tools (web_search returned results). Never commit the proxy URL |
 | Models | `claude-sonnet-5-5` for all nodes (env `OAUTH_PILOT_MODEL`) | Cost and speed. Live run target < 3 min |
 | Web research | Anthropic server tools `web_search` + `web_fetch` | No extra API keys. Citations come back with URLs. **Verify in spike T01** |
 | Composio data | REST `backend.composio.dev/api/v3.1` with `x-api-key` | Toolkit details, managed schemes, scope ceiling, required scopes for tools |
@@ -102,7 +103,8 @@ sequenceDiagram
 ## Environment variables (`.env.example`)
 
 ```
-ANTHROPIC_API_KEY=        # required for live runs
+ANTHROPIC_BASE_URL=       # LiteLLM proxy (Anthropic-compatible /v1/messages passthrough); empty = api.anthropic.com
+ANTHROPIC_API_KEY=        # LiteLLM virtual key (or real Anthropic key); required for live runs
 COMPOSIO_API_KEY=         # optional; without it composio_lookup is skipped and noted as a gap
 OAUTH_PILOT_MODEL=claude-sonnet-5-5
 OAUTH_PILOT_URL=http://localhost:3000   # optional; MCP uses it only to print web links
