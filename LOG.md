@@ -13,62 +13,65 @@
 - 2026-10-27: .env created (gitignored). LLM = LiteLLM proxy (D-ARCH-2, web_search confirmed through it). Composio key → 401, waiting on the user (D-OPS-1).
 - 2026-10-27: Composio project key (ak_) verified on /api/v3.1/toolkits/gmail (D-OPS-2). Both keys ready; T01 unblocked.
 
-## 2026-10-27T22:30+05:30 T00 PASS
+## 2026-10-27T22:24+05:30 T00 PASS
 - Scaffold landed: pnpm workspace (core/agent/mcp/web), tsconfig.base, check-secrets.sh. Done by a sonnet worker (user asked for sonnet on all implementation).
 - Fix round 1: TypeScript 7.0.2 → ~5.9.3. Accept: install, typecheck, check-ignore, remote all green; secret check exits 1 on a planted ak_ token.
-- Hour-0 marker for the cut rule (T14 by ~02:30).
+- Hour-0 marker for the cut rule: 22:23 (T14 due by ~02:23).
 
-## 2026-10-27T22:45+05:30 T02 PASS
+## 2026-10-27T22:27+05:30 T02 PASS
 - zod v3 schema + guideJsonSchema, COMPOSIO_CALLBACK_URL (v3, unverified until D-API-1), Linear fixture 9 steps / 9 claims. 5 core tests green.
 - Goldfish PASS (3 nits). Orchestrator found that the fixture said "no managed app", but /api/v3.1/toolkits/linear returns managed OAUTH2. Fix round 1 → managed_then_own; tier stays 1.
 
-## 2026-10-27T22:50+05:30 T06 PASS
+## 2026-10-27T22:28+05:30 T06 PASS
 - research/apps/linear.md (14 facts, 6 error rows) + shopify.md (21 facts, 7 error rows), all rank 1.
 - Goldfish spot-checked 16 quotes; all verbatim. Nits: Linear header says 12 facts (it's 14), and some quotes are narrower than their facts. Shopify Partner-account requirement left unverified.
 
-## 2026-10-27T23:00+05:30 T05 PASS
+## 2026-10-27T22:29+05:30 T05 PASS
 - gmail.md 23 facts / 8 error rows; google-calendar.md 19 facts / 7 error rows. Goldfish re-fetched quotes on 5 Google pages: all match.
 - Caveats: CASA cost and duration are only on a Health API page; the CASA tier naming conflict (tier-2/3 vs AL1/AL2) is unresolved; Calendar scope labels are inferred.
 
-## 2026-10-27T23:00+05:30 T07 PASS
+## 2026-10-27T22:29+05:30 T07 PASS
 - salesforce.md 18 facts (15 rank 1, 3 rank 3), 6 error rows. Worker reported "partial" (about 60% of fetches blocked), but the Accept counts are met. Goldfish PASS.
 - The Spring '26 block on new connected apps rests on a rank-3 source; the guide must keep it inferred or medium. The two Salesforce pages conflict on security-review fee and duration; both are recorded.
 
-## 2026-10-27T23:10+05:30 T03 PASS
+## 2026-10-27T22:30+05:30 T03 PASS
 - validate/tier/criticalPath/markdown + scripts/validate-guides.mjs (tsx). 29 core tests; Linear fixture: tier 1, 0 errors/warnings.
 - Goldfish PASS, nits only. Extra beyond spec: warns when timeToProduction.max < critical path total.
 
-## 2026-10-27T23:15+05:30 T01 PASS
+## 2026-10-27T22:30+05:30 T01 PASS
 - D-API-1…6 all confirmed with scripts in scripts/spikes and fixtures in packages/agent/fixtures/spike. Live auth-config + connected-account create was run with FAKE creds, then deleted.
 - Spec changes: callback URL is /api/v1/auth-apps/add (core constant fix sent to T02 worker); web_fetch_20250910 (not 20260209); recommendScopes is beta, so keep the per-tool scopes fallback.
 - Goldfish raised a Major (D-API-2 had no recorded evidence). Fix round 1 added composio-scopes.mjs + 3 fixtures. Numbers: one web_search ≈ 21k input tokens through LangChain.
 
-## 2026-10-27T23:20+05:30 T02 follow-up PASS
+## 2026-10-27T22:31+05:30 T02 follow-up PASS
 - COMPOSIO_CALLBACK_URL → https://backend.composio.dev/api/v1/auth-apps/add (D-API-1). Linear fixture updated, plus claim c10 (tested via T01). 29 tests, validate:guides ok. Orchestrator reviewed the 19-line diff directly.
 
-## 2026-10-27T23:40+05:30 T10 PASS
+## 2026-10-27T22:35+05:30 T10 PASS
 - Agent skeleton: state/graph (fan-out + fan-in + repair edge), events, store, fake mode, llm factory, stub nodes, Linear run fixtures. langgraph 1.5.2, @langchain/anthropic 1.6.
 - Goldfish FAIL (path traversal via slug/runId; verify failure aborted the run) → round 1 fixed both → round 2 fixed degraded nodes never emitting node_finished. 7 tests.
 - Deviation: agent tsconfig.json touched (D-ORCH-1). Conventions recorded in D-AGENT-1.
 
-## 2026-10-28T00:10+05:30 T11 PASS
+## 2026-10-27T22:40+05:30 T11 PASS
 - intake (LLM with a deterministic fallback), composio_lookup (v3.1 toolkit + recommended scopes, with per-tool fallback), probe (well-known + HEAD). 15 tests, no network.
 - Goldfish FAIL → round 1: probe topology bug (read research in a parallel branch), SSRF guard, capped body read, Composio slug format (orchestrator verified googlecalendar). D-AGENT-2.
 
-## 2026-10-28T00:15+05:30 T12 PASS
+## 2026-10-27T22:41+05:30 T12 PASS
 - docs_research: web_search (max 8) + web_fetch_20250910 (max 6), parser → ResearchNote[], one log per query, pause_turn handling. 8 research tests incl. a LIVE recorded Linear response.
 - Live numbers: 23 s, 170k input tokens (69k cache write, 101k cache read), 2.6k output, 13 notes. Watch the cost in T14/T21.
 - Goldfish FAIL → round 1 PASS. Found D-API-7 (temperature). The llm.ts fix landed as a T10 follow-up (31 agent tests).
 
-## 2026-10-28T00:25+05:30 T15 PASS
+## 2026-10-27T22:41+05:30 T15 PASS
 - Web scaffold: Next 15.5 / React 19 / Tailwind 4; /api/guides, /api/guides/:slug(+markdown), /api/runs (+:id, SSE); library page with tier filter; Playwright (build + next start, fake mode). Build ~9 s; e2e 3/3 in 8 s.
 - Orchestrator ran Accept 5b by hand: POST /api/runs {Linear} → SSE ended with `done`. Goldfish PASS. Chore: *.tsbuildinfo added to .gitignore.
 
-## 2026-10-28T00:55+05:30 T16 PASS
+## 2026-10-27T22:50+05:30 T16 PASS
 - Guide page: verdict, 3 clock tiles, Start today, timeline, React Flow swimlane diagram (shipped, under budget), phase checklist, scopes, requirements, risks, evidence ledger, copy-as-markdown. e2e 6/6; screenshot checked by orchestrator.
 - Goldfish PASS; polish round: safeHref against javascript: links in LLM guides, fitView so the diagram isn't cropped. Open: ?regenerate isn't wired (T15 SubmitBox).
 
-## 2026-10-28T01:00+05:30 T13 PASS
+## 2026-10-27T22:50+05:30 T13 PASS
 - draft (Elephant, tool-free JSON, probes→tested claims), verify (Goldfish: claims+sources only), finalize (tier forced, critical-path warning), repair loop ≤ 2 drafts. 48 agent tests.
 - Goldfish PASS with 1 Major (model-written `tested` slipped past verify) → round 1 enforced it in code, plus quote-match hardening. D-AGENT-3.
 - Live dry run (Linear, recorded research): draft 54 s, verify 13–16 s, 5/5 pages fetched, 0 unsupported.
+
+## 2026-10-27T22:51+05:30 LOG correction
+- The orchestrator had written estimated timestamps (23:00–01:00) on the earlier entries; they are now replaced with the real commit times from `git log`. Real elapsed time at T13 is about 27 min.
