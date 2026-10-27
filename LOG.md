@@ -21,3 +21,7 @@
 ## 2026-10-27T22:45+05:30 T02 PASS
 - zod v3 schema + guideJsonSchema, COMPOSIO_CALLBACK_URL (v3, unverified until D-API-1), Linear fixture 9 steps / 9 claims. 5 core tests green.
 - Goldfish PASS (3 nits). Orchestrator found that the fixture said "no managed app", but /api/v3.1/toolkits/linear returns managed OAUTH2. Fix round 1 → managed_then_own; tier stays 1.
+
+## 2026-10-27T22:50+05:30 T06 PASS
+- research/apps/linear.md (14 facts, 6 error rows) + shopify.md (21 facts, 7 error rows), all rank 1.
+- Goldfish spot-checked 16 quotes; all verbatim. Nits: Linear header says 12 facts (it's 14), and some quotes are narrower than their facts. Shopify Partner-account requirement left unverified.

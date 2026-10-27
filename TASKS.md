@@ -62,7 +62,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Notes:** agent:a3d2b26c8851f086d. Goldfish PASS (nits only). Fix 1: Composio has managed Linear OAuth (API-checked) → managed_then_own, c7 tested; tier still 1. 9 steps, 9 claims (5 sourced/1 tested/3 inferred). Callback URL = v3, pending D-API-1.
 
 ### T03 · Core logic: validate, tier, critical path, markdown
-- **Status:** todo · **Tier:** A · **Deps:** T02 · **Est:** 40 min · **Agent:** sonnet
+- **Status:** in_progress · **Tier:** A · **Deps:** T02 · **Est:** 40 min · **Agent:** sonnet
 - **Files:** `packages/core/src/{validate,tier,criticalPath,markdown}.ts`, `packages/core/src/index.ts`, `packages/core/test/**`, `scripts/validate-guides.mjs`
 - **Spec:** 02_GUIDE_SCHEMA §Validation, §Tier rubric, §Critical path, §Markdown; 07_TESTING §Core
 - **Do:** `validate-guides.mjs` validates every `*.json` in `GUIDES_DIR` (default `guides/`). Run it with `tsx` or import the source via `tsx/esm`; add `tsx` as a root devDep (root `package.json` devDeps only).
@@ -86,14 +86,14 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Notes:** agent:a7c91db8f95109056
 
 ### T06 · Evidence packs: Linear + Shopify
-- **Status:** in_progress · **Tier:** A · **Deps:** T00 · **Est:** 30 min · **Agent:** sonnet
+- **Status:** done · **Tier:** A · **Deps:** T00 · **Est:** 30 min · **Agent:** sonnet
 - **Files:** `research/apps/linear.md`, `research/apps/shopify.md`
 - **Spec:** 06_RESEARCH_PROTOCOL
 - **Must answer:**
   - Linear: OAuth app creation steps, any review, actor=app vs user tokens, scopes.
   - Shopify: custom vs public app, Partner account, app review requirements, protected customer data access, timeline wording.
 - **Accept:** same bar as T05 (Linear may have < 10 facts if the docs are short; say so).
-- **Notes:** agent:a135199e653331826
+- **Notes:** agent:a135199e653331826. Linear 14 facts / Shopify 21, all rank 1. Goldfish PASS: 16 quotes checked against the pages; nits = some quotes narrower than their facts. Review durations: neither provider gives one.
 
 ### T07 · Evidence pack: Salesforce
 - **Status:** in_progress · **Tier:** A · **Deps:** T00 · **Est:** 30 min · **Agent:** sonnet
