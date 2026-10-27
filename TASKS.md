@@ -35,7 +35,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Notes:** agent:a89c92c7113fde0dc (sonnet worker, per user request). TS pinned ~5.9.3 (7.x lacks the JS API Next needs); vitest 5, Node 26, pnpm 12.15. check-secrets.sh exit-1 path tested.
 
 ### T01 · Spike: verify external APIs (gate for T11–T13, T20)
-- **Status:** todo · **Tier:** A · **Deps:** T00 · **Est:** 30 min · **Agent:** sonnet
+- **Status:** in_progress · **Tier:** A · **Deps:** T00 · **Est:** 30 min · **Agent:** sonnet
 - **Files:** `DECISIONS.md` (append only), `scripts/spikes/*.mjs`, `packages/agent/fixtures/spike/*.json` (recorded responses, secrets stripped)
 - **Spec:** 03_AGENT_GRAPH, 04_PLUGIN
 - **Do:** confirm each item and record the exact request and response shape (trimmed) as DECISIONS entries:
@@ -46,12 +46,12 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
   5. **D-API-5** LLM goes through the LiteLLM proxy (`ANTHROPIC_BASE_URL`, see D-ARCH-2). Raw `/v1/messages` + `web_search_20250305` is already confirmed. Still to confirm: (a) `@langchain/anthropic` `ChatAnthropic` honours the base URL from env and returns `server_tool_use` / `web_search_tool_result` blocks with URLs; (b) the web fetch server tool type string works through the proxy (check the claude-api skill). If (b) fails, the verify node fetches URLs with plain `fetch()` + HTML-to-text and passes the text in; record that.
   6. **D-API-6** Claude Code plugin facts: `.mcp.json` format and `${CLAUDE_PLUGIN_ROOT}`, `claude -p --plugin-dir`, and `claude plugin validate` (or the equivalent check command).
 - **Accept:** DECISIONS.md has D-API-1…6, each "confirmed" with evidence or "not possible → fallback". If keys are missing: do 5–6 and the doc-only parts of 1–4, mark the rest "unverified", and the orchestrator sets the card to `human`.
-- **Notes:**
+- **Notes:** agent:aa0a4098f8084ff73
 
 ## Phase 1 — Core
 
 ### T02 · Core schema + Linear fixture
-- **Status:** todo · **Tier:** A · **Deps:** T00 · **Est:** 40 min · **Agent:** sonnet
+- **Status:** done · **Tier:** A · **Deps:** T00 · **Est:** 40 min · **Agent:** sonnet
 - **Files:** `packages/core/src/{schema,constants,index}.ts`, `packages/core/fixtures/linear.json`, `packages/core/test/schema.test.ts`
 - **Spec:** 02_GUIDE_SCHEMA (whole doc)
 - **Do:**
@@ -59,7 +59,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
   - `constants.ts`: `COMPOSIO_CALLBACK_URL`. Use the v3 URL until D-API-1 says otherwise.
   - `fixtures/linear.json`: a realistic, complete, **honest tier-1** Linear guide (rules in 02 §Example). ≥ 7 steps, ≥ 6 claims. A claim is `sourced` only if you fetched the URL in this task. Otherwise it's `inferred`.
 - **Accept:** `pnpm --filter @oauth-pilot/core test` passes, including "fixture parses".
-- **Notes:**
+- **Notes:** agent:a3d2b26c8851f086d. Goldfish PASS (nits only). Fix 1: Composio has managed Linear OAuth (API-checked) → managed_then_own, c7 tested; tier still 1. 9 steps, 9 claims (5 sourced/1 tested/3 inferred). Callback URL = v3, pending D-API-1.
 
 ### T03 · Core logic: validate, tier, critical path, markdown
 - **Status:** todo · **Tier:** A · **Deps:** T02 · **Est:** 40 min · **Agent:** sonnet
@@ -72,7 +72,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 ## Phase 2 — Evidence packs (ground truth; parallel with everything)
 
 ### T05 · Evidence packs: Gmail + Google Calendar
-- **Status:** todo · **Tier:** A · **Deps:** T00 · **Est:** 30 min · **Agent:** sonnet (WebSearch, WebFetch)
+- **Status:** in_progress · **Tier:** A · **Deps:** T00 · **Est:** 30 min · **Agent:** sonnet (WebSearch, WebFetch)
 - **Files:** `research/apps/gmail.md`, `research/apps/google-calendar.md`
 - **Spec:** 06_RESEARCH_PROTOCOL (format exactly)
 - **Must answer:**
@@ -83,20 +83,20 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
   - any official timeline wording
   - the internal-app / Workspace-admin exemption
 - **Accept:** each pack has ≥ 10 facts with rank-1 sources and quotes, a scope table, ≥ 3 error/blocker rows, and "Could not verify".
-- **Notes:**
+- **Notes:** agent:a7c91db8f95109056
 
 ### T06 · Evidence packs: Linear + Shopify
-- **Status:** todo · **Tier:** A · **Deps:** T00 · **Est:** 30 min · **Agent:** sonnet
+- **Status:** in_progress · **Tier:** A · **Deps:** T00 · **Est:** 30 min · **Agent:** sonnet
 - **Files:** `research/apps/linear.md`, `research/apps/shopify.md`
 - **Spec:** 06_RESEARCH_PROTOCOL
 - **Must answer:**
   - Linear: OAuth app creation steps, any review, actor=app vs user tokens, scopes.
   - Shopify: custom vs public app, Partner account, app review requirements, protected customer data access, timeline wording.
 - **Accept:** same bar as T05 (Linear may have < 10 facts if the docs are short; say so).
-- **Notes:**
+- **Notes:** agent:a135199e653331826
 
 ### T07 · Evidence pack: Salesforce
-- **Status:** todo · **Tier:** A · **Deps:** T00 · **Est:** 30 min · **Agent:** sonnet
+- **Status:** in_progress · **Tier:** A · **Deps:** T00 · **Est:** 30 min · **Agent:** sonnet
 - **Files:** `research/apps/salesforce.md`
 - **Spec:** 06_RESEARCH_PROTOCOL
 - **Must answer:**
@@ -105,7 +105,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
   - AppExchange security review: when it's needed, cost, duration wording
   - dev org signup
 - **Accept:** same bar as T05.
-- **Notes:**
+- **Notes:** agent:a1dac67d6eb1688c2
 
 ## Phase 3 — Agent
 
