@@ -72,7 +72,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 ## Phase 2 — Evidence packs (ground truth; parallel with everything)
 
 ### T05 · Evidence packs: Gmail + Google Calendar
-- **Status:** in_progress · **Tier:** A · **Deps:** T00 · **Est:** 30 min · **Agent:** sonnet (WebSearch, WebFetch)
+- **Status:** done · **Tier:** A · **Deps:** T00 · **Est:** 30 min · **Agent:** sonnet (WebSearch, WebFetch)
 - **Files:** `research/apps/gmail.md`, `research/apps/google-calendar.md`
 - **Spec:** 06_RESEARCH_PROTOCOL (format exactly)
 - **Must answer:**
@@ -83,7 +83,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
   - any official timeline wording
   - the internal-app / Workspace-admin exemption
 - **Accept:** each pack has ≥ 10 facts with rank-1 sources and quotes, a scope table, ≥ 3 error/blocker rows, and "Could not verify".
-- **Notes:** agent:a7c91db8f95109056
+- **Notes:** agent:a7c91db8f95109056. Gmail 23 facts / Calendar 19 (18 rank 1). Goldfish PASS: quotes on 5 pages checked. CASA cost $500–4,500 and 2–6 wk come from a Google Health API page, not a Gmail one (flagged). Calendar per-scope sensitivity is inferred (Nylas, rank 5).
 
 ### T06 · Evidence packs: Linear + Shopify
 - **Status:** done · **Tier:** A · **Deps:** T00 · **Est:** 30 min · **Agent:** sonnet
@@ -96,7 +96,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Notes:** agent:a135199e653331826. Linear 14 facts / Shopify 21, all rank 1. Goldfish PASS: 16 quotes checked against the pages; nits = some quotes narrower than their facts. Review durations: neither provider gives one.
 
 ### T07 · Evidence pack: Salesforce
-- **Status:** in_progress · **Tier:** A · **Deps:** T00 · **Est:** 30 min · **Agent:** sonnet
+- **Status:** done · **Tier:** A · **Deps:** T00 · **Est:** 30 min · **Agent:** sonnet
 - **Files:** `research/apps/salesforce.md`
 - **Spec:** 06_RESEARCH_PROTOCOL
 - **Must answer:**
@@ -105,7 +105,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
   - AppExchange security review: when it's needed, cost, duration wording
   - dev org signup
 - **Accept:** same bar as T05.
-- **Notes:** agent:a1dac67d6eb1688c2
+- **Notes:** agent:a1dac67d6eb1688c2. 18 facts (14 clean rank 1). Goldfish PASS: 5 pages checked. help.salesforce.com/dev docs mostly 403 or a JS shell. Spring '26 connected-app block is rank 3 only → keep it inferred/medium. Security review: $2,700+$150/yr vs $999/attempt, 4–6 vs 4–5 wk (both recorded).
 
 ## Phase 3 — Agent
 

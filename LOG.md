@@ -25,3 +25,7 @@
 ## 2026-10-27T22:50+05:30 T06 PASS
 - research/apps/linear.md (14 facts, 6 error rows) + shopify.md (21 facts, 7 error rows), all rank 1.
 - Goldfish spot-checked 16 quotes; all verbatim. Nits: Linear header says 12 facts (it's 14), and some quotes are narrower than their facts. Shopify Partner-account requirement left unverified.
+
+## 2026-10-27T23:00+05:30 T05 PASS
+- gmail.md 23 facts / 8 error rows; google-calendar.md 19 facts / 7 error rows. Goldfish re-fetched quotes on 5 Google pages: all match.
+- Caveats: CASA cost and duration are only on a Health API page; the CASA tier naming conflict (tier-2/3 vs AL1/AL2) is unresolved; Calendar scope labels are inferred.
