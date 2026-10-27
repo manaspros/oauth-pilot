@@ -29,3 +29,7 @@
 ## 2026-10-27T23:00+05:30 T05 PASS
 - gmail.md 23 facts / 8 error rows; google-calendar.md 19 facts / 7 error rows. Goldfish re-fetched quotes on 5 Google pages: all match.
 - Caveats: CASA cost and duration are only on a Health API page; the CASA tier naming conflict (tier-2/3 vs AL1/AL2) is unresolved; Calendar scope labels are inferred.
+
+## 2026-10-27T23:00+05:30 T07 PASS
+- salesforce.md 18 facts (15 rank 1, 3 rank 3), 6 error rows. Worker reported "partial" (about 60% of fetches blocked), but the Accept counts are met. Goldfish PASS.
+- The Spring '26 block on new connected apps rests on a rank-3 source; the guide must keep it inferred or medium. The two Salesforce pages conflict on security-review fee and duration; both are recorded.
