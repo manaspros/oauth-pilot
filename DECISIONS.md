@@ -81,3 +81,8 @@ Consequence: draft turns ok probes into `tested` claims; rejected URLs show as `
 Context: T12's live run through ChatAnthropic failed: "temperature is not supported for claude-sonnet-5-5 when set to non-default values".
 Decision: makeLlm() sets no temperature and takes `{maxTokens?, model?}` overrides. Nodes use makeLlm().
 Consequence: outputs are not temperature-pinned; determinism comes from fixtures in fake mode.
+
+### D-AGENT-3 Evidence enforcement in draft/verify (T13)
+Context: an LLM can claim "tested", and short quotes match any page.
+Decision: only code-made claims (`tp*` from probes, `tc1` from the Composio lookup) may be `tested`; a model-written tested claim is demoted to inferred/low. verify uses plain fetch + HTML→text, not web_fetch. Quote segments under 12 chars and under 3 words are unverifiable (left to the LLM, confidence capped at medium). An absent strong quote → `unsupported` regardless of the LLM.
+Consequence: JS-rendered pages can produce false `unsupported`; if T14/T21 show many, add a web_fetch fallback.

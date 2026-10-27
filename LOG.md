@@ -67,3 +67,8 @@
 ## 2026-10-28T00:55+05:30 T16 PASS
 - Guide page: verdict, 3 clock tiles, Start today, timeline, React Flow swimlane diagram (shipped, under budget), phase checklist, scopes, requirements, risks, evidence ledger, copy-as-markdown. e2e 6/6; screenshot checked by orchestrator.
 - Goldfish PASS; polish round: safeHref against javascript: links in LLM guides, fitView so the diagram isn't cropped. Open: ?regenerate isn't wired (T15 SubmitBox).
+
+## 2026-10-28T01:00+05:30 T13 PASS
+- draft (Elephant, tool-free JSON, probes→tested claims), verify (Goldfish: claims+sources only), finalize (tier forced, critical-path warning), repair loop ≤ 2 drafts. 48 agent tests.
+- Goldfish PASS with 1 Major (model-written `tested` slipped past verify) → round 1 enforced it in code, plus quote-match hardening. D-AGENT-3.
+- Live dry run (Linear, recorded research): draft 54 s, verify 13–16 s, 5/5 pages fetched, 0 unsupported.

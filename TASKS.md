@@ -136,17 +136,17 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Notes:** agent:a085424ad911165b4. Goldfish FAIL→PASS: robust JSON extraction, pause_turn continuations, URL normalization. Live Linear recording: 23 s, 170k input tok (mostly cache), 13 notes. Found the llm.ts temperature bug (fixed as a T10 follow-up).
 
 ### T13 · Nodes: draft (Elephant), verify (Goldfish), finalize + repair loop
-- **Status:** in_progress · **Tier:** A · **Deps:** T11, T12 · **Est:** 45 min · **Agent:** sonnet
+- **Status:** done · **Tier:** A · **Deps:** T11, T12 · **Est:** 45 min · **Agent:** sonnet
 - **Files:** `packages/agent/src/nodes/{draft,verify,finalize}.ts`, `packages/agent/src/prompts/{draft,verify}.md`, `packages/agent/test/{draft,verify,finalize}.test.ts`
 - **Spec:** 03_AGENT_GRAPH §Nodes (verify gets ONLY claims + sources); 02_GUIDE_SCHEMA
 - **Accept:**
   - Repair-loop test passes: draft runs at most twice, and `repairs` increments.
   - Verify test passes: a claim whose quote is absent from the fetched page becomes `inferred`/`low` with verdict `unsupported`.
   - Finalize forces `verdict.tier = computeTier()`.
-- **Notes:** agent:a4d80433a4380cc3f
+- **Notes:** agent:a4d80433a4380cc3f. 48 agent tests. verify = plain fetch + HTML→text (SSRF guard per hop), deterministic word-boundary quote check (≥12 chars/3 words) then an LLM that sees claims+sources only. Round 1: code demotes model-written `tested`. Live Linear draft+verify ≈65 s, 0 unsupported, 3–4 partial.
 
 ### T14 · CLI + live smoke + record Calendly
-- **Status:** todo · **Tier:** A · **Deps:** T13 · **Est:** 30 min · **Agent:** sonnet (needs `ANTHROPIC_API_KEY`; if missing → `human`)
+- **Status:** in_progress · **Tier:** A · **Deps:** T13 · **Est:** 30 min · **Agent:** sonnet (needs `ANTHROPIC_API_KEY`; if missing → `human`)
 - **Files:** `packages/agent/src/cli.ts`, `packages/agent/fixtures/runs/calendly/**`, `packages/agent/test/live.test.ts`, `packages/agent/test/replay.test.ts`
 - **Spec:** 03_AGENT_GRAPH §CLI flags, §Fake mode; 07_TESTING
 - **Accept:** `pnpm --filter @oauth-pilot/agent guide "Calendly" --record` finishes in under 300 s with a valid guide; fixtures are saved; `replay.test.ts` replays calendly in fake mode and passes. Runtime and the verifier's unsupported count go in the task report for LOG.md.
