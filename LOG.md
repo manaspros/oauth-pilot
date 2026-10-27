@@ -63,3 +63,7 @@
 ## 2026-10-28T00:25+05:30 T15 PASS
 - Web scaffold: Next 15.5 / React 19 / Tailwind 4; /api/guides, /api/guides/:slug(+markdown), /api/runs (+:id, SSE); library page with tier filter; Playwright (build + next start, fake mode). Build ~9 s; e2e 3/3 in 8 s.
 - Orchestrator ran Accept 5b by hand: POST /api/runs {Linear} → SSE ended with `done`. Goldfish PASS. Chore: *.tsbuildinfo added to .gitignore.
+
+## 2026-10-28T00:55+05:30 T16 PASS
+- Guide page: verdict, 3 clock tiles, Start today, timeline, React Flow swimlane diagram (shipped, under budget), phase checklist, scopes, requirements, risks, evidence ledger, copy-as-markdown. e2e 6/6; screenshot checked by orchestrator.
+- Goldfish PASS; polish round: safeHref against javascript: links in LLM guides, fitView so the diagram isn't cropped. Open: ?regenerate isn't wired (T15 SubmitBox).

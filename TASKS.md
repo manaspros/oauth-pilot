@@ -143,7 +143,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
   - Repair-loop test passes: draft runs at most twice, and `repairs` increments.
   - Verify test passes: a claim whose quote is absent from the fetched page becomes `inferred`/`low` with verdict `unsupported`.
   - Finalize forces `verdict.tier = computeTier()`.
-- **Notes:**
+- **Notes:** agent:a4d80433a4380cc3f
 
 ### T14 · CLI + live smoke + record Calendly
 - **Status:** todo · **Tier:** A · **Deps:** T13 · **Est:** 30 min · **Agent:** sonnet (needs `ANTHROPIC_API_KEY`; if missing → `human`)
@@ -163,12 +163,12 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Notes:** agent:aa9c9a3909813959b. Next 15.5, React 19, Tailwind 4. 6 API routes, library + filters, SubmitBox. e2e 3/3. Orchestrator ran POST /api/runs → SSE ends `done`. Goldfish PASS (nits). Max 2 concurrent runs (429).
 
 ### T16 · Guide page: verdict, Start today, timeline, React Flow, evidence ledger
-- **Status:** in_progress · **Tier:** A (React Flow part is B) · **Deps:** T15 · **Est:** 60 min · **Agent:** sonnet (frontend-design skill)
+- **Status:** done · **Tier:** A (React Flow part is B) · **Deps:** T15 · **Est:** 60 min · **Agent:** sonnet (frontend-design skill)
 - **Files:** `apps/web/src/app/guides/**`, `apps/web/src/components/{ClockTiles,StartToday,Timeline,CriticalPathFlow,StepNode,LaneNode,StepPanel,EvidenceLedger,RiskTable}.tsx`, `e2e/web/guide.spec.ts`, `docs/screenshots/guide.png`
 - **Spec:** 05_WEB §`/guides/[slug]`
 - **Do:** build the timeline and ledger first and get the spec green. Then React Flow. If React Flow runs past 75 min, ship timeline-only and report it.
 - **Accept:** `guide.spec.ts` (07_TESTING web cases 2–4 against `linear`) passes; screenshot saved.
-- **Notes:**
+- **Notes:** agent:aef5278205bedafb9. React Flow shipped (swimlanes by actor, dagre, fitView). e2e 6/6. Goldfish PASS; round 1 added safeHref (http/https only) + fitView. Open: Regenerate link does not start a run (needs SubmitBox ?regenerate, a T15 file).
 
 ### T17 · Live run page (agent graph animation)
 - **Status:** todo · **Tier:** B · **Deps:** T15, T14 · **Est:** 40 min · **Agent:** sonnet
