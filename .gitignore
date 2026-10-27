@@ -1,0 +1,10 @@
+node_modules/
+.next/
+dist/
+data/
+.env
+.env.*
+!.env.example
+oauth-guides/
+playwright-report/
+test-results/
