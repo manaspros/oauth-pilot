@@ -37,3 +37,8 @@
 ## 2026-10-27T23:10+05:30 T03 PASS
 - validate/tier/criticalPath/markdown + scripts/validate-guides.mjs (tsx). 29 core tests; Linear fixture: tier 1, 0 errors/warnings.
 - Goldfish PASS, nits only. Extra beyond spec: warns when timeToProduction.max < critical path total.
+
+## 2026-10-27T23:15+05:30 T01 PASS
+- D-API-1…6 all confirmed with scripts in scripts/spikes and fixtures in packages/agent/fixtures/spike. Live auth-config + connected-account create was run with FAKE creds, then deleted.
+- Spec changes: callback URL is /api/v1/auth-apps/add (core constant fix sent to T02 worker); web_fetch_20250910 (not 20260209); recommendScopes is beta, so keep the per-tool scopes fallback.
+- Goldfish raised a Major (D-API-2 had no recorded evidence). Fix round 1 added composio-scopes.mjs + 3 fixtures. Numbers: one web_search ≈ 21k input tokens through LangChain.

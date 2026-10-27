@@ -35,7 +35,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Notes:** agent:a89c92c7113fde0dc (sonnet worker, per user request). TS pinned ~5.9.3 (7.x lacks the JS API Next needs); vitest 5, Node 26, pnpm 12.15. check-secrets.sh exit-1 path tested.
 
 ### T01 · Spike: verify external APIs (gate for T11–T13, T20)
-- **Status:** in_progress · **Tier:** A · **Deps:** T00 · **Est:** 30 min · **Agent:** sonnet
+- **Status:** done · **Tier:** A · **Deps:** T00 · **Est:** 30 min · **Agent:** sonnet
 - **Files:** `DECISIONS.md` (append only), `scripts/spikes/*.mjs`, `packages/agent/fixtures/spike/*.json` (recorded responses, secrets stripped)
 - **Spec:** 03_AGENT_GRAPH, 04_PLUGIN
 - **Do:** confirm each item and record the exact request and response shape (trimmed) as DECISIONS entries:
@@ -46,7 +46,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
   5. **D-API-5** LLM goes through the LiteLLM proxy (`ANTHROPIC_BASE_URL`, see D-ARCH-2). Raw `/v1/messages` + `web_search_20250305` is already confirmed. Still to confirm: (a) `@langchain/anthropic` `ChatAnthropic` honours the base URL from env and returns `server_tool_use` / `web_search_tool_result` blocks with URLs; (b) the web fetch server tool type string works through the proxy (check the claude-api skill). If (b) fails, the verify node fetches URLs with plain `fetch()` + HTML-to-text and passes the text in; record that.
   6. **D-API-6** Claude Code plugin facts: `.mcp.json` format and `${CLAUDE_PLUGIN_ROOT}`, `claude -p --plugin-dir`, and `claude plugin validate` (or the equivalent check command).
 - **Accept:** DECISIONS.md has D-API-1…6, each "confirmed" with evidence or "not possible → fallback". If keys are missing: do 5–6 and the doc-only parts of 1–4, mark the rest "unverified", and the orchestrator sets the card to `human`.
-- **Notes:** agent:aa0a4098f8084ff73
+- **Notes:** agent:aa0a4098f8084ff73. All 6 confirmed. Callback = https://backend.composio.dev/api/v1/auth-apps/add (not v3). Scopes: POST /api/v3.1/toolkits/{slug}/scopes/recommended (beta; fallback GET /tools/{slug}.scopes). web_fetch_20250910 OK through the proxy, 20260209 → 400. Fix 1: D-API-2 fixtures recorded.
 
 ## Phase 1 — Core
 

@@ -1,0 +1,168 @@
+{
+  "createAuthConfig": {
+    "request": {
+      "toolkit": {
+        "slug": "gmail"
+      },
+      "auth_config": {
+        "type": "use_custom_auth",
+        "name": "oauth-pilot-spike-DELETE-ME",
+        "authScheme": "OAUTH2",
+        "credentials": {
+          "client_id": "fake-client-id.apps.googleusercontent.com",
+          "client_secret": "<fake>",
+          "scopes": "https://www.googleapis.com/auth/gmail.readonly"
+        }
+      }
+    },
+    "response": {
+      "status": 201,
+      "body": {
+        "toolkit": {
+          "slug": "gmail"
+        },
+        "auth_config": {
+          "id": "ac_<redacted>",
+          "auth_scheme": "OAUTH2",
+          "is_composio_managed": false,
+          "restrict_to_following_tools": []
+        }
+      }
+    }
+  },
+  "getAuthConfig": {
+    "status": 200,
+    "body": {
+      "id": "ac_<redacted>",
+      "uuid": "6bccb9e4-28aa-45ee-9ebf-e3bc8f5fd0a6",
+      "name": "oauth-pilot-spike-DELETE-ME",
+      "auth_scheme": "OAUTH2",
+      "is_composio_managed": false,
+      "credentials": {
+        "client_id": "fake-client-id.apps.googleusercontent.com",
+        "client_secret": "<redacted>",
+        "oauth_redirect_uri": "https://backend.composio.dev/api/v1/auth-apps/add",
+        "scopes": [
+          "https://www.googleapis.com/auth/gmail.readonly"
+        ],
+        "user_scopes": []
+      },
+      "created_by": "member",
+      "created_at": "2026-10-27T16:56:38.748Z",
+      "status": "ENABLED",
+      "toolkit": {
+        "slug": "gmail",
+        "logo": "https://logos.composio.dev/api/gmail",
+        "auth_guide_url": null,
+        "auth_hint_url": null
+      },
+      "last_updated_at": "2026-10-27T16:56:38.748Z",
+      "no_of_connections": 0,
+      "expected_input_fields": [],
+      "restrict_to_following_tools": [],
+      "type": "custom",
+      "tool_access_config": {
+        "tools_for_connected_account_creation": [],
+        "tools_available_for_execution": []
+      },
+      "shared_credentials": {},
+      "shared_connection_fields": {},
+      "is_enabled_for_tool_router": false
+    }
+  },
+  "initiate": {
+    "request": {
+      "auth_config": {
+        "id": "<id>"
+      },
+      "connection": {
+        "user_id": "oauth-pilot-spike-user"
+      }
+    },
+    "status": 201,
+    "body": {
+      "id": "ca_<redacted>",
+      "connectionData": {
+        "authScheme": "OAUTH2",
+        "val": {
+          "status": "INITIATED",
+          "redirectUrl": "https://backend.composio.dev/api/v3/s/prSnRMji",
+          "callback_url": "https://backend.composio.dev/api/v1/auth-apps/add"
+        }
+      },
+      "status": "INITIATED",
+      "redirect_url": "https://backend.composio.dev/api/v3/s/prSnRMji",
+      "redirect_uri": "https://backend.composio.dev/api/v3/s/prSnRMji",
+      "experimental": {
+        "account_type": "PRIVATE"
+      }
+    }
+  },
+  "poll": {
+    "status": 200,
+    "body": {
+      "user_id": "oauth-pilot-spike-user",
+      "id": "ca_<redacted>",
+      "word_id": "gmail_gavel-brooke",
+      "alias": null,
+      "toolkit": {
+        "slug": "gmail"
+      },
+      "auth_config": {
+        "id": "ac_<redacted>",
+        "auth_scheme": "OAUTH2",
+        "is_composio_managed": false,
+        "is_disabled": false
+      },
+      "status": "INITIATED",
+      "experimental": {
+        "account_type": "PRIVATE",
+        "acl_config_for_shared": {
+          "allow_all_users": false,
+          "allowed_user_ids": [],
+          "not_allowed_user_ids": []
+        }
+      },
+      "created_at": "2026-10-27T16:56:39.854Z",
+      "updated_at": "2026-10-27T16:56:39.915Z",
+      "data": {
+        "status": "INITIATED",
+        "redirectUrl": "https://backend.composio.dev/api/v3/s/prSnRMji",
+        "callback_url": "https://backend.composio.dev/api/v1/auth-apps/add"
+      },
+      "state": {
+        "authScheme": "OAUTH2",
+        "val": {
+          "status": "INITIATED",
+          "redirectUrl": "https://backend.composio.dev/api/v3/s/prSnRMji",
+          "callback_url": "https://backend.composio.dev/api/v1/auth-apps/add"
+        }
+      },
+      "status_reason": null,
+      "is_disabled": false,
+      "test_request_endpoint": "https://www.googleapis.com/gmail/v1/users/me/profile",
+      "params": {
+        "status": "INITIATED",
+        "redirectUrl": "https://backend.composio.dev/api/v3/s/prSnRMji",
+        "callback_url": "https://backend.composio.dev/api/v1/auth-apps/add"
+      },
+      "requested_scopes": [
+        "https://www.googleapis.com/auth/gmail.readonly"
+      ],
+      "requested_user_scopes": []
+    }
+  },
+  "deleteConnectedAccount": {
+    "status": 200,
+    "body": {
+      "success": true
+    }
+  },
+  "deleteAuthConfig": {
+    "status": 200,
+    "body": {
+      "success": true,
+      "message": "Successfully deleted auth config"
+    }
+  }
+}

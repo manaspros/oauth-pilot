@@ -1,0 +1,25 @@
+{
+  "claude_version": "2.1.311",
+  "plugin_layout": {
+    ".claude-plugin/plugin.json": "{\"name\":\"oauth-pilot\",\"version\":\"0.1.0\",\"description\":\"spike\",\"author\":{\"name\":\"spike\"}}",
+    ".mcp.json": "{\"mcpServers\":{\"oauth-pilot\":{\"command\":\"node\",\"args\":[\"${CLAUDE_PLUGIN_ROOT}/bin/mcp.mjs\"]}}}",
+    "skills/oauth-setup/SKILL.md": "frontmatter name+description; body may use ${CLAUDE_PLUGIN_ROOT}"
+  },
+  "validate": {
+    "cmd": "claude plugin validate <dir>",
+    "good_plugin": "exit 0, 'Validation passed' (+ directory-profile notes: README/LICENSE/icon missing, non-fatal unless --profile directory)",
+    "name_claude-foo": "exit 1, 'Plugin name \"claude-foo\" is reserved' (names starting claude-/anthropic- are rejected)"
+  },
+  "run": {
+    "cmd": "claude -p --plugin-dir <dir> --output-format stream-json --verbose --max-turns 3 \"<prompt>\"",
+    "init_event": {
+      "plugins[0]": {"name": "oauth-pilot", "source": "oauth-pilot@inline", "version": "0.1.0"},
+      "mcp_servers[0]": {"name": "plugin:oauth-pilot:oauth-pilot", "status": "connected", "source": "plugin"},
+      "skills": ["oauth-pilot:oauth-setup"],
+      "slash_commands": ["oauth-pilot:oauth-setup"],
+      "mcp_tool_name": "mcp__plugin_oauth-pilot_oauth-pilot__ping"
+    },
+    "tool_result": "pong",
+    "result": "success"
+  }
+}

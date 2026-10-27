@@ -1,0 +1,66 @@
+[
+  {
+    "variant": {
+      "type": "web_fetch_20250910",
+      "beta": "web-fetch-2025-09-10"
+    },
+    "status": 200,
+    "blocks": [
+      {
+        "type": "server_tool_use",
+        "name": "web_fetch"
+      },
+      {
+        "type": "web_fetch_tool_result",
+        "err": "web_fetch_result"
+      },
+      {
+        "type": "text"
+      }
+    ],
+    "usage": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 1
+    }
+  },
+  {
+    "variant": {
+      "type": "web_fetch_20250910",
+      "beta": null
+    },
+    "status": 200,
+    "blocks": [
+      {
+        "type": "server_tool_use",
+        "name": "web_fetch"
+      },
+      {
+        "type": "web_fetch_tool_result",
+        "err": "web_fetch_result"
+      },
+      {
+        "type": "text"
+      }
+    ],
+    "usage": {
+      "web_search_requests": 0,
+      "web_fetch_requests": 1
+    }
+  },
+  {
+    "variant": {
+      "type": "web_fetch_20260209",
+      "beta": null
+    },
+    "status": 400,
+    "error": "litellm.BadRequestError: Azure_aiException - {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"code_execution, web_fetch_20260209 not supported in your workspace.\"},\"request_id\":\"req_011CgT6TW7xtZWJhcZ4ov9Yt\"}\n\nLiteLLM: model group 'claude-sonnet-5-5' failed with the error above. No"
+  },
+  {
+    "variant": {
+      "type": "web_fetch_20260209",
+      "beta": "web-fetch-2025-09-10"
+    },
+    "status": 400,
+    "error": "litellm.BadRequestError: Azure_aiException - {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"code_execution, web_fetch_20260209 not supported in your workspace.\"},\"request_id\":\"req_011CgT6TY4Xsd6FQfWrT1oWt\"}\n\nLiteLLM: model group 'claude-sonnet-5-5' failed with the error above. No"
+  }
+]

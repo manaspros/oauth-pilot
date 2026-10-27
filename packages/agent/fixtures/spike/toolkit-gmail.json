@@ -1,0 +1,101 @@
+{
+  "status": 200,
+  "keys": [
+    "name",
+    "slug",
+    "type",
+    "enabled",
+    "composio_managed_auth_schemes",
+    "composio_managed_auth",
+    "auth_config_details",
+    "auth_guide_url",
+    "is_local_toolkit",
+    "base_url",
+    "get_current_user_endpoint",
+    "get_current_user_endpoint_method",
+    "meta",
+    "deprecated"
+  ],
+  "composio_managed_auth_schemes": [
+    "OAUTH2"
+  ],
+  "composio_managed_auth": [
+    {
+      "mode": "OAUTH2",
+      "scopes": {
+        "available": [
+          "https://www.googleapis.com/auth/userinfo.profile",
+          "https://www.googleapis.com/auth/userinfo.email",
+          "https://www.googleapis.com/auth/contacts.readonly",
+          "https://www.googleapis.com/auth/contacts.other.readonly",
+          "https://www.googleapis.com/auth/profile.language.read",
+          "https://www.googleapis.com/auth/user.addresses.read",
+          "https://www.googleapis.com/auth/user.birthday.read",
+          "https://www.googleapis.com/auth/user.emails.read",
+          "https://www.googleapis.com/auth/user.phonenumbers.read",
+          "https://www.googleapis.com/auth/profile.emails.read",
+          "https://mail.google.com/"
+        ]
+      }
+    }
+  ],
+  "auth_config_details": [
+    {
+      "name": "gmail_oauth",
+      "mode": "OAUTH2",
+      "required_scopes": [],
+      "fields": {
+        "auth_config_creation": {
+          "required": [
+            {
+              "name": "client_id",
+              "displayName": "Client id",
+              "type": "string",
+              "description": "Client id of the app",
+              "required": true,
+              "user_visible": true
+            },
+            {
+              "name": "client_secret",
+              "displayName": "Client secret",
+              "type": "string",
+              "description": "Client secret of the app",
+              "required": true,
+              "user_visible": true
+            }
+          ],
+          "optional": [
+            {
+              "name": "oauth_redirect_uri",
+              "displayName": "Redirect URI",
+              "type": "string",
+              "default": "https://backend.composio.dev/api/v1/auth-apps/add",
+              "description": "Add this Redirect URL to your app's OAuth allow list.",
+              "required": false,
+              "user_visible": true
+            },
+            {
+              "name": "scopes",
+              "displayName": "Scopes",
+              "type": "string",
+              "default": "https://www.googleapis.com/auth/userinfo.profile,https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/contacts.readonly,https://www.googleapis.com/auth/contacts.other.readonly,https://www.googleapis.com/auth/profile.language.read,https://www.googleapis.com/auth/user.addresses.read,https://www.googleapis.com/auth/user.birthday.read,https://www.googleapis.com/auth/user.emails.read,https://www.googleapis.com/auth/user.phonenumbers.read,https://www.googleapis.com/auth/profile.emails.read,https://mail.google.com/",
+              "description": "Scopes to request from the user, comma separated",
+              "required": false,
+              "user_visible": true
+            }
+          ]
+        },
+        "connected_account_initiation": {
+          "required": [],
+          "optional": []
+        }
+      },
+      "deprecated_auth_provider_details": {
+        "token_url": "https://oauth2.googleapis.com/token",
+        "authorization_url": "https://accounts.google.com/o/oauth2/v2/auth"
+      },
+      "auth_hint_url": null
+    }
+  ],
+  "auth_guide_url": null
+}

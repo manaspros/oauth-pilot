@@ -1,0 +1,52 @@
+{
+  "web_search": {
+    "blockTypes": [
+      "server_tool_use",
+      "web_search_tool_result",
+      "text",
+      "text",
+      "text"
+    ],
+    "urls": [
+      "https://linear.app/developers/oauth-2-0-authentication",
+      "https://linear.app/docs/api/oauth-2-0-authentication",
+      "https://developers.linear.app/docs/oauth/authentication",
+      "https://rollout.com/integration-guides/linear/how-to-build-a-public-linear-integration-building-the-auth-flow",
+      "https://linear.app/developers/oauth-actor-authorization"
+    ],
+    "textSample": "The Linear OAuth2 authorization URL is https://linear.app/oauth/authorize, which you call with parameters such as `response_type=code`, `client_id`, `redirect_uri` and `scope`.",
+    "usage": {
+      "input_tokens": 20967,
+      "output_tokens": 165,
+      "total_tokens": 21132,
+      "input_token_details": {
+        "cache_creation": 0,
+        "cache_read": 0
+      }
+    }
+  },
+  "web_fetch": {
+    "blockTypes": [
+      "server_tool_use",
+      "web_fetch_tool_result",
+      "text"
+    ],
+    "urls": [
+      "https://example.com"
+    ],
+    "textSample": "The heading of https://example.com is \"Example Domain.\"",
+    "usage": {
+      "input_tokens": 2363,
+      "output_tokens": 72,
+      "total_tokens": 2435,
+      "input_token_details": {
+        "cache_creation": 0,
+        "cache_read": 0
+      }
+    }
+  },
+  "envOnly": {
+    "ok": true,
+    "text": "ok"
+  }
+}

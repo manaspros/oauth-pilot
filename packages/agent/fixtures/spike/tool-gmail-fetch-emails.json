@@ -1,0 +1,27 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v3.1/tools/GMAIL_FETCH_EMAILS"
+  },
+  "status": 200,
+  "body": {
+    "slug": "GMAIL_FETCH_EMAILS",
+    "version": "20261023_00",
+    "scopes": [
+      "https://mail.google.com/",
+      "https://www.googleapis.com/auth/gmail.modify",
+      "https://www.googleapis.com/auth/gmail.readonly"
+    ],
+    "scope_requirements": {
+      "all_of": [
+        {
+          "any_of": [
+            "https://mail.google.com/",
+            "https://www.googleapis.com/auth/gmail.modify",
+            "https://www.googleapis.com/auth/gmail.readonly"
+          ]
+        }
+      ]
+    }
+  }
+}

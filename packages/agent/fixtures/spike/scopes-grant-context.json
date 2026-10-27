@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v3.1/toolkits/gmail/scopes/grant_context"
+  },
+  "status": 200,
+  "body": {
+    "auth_scheme": "OAUTH2",
+    "toolkit_version": "20261023_00",
+    "grant_context_dimensions": [
+      {
+        "dimension": "account_type",
+        "description": "Type of Google account connecting. Pass \"Google Workspace\" to unlock Workspace-only scopes (delegation settings); omit for personal Gmail accounts.",
+        "values": [
+          "Google Workspace"
+        ]
+      }
+    ],
+    "default_grant_context": {}
+  }
+}
