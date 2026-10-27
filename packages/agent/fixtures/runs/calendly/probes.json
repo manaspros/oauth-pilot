@@ -1,0 +1,85 @@
+{
+  "probes": [
+    {
+      "id": "p1",
+      "at": "2026-10-27T17:22:00.186Z",
+      "check": "oauth-authorization-server well-known",
+      "url": "https://api.calendly.com/.well-known/oauth-authorization-server",
+      "ok": false,
+      "status": 401,
+      "observed": "HTTP 401"
+    },
+    {
+      "id": "p2",
+      "at": "2026-10-27T17:22:00.209Z",
+      "check": "openid-configuration well-known",
+      "url": "https://api.calendly.com/.well-known/openid-configuration",
+      "ok": false,
+      "status": 401,
+      "observed": "HTTP 401"
+    },
+    {
+      "id": "p3",
+      "at": "2026-10-27T17:22:00.273Z",
+      "check": "oauth-authorization-server well-known",
+      "url": "https://auth.calendly.com/.well-known/oauth-authorization-server",
+      "ok": false,
+      "status": 404,
+      "observed": "HTTP 404"
+    },
+    {
+      "id": "p4",
+      "at": "2026-10-27T17:22:00.281Z",
+      "check": "openid-configuration well-known",
+      "url": "https://auth.calendly.com/.well-known/openid-configuration",
+      "ok": false,
+      "status": 404,
+      "observed": "HTTP 404"
+    },
+    {
+      "id": "p5",
+      "at": "2026-10-27T17:22:00.190Z",
+      "check": "oauth-authorization-server well-known",
+      "url": "https://calendly.com/.well-known/oauth-authorization-server",
+      "ok": true,
+      "status": 200,
+      "observed": "HTTP 200, metadata JSON with 7 keys"
+    },
+    {
+      "id": "p6",
+      "at": "2026-10-27T17:22:00.190Z",
+      "check": "registration_endpoint (dynamic client registration)",
+      "url": "https://calendly.com/.well-known/oauth-authorization-server",
+      "ok": true,
+      "status": 200,
+      "observed": "registration_endpoint present: https://calendly.com/oauth/register"
+    },
+    {
+      "id": "p7",
+      "at": "2026-10-27T17:22:00.275Z",
+      "check": "openid-configuration well-known",
+      "url": "https://calendly.com/.well-known/openid-configuration",
+      "ok": true,
+      "status": 200,
+      "observed": "HTTP 200, metadata JSON with 7 keys"
+    },
+    {
+      "id": "p8",
+      "at": "2026-10-27T17:22:00.275Z",
+      "check": "registration_endpoint (dynamic client registration)",
+      "url": "https://calendly.com/.well-known/openid-configuration",
+      "ok": true,
+      "status": 200,
+      "observed": "registration_endpoint present: https://calendly.com/oauth/register"
+    },
+    {
+      "id": "p9",
+      "at": "2026-10-27T17:22:00.851Z",
+      "check": "HEAD docs/console URL",
+      "url": "https://developer.calendly.com",
+      "ok": true,
+      "status": 307,
+      "observed": "HTTP 307 redirect to developer.calendly.com (not followed)"
+    }
+  ]
+}

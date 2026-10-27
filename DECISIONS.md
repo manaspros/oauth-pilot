@@ -86,3 +86,8 @@ Consequence: outputs are not temperature-pinned; determinism comes from fixtures
 Context: an LLM can claim "tested", and short quotes match any page.
 Decision: only code-made claims (`tp*` from probes, `tc1` from the Composio lookup) may be `tested`; a model-written tested claim is demoted to inferred/low. verify uses plain fetch + HTML→text, not web_fetch. Quote segments under 12 chars and under 3 words are unverifiable (left to the LLM, confidence capped at medium). An absent strong quote → `unsupported` regardless of the LLM.
 Consequence: JS-rendered pages can produce false `unsupported`; if T14/T21 show many, add a web_fetch fallback.
+
+### D-ORCH-2 Accepted vitest.config change in T14
+Context: excluding live.test.ts with a plain `exclude` would also block `pnpm test:live`, which passes the file as a filter.
+Decision: vitest.config.ts (a T10 file) excludes live.test.ts unless argv contains "live.test". Accepted by the orchestrator.
+Consequence: `pnpm test` never hits the network; `pnpm --filter @oauth-pilot/agent test:live` runs the live test (skips without a key).

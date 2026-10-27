@@ -1,0 +1,12 @@
+{
+  "composio": {
+    "toolkitFound": true,
+    "managedSchemes": [
+      "OAUTH2"
+    ],
+    "availableScopes": [],
+    "requiredScopes": [],
+    "authGuideUrl": null
+  },
+  "issues": []
+}

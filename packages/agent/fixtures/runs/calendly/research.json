@@ -1,0 +1,116 @@
+{
+  "research": [
+    {
+      "id": "r1",
+      "topic": "registration",
+      "finding": "Register a Calendly developer account (separate from your Calendly user account) with GitHub or Google, then create a new OAuth application by giving a name, choosing web or native, and choosing Sandbox or Production.",
+      "url": "https://developer.calendly.com/docs/authentication/creating-an-oauth-app",
+      "title": "Creating an OAuth app | Calendly | Developer Documentation",
+      "quote": "Sign up for a Calendly developer account using your Github or Google account by clicking the Sign Up button found in the top right corner of this page."
+    },
+    {
+      "id": "r2",
+      "topic": "registration",
+      "finding": "Redirect URI rules: Sandbox allows HTTP on localhost, and Production must use HTTPS. Calendly recommends building in Sandbox first, then creating a second app for Production.",
+      "url": "https://developer.calendly.com/docs/authentication/creating-an-oauth-app",
+      "title": "Creating an OAuth app | Calendly | Developer Documentation",
+      "quote": "For the Sandbox environment, we allow HTTP with localhost domain. Example: http://localhost:1234 For the Production environment, this must be HTTPS"
+    },
+    {
+      "id": "r3",
+      "topic": "review_process",
+      "finding": "Calendly's docs describe a self-serve flow. You create a Production-environment app and go live with customer data, and the docs name no formal review or verification program or timeline. This absence is my inference from the pages I read; I did not find a review program in them.",
+      "url": "https://developer.calendly.com/docs/authentication/creating-an-oauth-app",
+      "title": "Creating an OAuth app | Calendly | Developer Documentation",
+      "quote": "We recommend starting with Sandbox for development and creating a second application for Production when ready to go live with customer data."
+    },
+    {
+      "id": "r4",
+      "topic": "registration",
+      "finding": "The Client Secret and Webhook signing key are shown only once, when the app is created, and cannot be retrieved when editing the app. Editable attributes are name, kind, environment type and redirect URI.",
+      "url": "https://developer.calendly.com/docs/authentication/creating-an-oauth-app",
+      "title": "Creating an OAuth app | Calendly | Developer Documentation",
+      "quote": "Be sure to copy these values as you will not be able to access the Client Secret or Webhook signing key again"
+    },
+    {
+      "id": "r5",
+      "topic": "requirements",
+      "finding": "PKCE with S256 and a specific redirect_uri is specified for all OAuth apps. The same page also says PKCE is not enforced for web apps.",
+      "url": "https://developer.calendly.com/docs/authentication/creating-an-oauth-app",
+      "title": "Creating an OAuth app | Calendly | Developer Documentation",
+      "quote": "For all OAuth applications (web or native) use a specific redirect_uri, a Proof Key for Code Exchange (PKCE), and S256 for code_challenge_method."
+    },
+    {
+      "id": "r6",
+      "topic": "requirements",
+      "finding": "Calendly's Developer Policy requires every developer to have an industry-standard privacy policy. It also requires secure, strongly encrypted data storage, brand-guideline adherence, and connection instructions plus support contact info.",
+      "url": "https://calendly.com/legal/developer-policy",
+      "title": "Developer Policy — Security, Data Use & Integration Guidelines | Calendly",
+      "quote": "All Developers must have an industry standard privacy policy in place that accurately describes the specifics of data usage and meets applicable legal and consent requirements."
+    },
+    {
+      "id": "r7",
+      "topic": "requirements",
+      "finding": "The Developer Policy requires apps to include connection instructions and customer support information. Breaches must be reported to Calendly immediately.",
+      "url": "https://calendly.com/legal/developer-policy",
+      "title": "Developer Policy — Security, Data Use & Integration Guidelines | Calendly",
+      "quote": "Application must be complemented with instructions on how to connect Calendly and customer support information"
+    },
+    {
+      "id": "r8",
+      "topic": "scopes",
+      "finding": "Calendly uses granular resource:read and resource:write scopes (for example scheduled_events:read, webhooks:write, users:read, event_types:write). A :write scope implicitly includes the matching :read scope. The docs define no sensitive/restricted tiers.",
+      "url": "https://developer.calendly.com/docs/authentication/scopes",
+      "title": "Authorization Scopes | Calendly | Developer Documentation",
+      "quote": "A :write scope implicitly includes the corresponding :read scope within the same domain."
+    },
+    {
+      "id": "r9",
+      "topic": "scopes",
+      "finding": "Newly created OAuth apps get no API access until scopes are explicitly requested and approved, while legacy apps keep full access. Scopes are passed space-separated in the authorize URL.",
+      "url": "https://developer.calendly.com/docs/authentication/scopes",
+      "title": "Authorization Scopes | Calendly | Developer Documentation",
+      "quote": "For newly created OAuth apps and new Personal Access Tokens, no API access is granted until scopes are explicitly requested and approved."
+    },
+    {
+      "id": "r10",
+      "topic": "errors",
+      "finding": "Exceeding the rate limit returns HTTP 429 with X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset headers. Wait until the reset time has elapsed before retrying.",
+      "url": "https://developer.calendly.com/api-docs/overview/rate-limits",
+      "title": "Rate Limits | Calendly | Developer Documentation",
+      "quote": "If you receive a 429 response, wait until the X-RateLimit-Reset time has elapsed before retrying."
+    },
+    {
+      "id": "r11",
+      "topic": "gotchas",
+      "finding": "Creating webhook subscriptions requires the connected Calendly user to be on a paid Standard, Teams or Enterprise plan. Other API endpoints work on any plan, apart from three Enterprise-only endpoints.",
+      "url": "https://developer.calendly.com/docs/getting-started/frequently-asked-questions",
+      "title": "Frequently Asked Questions | Calendly | Developer Documentation",
+      "quote": "the Calendly user account for which the webhook subscription is being made will need a paid subscription on the Standard, Teams, or Enterprise plan."
+    },
+    {
+      "id": "r12",
+      "topic": "gotchas",
+      "finding": "OAuth access tokens are revoked automatically if the user's login email, password or login method changes, so apps must handle re-authorization.",
+      "url": "https://developer.calendly.com/docs/getting-started/frequently-asked-questions",
+      "title": "Frequently Asked Questions | Calendly | Developer Documentation",
+      "quote": "Both OAuth and personal access tokens will be revoked if: The account’s login email is changed. The account’s password is changed. The account’s login method is changed."
+    },
+    {
+      "id": "r13",
+      "topic": "errors",
+      "finding": "Missing scopes produce a 403 insufficient-permissions error. Fixes are to include all required scopes, confirm the user did not decline any, and re-authorize existing installs to add scopes.",
+      "url": "https://developer.calendly.com/docs/authentication/scopes",
+      "title": "Authorization Scopes | Calendly | Developer Documentation",
+      "quote": "For existing installs, you may need to reauthorize the app to request additional scopes."
+    },
+    {
+      "id": "r14",
+      "topic": "gotchas",
+      "finding": "Webhooks that fail to deliver are often a scope problem. You need webhooks:write plus the related domain read scopes, and the subscription must include the event family you want.",
+      "url": "https://developer.calendly.com/docs/authentication/scopes",
+      "title": "Authorization Scopes | Calendly | Developer Documentation",
+      "quote": "Ensure that the related domain read scopes are also granted."
+    }
+  ]
+}

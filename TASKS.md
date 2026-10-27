@@ -146,11 +146,11 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Notes:** agent:a4d80433a4380cc3f. 48 agent tests. verify = plain fetch + HTML→text (SSRF guard per hop), deterministic word-boundary quote check (≥12 chars/3 words) then an LLM that sees claims+sources only. Round 1: code demotes model-written `tested`. Live Linear draft+verify ≈65 s, 0 unsupported, 3–4 partial.
 
 ### T14 · CLI + live smoke + record Calendly
-- **Status:** in_progress · **Tier:** A · **Deps:** T13 · **Est:** 30 min · **Agent:** sonnet (needs `ANTHROPIC_API_KEY`; if missing → `human`)
+- **Status:** done · **Tier:** A · **Deps:** T13 · **Est:** 30 min · **Agent:** sonnet (needs `ANTHROPIC_API_KEY`; if missing → `human`)
 - **Files:** `packages/agent/src/cli.ts`, `packages/agent/fixtures/runs/calendly/**`, `packages/agent/test/live.test.ts`, `packages/agent/test/replay.test.ts`
 - **Spec:** 03_AGENT_GRAPH §CLI flags, §Fake mode; 07_TESTING
 - **Accept:** `pnpm --filter @oauth-pilot/agent guide "Calendly" --record` finishes in under 300 s with a valid guide; fixtures are saved; `replay.test.ts` replays calendly in fake mode and passes. Runtime and the verifier's unsupported count go in the task report for LOG.md.
-- **Notes:**
+- **Notes:** agent:a3b33ddb00ece42d4. Live Calendly 96 s (worker) / 98 s (orchestrator re-run): draft 60 s, research 26 s, verify 8 s. Tier 0 (managed). Verify: 1 unsupported, 2 partial. Replay test green; 50 agent tests. vitest.config excludes live.test via argv (D-ORCH-2).
 
 ## Phase 4 — Web
 
@@ -171,7 +171,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Notes:** agent:aef5278205bedafb9. React Flow shipped (swimlanes by actor, dagre, fitView). e2e 6/6. Goldfish PASS; round 1 added safeHref (http/https only) + fitView. Open: Regenerate link does not start a run (needs SubmitBox ?regenerate, a T15 file).
 
 ### T17 · Live run page (agent graph animation)
-- **Status:** todo · **Tier:** B · **Deps:** T15, T14 · **Est:** 40 min · **Agent:** sonnet
+- **Status:** in_progress · **Tier:** B · **Deps:** T15, T14 · **Est:** 40 min · **Agent:** sonnet
 - **Files:** `apps/web/src/app/runs/**`, `apps/web/src/components/{AgentRunFlow,RunLog}.tsx`, `e2e/web/run.spec.ts`, `docs/screenshots/run.png`
 - **Spec:** 05_WEB §`/runs/[runId]`
 - **Accept:** `run.spec.ts` (web case 5, Calendly in fake mode) passes; screenshot saved.
@@ -180,7 +180,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 ## Phase 5 — MCP + plugin
 
 ### T18 · MCP server (in-process agent, bundled into the plugin)
-- **Status:** todo · **Tier:** A · **Deps:** T14 · **Est:** 35 min · **Agent:** sonnet
+- **Status:** in_progress · **Tier:** A · **Deps:** T14 · **Est:** 35 min · **Agent:** sonnet
 - **Files:** `packages/mcp/**`, `plugin/oauth-pilot/bin/mcp.mjs`, `e2e/mcp.e2e.mjs`
 - **Spec:** 03_AGENT_GRAPH §MCP server
 - **Accept:** `pnpm e2e:mcp` passes with these interim asserts: list includes `linear`; `get linear` contains "Evidence"; start `calendly` → status reaches done in ≤ 30 s (fake mode) and contains "tier". T23 switches the asserts to `gmail`.

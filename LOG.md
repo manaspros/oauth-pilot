@@ -75,3 +75,8 @@
 
 ## 2026-10-27T22:51+05:30 LOG correction
 - The orchestrator had written estimated timestamps (23:00–01:00) on the earlier entries; they are now replaced with the real commit times from `git log`. Real elapsed time at T13 is about 27 min.
+
+## 2026-10-27T22:56+05:30 T14 PASS
+- CLI (`guide <app> [--use-case --tools --out --kind --record]`), Calendly recorded live, replay + live tests. 50 agent tests.
+- Live Calendly: 96.3 s (worker), 97.8 s (orchestrator re-run, no --record). Per node: research 26 s, draft 60 s, verify 8 s. Tier 0 (Composio managed). 22–23 claims: 6 tested / 12–15 sourced / 2–4 inferred. Verifier: 1 unsupported, 2 partial.
+- Cut rule: T14 done at 22:56, well before the hour-4 mark (02:23). T20/T22 stay in. Goldfish PASS (nits: record path lacks runGuide's timeout degrade). Token usage not surfaced by nodes.

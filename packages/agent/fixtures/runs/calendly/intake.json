@@ -1,0 +1,16 @@
+{
+  "target": {
+    "name": "Calendly",
+    "slug": "calendly",
+    "website": "https://calendly.com",
+    "composioSlug": "calendly",
+    "docsHints": [
+      "Calendly developer OAuth2 app registration",
+      "Calendly API OAuth scopes",
+      "Calendly OAuth app review and production access requirements",
+      "Calendly API rate limits",
+      "Calendly webhooks subscription OAuth access token",
+      "https://developer.calendly.com"
+    ]
+  }
+}
