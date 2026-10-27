@@ -171,11 +171,11 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Notes:** agent:aef5278205bedafb9. React Flow shipped (swimlanes by actor, dagre, fitView). e2e 6/6. Goldfish PASS; round 1 added safeHref (http/https only) + fitView. Open: Regenerate link does not start a run (needs SubmitBox ?regenerate, a T15 file).
 
 ### T17 · Live run page (agent graph animation)
-- **Status:** in_progress · **Tier:** B · **Deps:** T15, T14 · **Est:** 40 min · **Agent:** sonnet
+- **Status:** done · **Tier:** B · **Deps:** T15, T14 · **Est:** 40 min · **Agent:** sonnet
 - **Files:** `apps/web/src/app/runs/**`, `apps/web/src/components/{AgentRunFlow,RunLog}.tsx`, `e2e/web/run.spec.ts`, `docs/screenshots/run.png`
 - **Spec:** 05_WEB §`/runs/[runId]`
 - **Accept:** `run.spec.ts` (web case 5, Calendly in fake mode) passes; screenshot saved.
-- **Notes:**
+- **Notes:** agent:a4ce4978910556cc5. React Flow agent graph (pending/running/done/degraded) + streaming log; done → /guides/<slug>?generated=1. e2e 8/8. Goldfish PASS. No partial-guide link (finalize saves nothing on error).
 
 ## Phase 5 — MCP + plugin
 
@@ -184,7 +184,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Files:** `packages/mcp/**`, `plugin/oauth-pilot/bin/mcp.mjs`, `e2e/mcp.e2e.mjs`
 - **Spec:** 03_AGENT_GRAPH §MCP server
 - **Accept:** `pnpm e2e:mcp` passes with these interim asserts: list includes `linear`; `get linear` contains "Evidence"; start `calendly` → status reaches done in ≤ 30 s (fake mode) and contains "tier". T23 switches the asserts to `gmail`.
-- **Notes:**
+- **Notes:** agent:a1910cab9d440618b
 
 ### T19 · Plugin: manifest, marketplace, oauth-guide skill, goldfish agent
 - **Status:** todo · **Tier:** A · **Deps:** T18 · **Est:** 40 min · **Agent:** sonnet
@@ -203,7 +203,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 ## Phase 6 — Library + verification
 
 ### T21 · Generate the 5 library guides + audit against evidence packs
-- **Status:** todo · **Tier:** A · **Deps:** T14, T05, T06, T07 · **Est:** 60 min · **Agent:** orchestrator generates; 3 sonnet auditors (gmail+google-calendar, linear+shopify, salesforce); orchestrator writes SUMMARY
+- **Status:** in_progress · **Tier:** A · **Deps:** T14, T05, T06, T07 · **Est:** 60 min · **Agent:** orchestrator generates; 3 sonnet auditors (gmail+google-calendar, linear+shopify, salesforce); orchestrator writes SUMMARY
 - **Files:** `guides/{linear,google-calendar,gmail,salesforce,shopify}.json`, `docs/verification/{linear,google-calendar,gmail,salesforce,shopify}.md` (auditors), `docs/verification/SUMMARY.md` (orchestrator), `packages/agent/src/prompts/*.md` (systematic fixes only, each logged in DECISIONS)
 - **Spec:** 06_RESEARCH_PROTOCOL §Verification report
 - **Do:**
@@ -211,7 +211,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
   - Each auditor corrects only its own apps' JSON and writes its reports.
   - The Gmail guide must compute to tier 3; if the evidence disagrees, record why.
 - **Accept:** `pnpm validate:guides` passes on 5 guides; 6 verification files exist; each report has counts and ≥ 1 corrected/unverifiable entry, or says explicitly that there were none.
-- **Notes:**
+- **Notes:** agent:abcbf9560a3fef986 (generation)
 
 ### T22 · HUMAN: real setup attempt via the plugin
 - **Status:** human · **Tier:** B · **Deps:** T20, T21 · **Est:** 30 min with the user

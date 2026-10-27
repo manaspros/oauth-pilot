@@ -80,3 +80,7 @@
 - CLI (`guide <app> [--use-case --tools --out --kind --record]`), Calendly recorded live, replay + live tests. 50 agent tests.
 - Live Calendly: 96.3 s (worker), 97.8 s (orchestrator re-run, no --record). Per node: research 26 s, draft 60 s, verify 8 s. Tier 0 (Composio managed). 22–23 claims: 6 tested / 12–15 sourced / 2–4 inferred. Verifier: 1 unsupported, 2 partial.
 - Cut rule: T14 done at 22:56, well before the hour-4 mark (02:23). T20/T22 stay in. Goldfish PASS (nits: record path lacks runGuide's timeout degrade). Token usage not surfaced by nodes.
+
+## 2026-10-27T23:05+05:30 T17 PASS
+- /runs/[runId]: EventSource → AgentRunFlow (7 nodes, fan-out/fan-in, degraded = amber) + RunLog; banner and redirect on done; honest error state. run.spec 2 cases; e2e 8/8 in 18.5 s.
+- Goldfish PASS (nits). Note: guide.spec rewrites docs/screenshots/guide.png on every e2e run, so the orchestrator restores it before commits.
