@@ -1,0 +1,7 @@
+{
+  "_note": "hand-built RFC 8414 metadata shape for unit tests; not a live recording",
+  "issuer": "https://example.test",
+  "authorization_endpoint": "https://example.test/oauth/authorize",
+  "token_endpoint": "https://example.test/oauth/token",
+  "registration_endpoint": "https://example.test/oauth/register"
+}

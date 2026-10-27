@@ -50,3 +50,7 @@
 - Agent skeleton: state/graph (fan-out + fan-in + repair edge), events, store, fake mode, llm factory, stub nodes, Linear run fixtures. langgraph 1.5.2, @langchain/anthropic 1.6.
 - Goldfish FAIL (path traversal via slug/runId; verify failure aborted the run) → round 1 fixed both → round 2 fixed degraded nodes never emitting node_finished. 7 tests.
 - Deviation: agent tsconfig.json touched (D-ORCH-1). Conventions recorded in D-AGENT-1.
+
+## 2026-10-28T00:10+05:30 T11 PASS
+- intake (LLM with a deterministic fallback), composio_lookup (v3.1 toolkit + recommended scopes, with per-tool fallback), probe (well-known + HEAD). 15 tests, no network.
+- Goldfish FAIL → round 1: probe topology bug (read research in a parallel branch), SSRF guard, capped body read, Composio slug format (orchestrator verified googlecalendar). D-AGENT-2.

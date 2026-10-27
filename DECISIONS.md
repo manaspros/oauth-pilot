@@ -71,3 +71,8 @@ Consequence: T13 keeps `draft_node` in graph.ts; T17 renders `status:"degraded"`
 Context: the T10 worker widened packages/agent/tsconfig.json `include` to cover test/ and vitest.config.ts (a T00 file).
 Decision: accepted by the orchestrator instead of a FAIL; it only widens typecheck coverage.
 Consequence: agent tests are typechecked by `pnpm typecheck`.
+
+### D-AGENT-2 Probe inputs and URL safety (T11)
+Context: probe runs in parallel with docs_research, so it can't use research URLs; all probe URLs are LLM-derived.
+Decision: intake puts up to 2 provider https URLs (console, OAuth docs) into `target.docsHints`. Probe GETs .well-known on website/api./auth. and HEADs the URL hints. Only https is allowed: no IP literals, localhost, .local, .internal or single-label hosts, and redirects are recorded, not followed. Composio slugs drop separators (`googlecalendar`; checked: `google_calendar` → 404).
+Consequence: draft turns ok probes into `tested` claims; rejected URLs show as `ok:false` "skipped: <reason>".

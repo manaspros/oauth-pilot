@@ -122,18 +122,18 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Notes:** agent:ae3a1d6677628bc23. 7 tests. Goldfish FAIL→PASS after 2 rounds (slug/runId path safety; non-draft nodes degrade with warn log + node_finished status:"degraded"). Draft node id is `draft_node` (state channel clash), events still say `draft`. Deviation: agent tsconfig include widened (D-ORCH-1).
 
 ### T11 · Nodes: intake, composio_lookup, probe
-- **Status:** in_progress · **Tier:** A · **Deps:** T10, T01 · **Est:** 30 min · **Agent:** sonnet
+- **Status:** done · **Tier:** A · **Deps:** T10, T01 · **Est:** 30 min · **Agent:** sonnet
 - **Files:** `packages/agent/src/nodes/{intake,composio,probe}.ts`, `packages/agent/src/prompts/intake.md`, `packages/agent/test/{intake,composio,probe}.test.ts`, `packages/agent/fixtures/unit/**`
 - **Spec:** 03_AGENT_GRAPH §Nodes; DECISIONS D-API-1/2
 - **Accept:** unit tests with recorded fixtures pass: probe `registration_endpoint` → tested claim; composio 404 → `toolkitFound:false` + issue; missing key → skipped + issue.
-- **Notes:**
+- **Notes:** agent:a8b49097c6a2368e2. 15 node tests. Goldfish FAIL→PASS: probe read state.research (always empty in parallel fan-out) → now uses target.website + URL docsHints; SSRF guard (https only, no IPs/local/internal, manual redirects). Composio slug fallback strips hyphens (googlecalendar).
 
 ### T12 · Node: docs_research
 - **Status:** in_progress · **Tier:** A · **Deps:** T10, T01 · **Est:** 30 min · **Agent:** sonnet
 - **Files:** `packages/agent/src/nodes/research.ts`, `packages/agent/src/prompts/research.md`, `packages/agent/test/research.test.ts`, `packages/agent/fixtures/unit/research-*.json`
 - **Spec:** 03_AGENT_GRAPH; 06_RESEARCH_PROTOCOL §Source ranking; DECISIONS D-API-5
 - **Accept:** parses a recorded server-tool response fixture into `ResearchNote[]` with url + quote; emits one `log` event per search query.
-- **Notes:**
+- **Notes:** agent:a085424ad911165b4
 
 ### T13 · Nodes: draft (Elephant), verify (Goldfish), finalize + repair loop
 - **Status:** todo · **Tier:** A · **Deps:** T11, T12 · **Est:** 45 min · **Agent:** sonnet
@@ -160,7 +160,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Spec:** 05_WEB §`/`, §Data access, §Visual direction; 03_AGENT_GRAPH §HTTP API; 01_ARCHITECTURE §How packages consume each other
 - **Do:** install all web deps up front: next, react, tailwind, `@xyflow/react`, `@dagrejs/dagre`, `@playwright/test` (root devDep allowed). Add all `/api/*` routes, `GuideCard`, `TierBadge` and `SubmitBox`. SubmitBox posts and navigates to `/runs/<id>`; the page itself comes in T17.
 - **Accept:** `pnpm --filter web build` passes; with `GUIDES_DIR=packages/core/fixtures OAUTH_PILOT_FAKE=1`, `/api/guides` lists linear, and POST `/api/runs {app:"Linear"}` returns a runId whose SSE ends with `done`; `pnpm e2e:web` (library.spec) passes.
-- **Notes:**
+- **Notes:** agent:aa9c9a3909813959b
 
 ### T16 · Guide page: verdict, Start today, timeline, React Flow, evidence ledger
 - **Status:** todo · **Tier:** A (React Flow part is B) · **Deps:** T15 · **Est:** 60 min · **Agent:** sonnet (frontend-design skill)
