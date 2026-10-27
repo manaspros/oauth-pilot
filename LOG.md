@@ -11,3 +11,4 @@
   CLI flags, LangGraph fan-in, explicit-pathspec commits, git status snapshot check, secret check exits non-zero.
   Kept against advice: plugin oauth-setup skill (user asked for Claude-driven setup) but moved to Tier B.
 - 2026-10-27: .env created (gitignored). LLM = LiteLLM proxy (D-ARCH-2, web_search confirmed through it). Composio key → 401, waiting on the user (D-OPS-1).
+- 2026-10-27: Composio project key (ak_) verified on /api/v3.1/toolkits/gmail (D-OPS-2). Both keys ready; T01 unblocked.

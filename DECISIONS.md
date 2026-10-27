@@ -27,3 +27,7 @@ Consequence: no code changes vs the plan; T01 still confirms the LangChain clien
 
 ### D-OPS-1 Composio key status
 2026-10-27: the key the user supplied returned 401 "Invalid API key" on /api/v3.1 and /api/v3 (both x-api-key and x-user-api-key). T01 items 1–4 stay blocked until a valid key is in .env; composio_lookup degrades gracefully without it.
+
+### D-OPS-2 Composio project key works (supersedes D-OPS-1)
+2026-10-27: the earlier `ck_` key is a consumer MCP key (x-consumer-api-key), not a platform key. A project key (`ak_…`, in .env) returns 200 on GET /api/v3.1/toolkits/gmail with x-api-key: composio_managed_auth_schemes=["OAUTH2"], auth_config_details modes ["OAUTH2"] with required_scopes [], managed scope ceiling of 11 scopes, auth_guide_url null.
+Consequence: T01 items 1–4 are unblocked. Don't rely on auth_guide_url (null for gmail).
