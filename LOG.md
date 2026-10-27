@@ -42,3 +42,6 @@
 - D-API-1…6 all confirmed with scripts in scripts/spikes and fixtures in packages/agent/fixtures/spike. Live auth-config + connected-account create was run with FAKE creds, then deleted.
 - Spec changes: callback URL is /api/v1/auth-apps/add (core constant fix sent to T02 worker); web_fetch_20250910 (not 20260209); recommendScopes is beta, so keep the per-tool scopes fallback.
 - Goldfish raised a Major (D-API-2 had no recorded evidence). Fix round 1 added composio-scopes.mjs + 3 fixtures. Numbers: one web_search ≈ 21k input tokens through LangChain.
+
+## 2026-10-27T23:20+05:30 T02 follow-up PASS
+- COMPOSIO_CALLBACK_URL → https://backend.composio.dev/api/v1/auth-apps/add (D-API-1). Linear fixture updated, plus claim c10 (tested via T01). 29 tests, validate:guides ok. Orchestrator reviewed the 19-line diff directly.

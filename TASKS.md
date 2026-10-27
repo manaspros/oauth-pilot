@@ -59,7 +59,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
   - `constants.ts`: `COMPOSIO_CALLBACK_URL`. Use the v3 URL until D-API-1 says otherwise.
   - `fixtures/linear.json`: a realistic, complete, **honest tier-1** Linear guide (rules in 02 §Example). ≥ 7 steps, ≥ 6 claims. A claim is `sourced` only if you fetched the URL in this task. Otherwise it's `inferred`.
 - **Accept:** `pnpm --filter @oauth-pilot/core test` passes, including "fixture parses".
-- **Notes:** agent:a3d2b26c8851f086d. Goldfish PASS (nits only). Fix 1: Composio has managed Linear OAuth (API-checked) → managed_then_own, c7 tested; tier still 1. 9 steps, 9 claims (5 sourced/1 tested/3 inferred). Callback URL = v3, pending D-API-1.
+- **Notes:** agent:a3d2b26c8851f086d. Goldfish PASS (nits only). Fix 1: Composio has managed Linear OAuth (API-checked) → managed_then_own, c7 tested; tier still 1. 9 steps, 9 claims (5 sourced/1 tested/3 inferred). Follow-up: callback → /api/v1/auth-apps/add (D-API-1), claim c10 tested.
 
 ### T03 · Core logic: validate, tier, critical path, markdown
 - **Status:** done · **Tier:** A · **Deps:** T02 · **Est:** 40 min · **Agent:** sonnet
@@ -119,7 +119,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
   - `llm.ts`: a ChatAnthropic factory with the model from env.
   - Hand-make `fixtures/runs/linear/` from the core fixture.
 - **Accept:** the fake-mode test passes: valid event order, all 6 node names, `draft` started exactly once, the result passes `validateGuide`. The store writes `data/runs/<id>.jsonl` and `data/guides/linear.json` (under a temp `DATA_DIR` in the test).
-- **Notes:**
+- **Notes:** agent:ae3a1d6677628bc23
 
 ### T11 · Nodes: intake, composio_lookup, probe
 - **Status:** todo · **Tier:** A · **Deps:** T10, T01 · **Est:** 30 min · **Agent:** sonnet

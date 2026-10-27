@@ -63,8 +63,9 @@
     "managedAvailable": true,
     "recommendation": "managed_then_own",
     "why": "Composio has a managed OAuth2 app for Linear, so you can test immediately; register your own OAuth app before production if you want your own branding on the consent screen.",
-    "callbackUrl": "https://backend.composio.dev/api/v3/toolkits/auth/callback",
+    "callbackUrl": "https://backend.composio.dev/api/v1/auth-apps/add",
     "claimIds": [
+      "c10",
       "c7"
     ]
   },
@@ -203,7 +204,7 @@
       "phase": "configure",
       "title": "Add the Composio redirect URL",
       "actor": "developer",
-      "detail": "Paste the Composio callback URL into the application's redirect callback URLs and save.",
+      "detail": "Paste the Composio callback URL (`https://backend.composio.dev/api/v1/auth-apps/add`) into the application's redirect callback URLs and save.",
       "duration": {
         "minHours": 0.05,
         "maxHours": 0.1,
@@ -217,6 +218,7 @@
       "links": [],
       "claimIds": [
         "c1",
+        "c10",
         "c9"
       ],
       "optional": false
@@ -352,6 +354,7 @@
       "symptom": "redirect_uri mismatch error on the consent screen",
       "fix": "Make the Linear redirect URL exactly equal the Composio callback URL.",
       "claimIds": [
+        "c10",
         "c9"
       ]
     },
@@ -462,6 +465,14 @@
       "text": "Registering the Composio callback URL as a Linear redirect URL is required for Composio to complete the OAuth exchange.",
       "evidence": "inferred",
       "confidence": "medium"
+    },
+    {
+      "id": "c10",
+      "text": "The redirect URL a custom OAuth app must register with Composio is https://backend.composio.dev/api/v1/auth-apps/add (the default oauth_redirect_uri).",
+      "evidence": "tested",
+      "sources": [],
+      "testedHow": "GET /api/v3.1/auth_configs/{id} echoed credentials.oauth_redirect_uri, T01 spike 2026-10-27 (D-API-1)",
+      "confidence": "high"
     }
   ],
   "openQuestions": [
