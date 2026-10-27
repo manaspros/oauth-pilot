@@ -12,3 +12,8 @@
   Kept against advice: plugin oauth-setup skill (user asked for Claude-driven setup) but moved to Tier B.
 - 2026-10-27: .env created (gitignored). LLM = LiteLLM proxy (D-ARCH-2, web_search confirmed through it). Composio key → 401, waiting on the user (D-OPS-1).
 - 2026-10-27: Composio project key (ak_) verified on /api/v3.1/toolkits/gmail (D-OPS-2). Both keys ready; T01 unblocked.
+
+## 2026-10-27T22:30+05:30 T00 PASS
+- Scaffold landed: pnpm workspace (core/agent/mcp/web), tsconfig.base, check-secrets.sh. Done by a sonnet worker (user asked for sonnet on all implementation).
+- Fix round 1: TypeScript 7.0.2 → ~5.9.3. Accept: install, typecheck, check-ignore, remote all green; secret check exits 1 on a planted ak_ token.
+- Hour-0 marker for the cut rule (T14 by ~02:30).

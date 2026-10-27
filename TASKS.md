@@ -16,7 +16,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 ## Phase 0 — Setup
 
 ### T00 · Repo scaffold + GitHub remote
-- **Status:** todo · **Tier:** A · **Deps:** — · **Est:** 20 min · **Agent:** orchestrator itself (no subagent)
+- **Status:** done · **Tier:** A · **Deps:** — · **Est:** 20 min · **Agent:** orchestrator itself (no subagent)
 - **Files:** `package.json`, `pnpm-workspace.yaml`, `tsconfig.base.json`, `.prettierrc`, `.gitignore`, `.env.example`, `packages/{core,agent,mcp}/{package.json,tsconfig.json,src/index.ts}`, `apps/web/package.json`, `scripts/check-secrets.sh`
 - **Spec:** 01_ARCHITECTURE §Repo layout, §How packages consume each other
 - **Do:**
@@ -32,7 +32,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
   - `scripts/check-secrets.sh`: exits 1 if `git diff --cached` matches the secret regex in CLAUDE.md §Commits.
   - The remote `origin` should already exist (created by the user, see README). If `git remote get-url origin` fails, set this card to `human` and ask the user to run `gh repo create manaspros/oauth-pilot --private --source=. --remote=origin --push`. Keep committing locally meanwhile.
 - **Accept:** `pnpm install` ok; `pnpm typecheck` exit 0; `git check-ignore .env data/x` prints both; `git remote get-url origin` succeeds.
-- **Notes:**
+- **Notes:** agent:a89c92c7113fde0dc (sonnet worker, per user request). TS pinned ~5.9.3 (7.x lacks the JS API Next needs); vitest 5, Node 26, pnpm 12.15. check-secrets.sh exit-1 path tested.
 
 ### T01 · Spike: verify external APIs (gate for T11–T13, T20)
 - **Status:** todo · **Tier:** A · **Deps:** T00 · **Est:** 30 min · **Agent:** sonnet

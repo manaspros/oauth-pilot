@@ -1,0 +1,23 @@
+{
+  "name": "oauth-pilot",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@12.15.0",
+  "scripts": {
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "pnpm -r --if-present test",
+    "validate:guides": "node scripts/validate-guides.mjs",
+    "e2e:web": "playwright test",
+    "e2e:mcp": "pnpm --filter @oauth-pilot/mcp build && node e2e/mcp.e2e.mjs",
+    "e2e:plugin": "bash e2e/plugin.e2e.sh",
+    "test:all": "pnpm typecheck && pnpm test && pnpm validate:guides && pnpm e2e:web && pnpm e2e:mcp"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "typescript": "~5.9.3",
+    "vitest": "^5.0.5"
+  }
+}
