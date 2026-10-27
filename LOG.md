@@ -33,3 +33,7 @@
 ## 2026-10-27T23:00+05:30 T07 PASS
 - salesforce.md 18 facts (15 rank 1, 3 rank 3), 6 error rows. Worker reported "partial" (about 60% of fetches blocked), but the Accept counts are met. Goldfish PASS.
 - The Spring '26 block on new connected apps rests on a rank-3 source; the guide must keep it inferred or medium. The two Salesforce pages conflict on security-review fee and duration; both are recorded.
+
+## 2026-10-27T23:10+05:30 T03 PASS
+- validate/tier/criticalPath/markdown + scripts/validate-guides.mjs (tsx). 29 core tests; Linear fixture: tier 1, 0 errors/warnings.
+- Goldfish PASS, nits only. Extra beyond spec: warns when timeToProduction.max < critical path total.

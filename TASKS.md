@@ -62,12 +62,12 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Notes:** agent:a3d2b26c8851f086d. Goldfish PASS (nits only). Fix 1: Composio has managed Linear OAuth (API-checked) → managed_then_own, c7 tested; tier still 1. 9 steps, 9 claims (5 sourced/1 tested/3 inferred). Callback URL = v3, pending D-API-1.
 
 ### T03 · Core logic: validate, tier, critical path, markdown
-- **Status:** in_progress · **Tier:** A · **Deps:** T02 · **Est:** 40 min · **Agent:** sonnet
+- **Status:** done · **Tier:** A · **Deps:** T02 · **Est:** 40 min · **Agent:** sonnet
 - **Files:** `packages/core/src/{validate,tier,criticalPath,markdown}.ts`, `packages/core/src/index.ts`, `packages/core/test/**`, `scripts/validate-guides.mjs`
 - **Spec:** 02_GUIDE_SCHEMA §Validation, §Tier rubric, §Critical path, §Markdown; 07_TESTING §Core
 - **Do:** `validate-guides.mjs` validates every `*.json` in `GUIDES_DIR` (default `guides/`). Run it with `tsx` or import the source via `tsx/esm`; add `tsx` as a root devDep (root `package.json` devDeps only).
 - **Accept:** all Core cases in 07_TESTING pass; `computeTier(linear fixture) === 1`; `GUIDES_DIR=packages/core/fixtures pnpm validate:guides` exits 0.
-- **Notes:**
+- **Notes:** agent:a4f5e01d75bd00aee. 29 core tests; computeTier(linear)=1; validate-guides via tsx/esm/api. Goldfish PASS (nits: one conditional test, dead fall-through).
 
 ## Phase 2 — Evidence packs (ground truth; parallel with everything)
 
@@ -110,7 +110,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 ## Phase 3 — Agent
 
 ### T10 · Agent skeleton: state, graph wiring, events, store, fake mode
-- **Status:** todo · **Tier:** A · **Deps:** T02, T03 · **Est:** 40 min · **Agent:** sonnet
+- **Status:** in_progress · **Tier:** A · **Deps:** T02, T03 · **Est:** 40 min · **Agent:** sonnet
 - **Files:** `packages/agent/src/{index,graph,state,events,store,fake,llm}.ts`, `packages/agent/src/nodes/*.ts` (**stubs only**: each returns its fake-mode fixture), `packages/agent/fixtures/runs/linear/**`, `packages/agent/test/graph.test.ts`, `packages/agent/vitest.config.ts`
 - **Spec:** 03_AGENT_GRAPH §Graph, §State, §Wiring notes, §Events, §Fake mode, §Budgets
 - **Do:**
