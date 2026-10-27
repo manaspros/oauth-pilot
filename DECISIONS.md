@@ -61,3 +61,13 @@ Consequence: the verify node may use `web_fetch_20250910` as a server tool (no b
 Context: run by hand on claude 2.1.311 (no script in the repo) from a scratch plugin built outside the repo with `.claude-plugin/plugin.json`, `.mcp.json`, `skills/oauth-setup/SKILL.md`, a dependency-free stdio MCP server `bin/mcp.mjs`; results in fixtures/spike/plugin-probe.json.
 Decision: `.mcp.json` format `{"mcpServers":{"oauth-pilot":{"command":"node","args":["${CLAUDE_PLUGIN_ROOT}/bin/mcp.mjs"]}}}` is correct; `${CLAUDE_PLUGIN_ROOT}` resolves in MCP `command/args/env`, hook commands and skill/command/agent markdown bodies (not in Bash-tool commands). `claude plugin validate <dir>` exits 0 on a good plugin (prints non-fatal directory-profile notes: README, LICENSE or `license`, icon; `--profile directory` makes them fatal) and exits 1 on errors; a plugin name starting `claude-` or `anthropic-` is rejected. `claude -p --plugin-dir <dir> --output-format stream-json --verbose "<prompt>"` loads it (init event: plugin `oauth-pilot@inline`, mcp server `plugin:oauth-pilot:oauth-pilot` status connected, skill and slash command `oauth-pilot:oauth-setup`); the MCP tool name is `mcp__plugin_oauth-pilot_oauth-pilot__<tool>` and a real tool call returned its result. Skills are namespaced `<plugin>:<skill>`.
 Consequence: T19/T20 scaffolding can use these exact files; CI check = `claude plugin validate plugin/oauth-pilot` (add `--strict` to fail on warnings; add README and `license` in plugin.json to also satisfy `--profile directory`). MCP server must be dependency-free or bundled (D-PLAN-1).
+
+### D-AGENT-1 Graph runtime conventions (T10)
+Context: LangGraph refuses a node id equal to a state channel (`draft`); the spec says non-draft failures degrade.
+Decision: draft's node id is `draft_node`, but events still report `draft`. Only draft and finalize are fatal. Other nodes log at level warn, emit `node_finished` with `status:"degraded"`, and add an issue. `done` is emitted by runGuide after the stream ends. Slugs and runIds must match `/^[a-z0-9][a-z0-9-]*$/i`. A timeout note goes into `guide.openQuestions` (the schema has no issues field).
+Consequence: T13 keeps `draft_node` in graph.ts; T17 renders `status:"degraded"` as a warning state.
+
+### D-ORCH-1 Accepted out-of-Files change in T10
+Context: the T10 worker widened packages/agent/tsconfig.json `include` to cover test/ and vitest.config.ts (a T00 file).
+Decision: accepted by the orchestrator instead of a FAIL; it only widens typecheck coverage.
+Consequence: agent tests are typechecked by `pnpm typecheck`.

@@ -45,3 +45,8 @@
 
 ## 2026-10-27T23:20+05:30 T02 follow-up PASS
 - COMPOSIO_CALLBACK_URL → https://backend.composio.dev/api/v1/auth-apps/add (D-API-1). Linear fixture updated, plus claim c10 (tested via T01). 29 tests, validate:guides ok. Orchestrator reviewed the 19-line diff directly.
+
+## 2026-10-27T23:40+05:30 T10 PASS
+- Agent skeleton: state/graph (fan-out + fan-in + repair edge), events, store, fake mode, llm factory, stub nodes, Linear run fixtures. langgraph 1.5.2, @langchain/anthropic 1.6.
+- Goldfish FAIL (path traversal via slug/runId; verify failure aborted the run) → round 1 fixed both → round 2 fixed degraded nodes never emitting node_finished. 7 tests.
+- Deviation: agent tsconfig.json touched (D-ORCH-1). Conventions recorded in D-AGENT-1.

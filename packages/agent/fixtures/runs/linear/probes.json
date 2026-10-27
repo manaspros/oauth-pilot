@@ -1,0 +1,1 @@
+{"probes":[{"id":"p1","check":"oauth-authorization-server well-known","url":"https://linear.app/.well-known/oauth-authorization-server","ok":false,"status":404,"observed":"not found (fixture)","at":"2026-10-27T00:00:00.000Z"}]}

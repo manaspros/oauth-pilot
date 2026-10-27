@@ -1,0 +1,481 @@
+{
+  "schemaVersion": 1,
+  "slug": "linear",
+  "app": {
+    "name": "Linear",
+    "website": "https://linear.app",
+    "composioToolkit": "linear",
+    "developerConsoleUrl": "https://linear.app/settings/api"
+  },
+  "generatedAt": "2026-10-27T00:00:00Z",
+  "generator": {
+    "kind": "library",
+    "model": "claude-sonnet-5-5",
+    "runId": "fixture-t02"
+  },
+  "useCase": {
+    "summary": "Read and create Linear issues from an agent on behalf of a user.",
+    "tools": [
+      "LINEAR_LIST_LINEAR_ISSUES",
+      "LINEAR_CREATE_LINEAR_ISSUE"
+    ]
+  },
+  "verdict": {
+    "tier": 1,
+    "tierLabel": "Self-serve",
+    "headline": "Linear needs your own OAuth app but has no documented review, so you can connect within an hour.",
+    "startToday": "Create the Linear OAuth2 application now; it is the only step with a real dependency and takes about 10 minutes.",
+    "timeToFirstConnection": {
+      "minHours": 0.3,
+      "maxHours": 1,
+      "label": "20-60 min",
+      "basis": "estimate",
+      "claimIds": [
+        "c8"
+      ]
+    },
+    "timeToProduction": {
+      "minHours": 0.5,
+      "maxHours": 1.5,
+      "label": "30-90 min",
+      "basis": "estimate",
+      "claimIds": [
+        "c5",
+        "c8"
+      ]
+    },
+    "activeEffort": {
+      "minHours": 0.5,
+      "maxHours": 1.25,
+      "label": "30-75 min",
+      "basis": "estimate",
+      "claimIds": [
+        "c8"
+      ]
+    },
+    "confidence": "medium",
+    "claimIds": [
+      "c5"
+    ]
+  },
+  "composio": {
+    "toolkitFound": true,
+    "managedAvailable": true,
+    "recommendation": "managed_then_own",
+    "why": "Composio has a managed OAuth2 app for Linear, so you can test immediately; register your own OAuth app before production if you want your own branding on the consent screen.",
+    "callbackUrl": "https://backend.composio.dev/api/v1/auth-apps/add",
+    "claimIds": [
+      "c10",
+      "c7"
+    ]
+  },
+  "scopes": [
+    {
+      "scope": "read",
+      "sensitivity": "basic",
+      "neededFor": [
+        "LINEAR_LIST_LINEAR_ISSUES"
+      ],
+      "claimIds": [
+        "c3"
+      ]
+    },
+    {
+      "scope": "write",
+      "sensitivity": "basic",
+      "neededFor": [
+        "edit issues"
+      ],
+      "claimIds": [
+        "c3"
+      ]
+    },
+    {
+      "scope": "issues:create",
+      "sensitivity": "basic",
+      "neededFor": [
+        "LINEAR_CREATE_LINEAR_ISSUE"
+      ],
+      "claimIds": [
+        "c3"
+      ]
+    },
+    {
+      "scope": "comments:create",
+      "sensitivity": "basic",
+      "neededFor": [
+        "add comments"
+      ],
+      "claimIds": [
+        "c3"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "id": "r1",
+      "item": "A Linear workspace account that can create OAuth applications",
+      "owner": "developer",
+      "neededFor": "testing",
+      "gate": false,
+      "claimIds": [
+        "c1"
+      ]
+    },
+    {
+      "id": "r2",
+      "item": "Composio project API key",
+      "owner": "developer",
+      "neededFor": "testing",
+      "gate": false,
+      "claimIds": []
+    }
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "phase": "prepare",
+      "title": "Decide scopes",
+      "actor": "developer",
+      "detail": "Pick the narrowest scopes: `read` for listing, `write` for edits, `issues:create` for creating issues. Avoid `admin`.",
+      "duration": {
+        "minHours": 0.1,
+        "maxHours": 0.25,
+        "label": "5-15 min",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [],
+      "links": [],
+      "claimIds": [
+        "c3"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s2",
+      "phase": "prepare",
+      "title": "Check Composio managed Linear toolkit",
+      "actor": "agent",
+      "detail": "Look up the `linear` toolkit in Composio; managed OAuth2 is available, so you can test without your own app.",
+      "duration": {
+        "minHours": 0.05,
+        "maxHours": 0.1,
+        "label": "3-6 min",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [],
+      "links": [],
+      "claimIds": [
+        "c7"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s3",
+      "phase": "register",
+      "title": "Create an OAuth2 application",
+      "actor": "developer",
+      "detail": "Sign in to Linear as a workspace member and open **Settings > API > OAuth applications > New**. Enter name, developer name and description.",
+      "duration": {
+        "minHours": 0.1,
+        "maxHours": 0.25,
+        "label": "5-15 min",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s1"
+      ],
+      "links": [
+        {
+          "label": "New OAuth application",
+          "url": "https://linear.app/settings/api/applications/new"
+        }
+      ],
+      "claimIds": [
+        "c1"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s4",
+      "phase": "configure",
+      "title": "Add the Composio redirect URL",
+      "actor": "developer",
+      "detail": "Paste the Composio callback URL (`https://backend.composio.dev/api/v1/auth-apps/add`) into the application's redirect callback URLs and save.",
+      "duration": {
+        "minHours": 0.05,
+        "maxHours": 0.1,
+        "label": "3-6 min",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s3"
+      ],
+      "links": [],
+      "claimIds": [
+        "c1",
+        "c10",
+        "c9"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s5",
+      "phase": "configure",
+      "title": "Copy client ID and secret into Composio (own app)",
+      "actor": "developer",
+      "detail": "Create a Composio auth config for `linear` with your own client ID and client secret and the chosen scopes. Never commit the secret.",
+      "duration": {
+        "minHours": 0.1,
+        "maxHours": 0.2,
+        "label": "6-12 min",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s4",
+        "s2"
+      ],
+      "links": [],
+      "claimIds": [
+        "c2"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s6",
+      "phase": "connect",
+      "title": "Run the first OAuth connection",
+      "actor": "developer",
+      "detail": "Initiate a connection, approve the consent screen in Linear, and confirm the connection shows ACTIVE.",
+      "duration": {
+        "minHours": 0.05,
+        "maxHours": 0.15,
+        "label": "3-9 min",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s5"
+      ],
+      "links": [],
+      "claimIds": [
+        "c2",
+        "c3"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s7",
+      "phase": "connect",
+      "title": "Verify a tool call",
+      "actor": "agent",
+      "detail": "Execute a read-only Linear tool (e.g. list issues) with the new connection and check the response.",
+      "duration": {
+        "minHours": 0.05,
+        "maxHours": 0.1,
+        "label": "3-6 min",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s6"
+      ],
+      "links": [],
+      "claimIds": [],
+      "optional": false
+    },
+    {
+      "id": "s8",
+      "phase": "launch",
+      "title": "Plan for token refresh",
+      "actor": "developer",
+      "detail": "Access tokens last 24 hours; Composio refreshes them for managed connections, but confirm refresh works for your own app before going live.",
+      "duration": {
+        "minHours": 0.1,
+        "maxHours": 0.25,
+        "label": "5-15 min",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s7"
+      ],
+      "links": [],
+      "claimIds": [
+        "c4"
+      ],
+      "optional": false
+    },
+    {
+      "id": "s9",
+      "phase": "launch",
+      "title": "Optional: enable PKCE",
+      "actor": "developer",
+      "detail": "If you run your own OAuth client outside Composio, use PKCE with S256.",
+      "duration": {
+        "minHours": 0.1,
+        "maxHours": 0.25,
+        "label": "5-15 min",
+        "basis": "estimate",
+        "claimIds": []
+      },
+      "dependsOn": [
+        "s6"
+      ],
+      "links": [],
+      "claimIds": [
+        "c6"
+      ],
+      "optional": true
+    }
+  ],
+  "risks": [
+    {
+      "id": "k1",
+      "title": "Access tokens expire after 24 hours",
+      "severity": "warning",
+      "gate": false,
+      "symptom": "401 from the Linear API after a day",
+      "fix": "Ensure refresh tokens are stored and refreshed; Composio handles this when connected through it.",
+      "claimIds": [
+        "c4"
+      ]
+    },
+    {
+      "id": "k2",
+      "title": "Redirect URL mismatch",
+      "severity": "warning",
+      "gate": false,
+      "symptom": "redirect_uri mismatch error on the consent screen",
+      "fix": "Make the Linear redirect URL exactly equal the Composio callback URL.",
+      "claimIds": [
+        "c10",
+        "c9"
+      ]
+    },
+    {
+      "id": "k3",
+      "title": "Over-broad admin scope",
+      "severity": "info",
+      "gate": false,
+      "fix": "Do not request `admin` unless needed.",
+      "claimIds": [
+        "c3"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "id": "c1",
+      "text": "OAuth2 applications are created in Linear's API settings at linear.app/settings/api/applications/new, where redirect callback URLs are configured.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/oauth-2-0-authentication",
+          "title": "Linear Developers: OAuth 2.0 authentication",
+          "quote": "Create a new OAuth2 Application",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "c2",
+      "text": "Authorization goes to https://linear.app/oauth/authorize and tokens are exchanged at https://api.linear.app/oauth/token.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/oauth-2-0-authentication",
+          "title": "Linear Developers: OAuth 2.0 authentication",
+          "quote": "GET https://linear.app/oauth/authorize HTTP/1.1",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "c3",
+      "text": "Linear scopes include read (default), write, issues:create, comments:create and admin; admin should only be requested if absolutely needed.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/oauth-2-0-authentication",
+          "title": "Linear Developers: OAuth 2.0 authentication",
+          "quote": "`read` - (Default) Read access for the user's account. `write` - Write access for the user's account. `issues:create` - Allows creating new issues and their attachments. `comments:create` - Allows creating new issue comments. `admin` - Full access to admin level endpoints. You should never ask for this permission unless it's absolutely needed",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "c4",
+      "text": "Access tokens are valid for 24 hours and must be refreshed.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/oauth-2-0-authentication",
+          "title": "Linear Developers: OAuth 2.0 authentication",
+          "quote": "The access token is valid for 24 hours and will need to be refreshed when it expires.",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "c5",
+      "text": "The OAuth documentation describes no app review or approval step; the app can be used right after creation.",
+      "evidence": "inferred",
+      "confidence": "medium"
+    },
+    {
+      "id": "c6",
+      "text": "Linear supports PKCE with plain or S256 code challenge methods.",
+      "evidence": "sourced",
+      "sources": [
+        {
+          "url": "https://linear.app/developers/oauth-2-0-authentication",
+          "title": "Linear Developers: OAuth 2.0 authentication",
+          "quote": "Linear supports the PKCE flow",
+          "accessedAt": "2026-10-27"
+        }
+      ],
+      "confidence": "high"
+    },
+    {
+      "id": "c7",
+      "text": "Composio has managed OAuth2 for Linear (composio_managed_auth_schemes includes OAUTH2).",
+      "evidence": "tested",
+      "confidence": "high",
+      "sources": [],
+      "testedHow": "GET /api/v3.1/toolkits/linear -> composio_managed_auth_schemes [\"OAUTH2\"], run by orchestrator 2026-10-27"
+    },
+    {
+      "id": "c8",
+      "text": "The whole own-app setup takes roughly 15-30 minutes of hands-on work.",
+      "evidence": "inferred",
+      "confidence": "medium"
+    },
+    {
+      "id": "c9",
+      "text": "Registering the Composio callback URL as a Linear redirect URL is required for Composio to complete the OAuth exchange.",
+      "evidence": "inferred",
+      "confidence": "medium"
+    },
+    {
+      "id": "c10",
+      "text": "The redirect URL a custom OAuth app must register with Composio is https://backend.composio.dev/api/v1/auth-apps/add (the default oauth_redirect_uri).",
+      "evidence": "tested",
+      "sources": [],
+      "testedHow": "GET /api/v3.1/auth_configs/{id} echoed credentials.oauth_redirect_uri, T01 spike 2026-10-27 (D-API-1)",
+      "confidence": "high"
+    }
+  ],
+  "openQuestions": [
+    "Are there workspace-level restrictions on who can create OAuth apps?"
+  ]
+}

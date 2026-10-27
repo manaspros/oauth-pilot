@@ -110,7 +110,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 ## Phase 3 — Agent
 
 ### T10 · Agent skeleton: state, graph wiring, events, store, fake mode
-- **Status:** in_progress · **Tier:** A · **Deps:** T02, T03 · **Est:** 40 min · **Agent:** sonnet
+- **Status:** done · **Tier:** A · **Deps:** T02, T03 · **Est:** 40 min · **Agent:** sonnet
 - **Files:** `packages/agent/src/{index,graph,state,events,store,fake,llm}.ts`, `packages/agent/src/nodes/*.ts` (**stubs only**: each returns its fake-mode fixture), `packages/agent/fixtures/runs/linear/**`, `packages/agent/test/graph.test.ts`, `packages/agent/vitest.config.ts`
 - **Spec:** 03_AGENT_GRAPH §Graph, §State, §Wiring notes, §Events, §Fake mode, §Budgets
 - **Do:**
@@ -119,17 +119,17 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
   - `llm.ts`: a ChatAnthropic factory with the model from env.
   - Hand-make `fixtures/runs/linear/` from the core fixture.
 - **Accept:** the fake-mode test passes: valid event order, all 6 node names, `draft` started exactly once, the result passes `validateGuide`. The store writes `data/runs/<id>.jsonl` and `data/guides/linear.json` (under a temp `DATA_DIR` in the test).
-- **Notes:** agent:ae3a1d6677628bc23
+- **Notes:** agent:ae3a1d6677628bc23. 7 tests. Goldfish FAIL→PASS after 2 rounds (slug/runId path safety; non-draft nodes degrade with warn log + node_finished status:"degraded"). Draft node id is `draft_node` (state channel clash), events still say `draft`. Deviation: agent tsconfig include widened (D-ORCH-1).
 
 ### T11 · Nodes: intake, composio_lookup, probe
-- **Status:** todo · **Tier:** A · **Deps:** T10, T01 · **Est:** 30 min · **Agent:** sonnet
+- **Status:** in_progress · **Tier:** A · **Deps:** T10, T01 · **Est:** 30 min · **Agent:** sonnet
 - **Files:** `packages/agent/src/nodes/{intake,composio,probe}.ts`, `packages/agent/src/prompts/intake.md`, `packages/agent/test/{intake,composio,probe}.test.ts`, `packages/agent/fixtures/unit/**`
 - **Spec:** 03_AGENT_GRAPH §Nodes; DECISIONS D-API-1/2
 - **Accept:** unit tests with recorded fixtures pass: probe `registration_endpoint` → tested claim; composio 404 → `toolkitFound:false` + issue; missing key → skipped + issue.
 - **Notes:**
 
 ### T12 · Node: docs_research
-- **Status:** todo · **Tier:** A · **Deps:** T10, T01 · **Est:** 30 min · **Agent:** sonnet
+- **Status:** in_progress · **Tier:** A · **Deps:** T10, T01 · **Est:** 30 min · **Agent:** sonnet
 - **Files:** `packages/agent/src/nodes/research.ts`, `packages/agent/src/prompts/research.md`, `packages/agent/test/research.test.ts`, `packages/agent/fixtures/unit/research-*.json`
 - **Spec:** 03_AGENT_GRAPH; 06_RESEARCH_PROTOCOL §Source ranking; DECISIONS D-API-5
 - **Accept:** parses a recorded server-tool response fixture into `ResearchNote[]` with url + quote; emits one `log` event per search query.
@@ -155,7 +155,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 ## Phase 4 — Web
 
 ### T15 · Web scaffold, library page, API routes, Playwright setup
-- **Status:** todo · **Tier:** A · **Deps:** T10 · **Est:** 40 min · **Agent:** sonnet (use the frontend-design skill)
+- **Status:** in_progress · **Tier:** A · **Deps:** T10 · **Est:** 40 min · **Agent:** sonnet (use the frontend-design skill)
 - **Files:** `apps/web/**` except `apps/web/src/app/{guides,runs}/**` and the components owned by T16/T17; `playwright.config.ts`, `e2e/web/library.spec.ts`
 - **Spec:** 05_WEB §`/`, §Data access, §Visual direction; 03_AGENT_GRAPH §HTTP API; 01_ARCHITECTURE §How packages consume each other
 - **Do:** install all web deps up front: next, react, tailwind, `@xyflow/react`, `@dagrejs/dagre`, `@playwright/test` (root devDep allowed). Add all `/api/*` routes, `GuideCard`, `TierBadge` and `SubmitBox`. SubmitBox posts and navigates to `/runs/<id>`; the page itself comes in T17.
