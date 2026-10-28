@@ -30,6 +30,14 @@ No claim was found to be factually wrong and removed. `tested` claims (11) come 
 - Shopify: whether a Partner account is required for custom distribution.
 - Auditor re-fetches used WebFetch, which returns a model-extracted view of the page. Quotes upgraded to `sourced` in the audit are near-verbatim, not byte-verified.
 
+## Re-running the fixed verifier
+
+Measured in [verifier-rerun.md](verifier-rerun.md): the fixed verify node (D-AGENT-4) was run twice, live, on the original pre-audit guides (102 non-tested claims). Unsupported verdicts dropped from **28 → 8 (run 1) and 28 → 5 (run 2)**. 14 and then 17 of the 20 confirmed fetch artifacts cleared. Still missed: 3 Shopify claims on very long pages (likely the text cap or the 6-fallback budget). It also caught one real drift: Linear's page now says "creating and updating issues", so guide claim c4's quote is stale. Verdicts vary by about 3 claims between runs.
+
+## After the audit
+
+T22's real setup attempts added 5 `tested` Linear claims (managed OAuth ACTIVE with tool calls, the API-key path, the consent-link expiry, the `oauth:create` requirement). Library totals today: **123 claims = 16 tested / 86 sourced / 21 inferred**.
+
 ## Setup attempts
 
 None in this task. Real setup attempts are recorded in `setup-attempts.md` (T22).

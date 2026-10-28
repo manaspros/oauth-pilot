@@ -123,3 +123,6 @@
 ## 2026-10-28T12:45+05:30 Final round (user: complete all steps, e2e results in md, share with Composio)
 - Managed OAuth for Linear reached ACTIVE (ca_tD6Ak9Makygc, OAUTH2, managed). The redirect skipped consent (already authorized); LINEAR_GET_CURRENT_USER + LINEAR_LIST_LINEAR_ISSUES succeeded.
 - Full-history secret scan: 0 hits (keys, proxy host, .env never tracked). The user chose to make manaspros/oauth-pilot public, keep the T22 Composio objects until after the demo, and keep the workspace name.
+
+## 2026-10-28T12:49+05:30 Verifier re-run (measurement)
+- Fixed verify on the pre-audit guides, 2 live runs: unsupported 28 → 8 / 5; 14 then 17 of the 20 confirmed artifacts cleared; 19 web_fetch fallbacks; ~70–80 s for 5 apps. Remaining: 3 Shopify long-page misses. New drift: Linear c4 quote is stale. docs/verification/verifier-rerun.md.
