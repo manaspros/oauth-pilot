@@ -17,7 +17,7 @@ The tools are named `mcp__plugin_oauth-pilot_oauth-pilot__<tool>`. Use them if t
 
 1. `oauth_guide_list`. If the app is already listed, call `oauth_guide_get` with its slug and skip to step 4.
 2. Otherwise `oauth_guide_start` with `app`, and `use_case` / `tools` when known. It returns a `run_id` at once; the run takes a few minutes.
-3. Poll `oauth_guide_status` about every 20 seconds until it reports done (or FAILED: tell the user and switch to the fallback). Then `oauth_guide_get` for the full guide.
+3. Call `oauth_guide_status` with `run_id` and `wait_seconds: 20` (the server waits for you; do not rely on Bash sleep). Keep calling it until the reply starts with "Done." or "Run FAILED.". A typical run takes 1-3 minutes, so expect 3-8 calls. Never give up before about 6 minutes. On FAILED, tell the user and switch to the fallback. On Done, call `oauth_guide_get` for the full guide.
 
 Save the markdown to `./oauth-guides/<slug>.md`. A run needs `ANTHROPIC_API_KEY` in the environment of the MCP server; if it is missing, say so and use the fallback.
 

@@ -49,14 +49,17 @@ await run("repo guides dir", path.join(root, "guides"), async (client, out) => {
 
   const started = JSON.parse(out(await client.callTool({ name: "oauth_guide_start", arguments: { app: "calendly" } })));
   assert.ok(started.run_id, "start returns run_id");
+  assert.ok(!("web_url" in started), "no web_url without OAUTH_PILOT_URL");
 
   let status = "";
+  let calls = 0;
   const deadline = Date.now() + 30_000;
   while (Date.now() < deadline) {
-    status = out(await client.callTool({ name: "oauth_guide_status", arguments: { run_id: started.run_id } }));
+    calls++;
+    status = out(await client.callTool({ name: "oauth_guide_status", arguments: { run_id: started.run_id, wait_seconds: 20 } }));
     if (/^Done\./.test(status) || /FAILED/.test(status)) break;
-    await new Promise((r) => setTimeout(r, 300));
   }
+  assert.ok(calls <= 3, `done within 3 status calls, took ${calls}`);
   assert.match(status, /^Done\./, "run reaches done within 30 s: " + status);
   assert.match(status, /tier/i, "status contains tier");
 

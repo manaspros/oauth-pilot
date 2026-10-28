@@ -7,6 +7,7 @@ import { bundledGuides } from "./shim";
 
 const text = (t: string, isError = false) => ({ content: [{ type: "text" as const, text: t }], ...(isError ? { isError: true } : {}) });
 const webUrl = (slug: string) => (process.env.OAUTH_PILOT_URL ? `${process.env.OAUTH_PILOT_URL.replace(/\/$/, "")}/guides/${slug}` : undefined);
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 /** Library guides on disk, then the guides bundled at build time for any slug not found. */
 async function allGuides(): Promise<{ slug: string; guide: Guide; source: string }[]> {
@@ -74,7 +75,7 @@ export function createServer(): McpServer {
     "oauth_guide_start",
     {
       description:
-        "Start an autonomous research run that produces an OAuth setup guide for an app. Returns immediately with a run_id; the run takes a few minutes. Keep working on other things, then call oauth_guide_status with the run_id roughly every 20 seconds until it reports done.",
+        "Start an autonomous research run that produces an OAuth setup guide for an app. Returns immediately with a run_id; the run takes a few minutes. Then call oauth_guide_status with the run_id and wait_seconds (it waits server-side), repeatedly, until it reports Done. or Run FAILED. (typically 3-8 calls).",
       inputSchema: {
         app: z.string().min(1).describe("App or provider name or website, e.g. 'Calendly'"),
         use_case: z.string().optional().describe("What the integration will do, e.g. 'read and create meetings on behalf of users'"),
@@ -94,7 +95,7 @@ export function createServer(): McpServer {
             run_id: runId,
             status_url: `oauth_guide_status {"run_id":"${runId}"}`,
             ...(web ? { web_url: web } : {}),
-            next: "Poll oauth_guide_status every ~20 s.",
+            next: `Call oauth_guide_status {"run_id":"${runId}","wait_seconds":20} repeatedly until it says "Done." or "Run FAILED.". A run typically takes 1-3 min; do not give up before ~6 min.`,
           },
           null,
           2,
@@ -107,19 +108,27 @@ export function createServer(): McpServer {
     "oauth_guide_status",
     {
       description:
-        "Check a run started with oauth_guide_start. While running it returns the latest progress events; when finished it returns the verdict (tier, time to first connection and to production), the first three critical-path actions with who does them, blockers, and the guide's web URL. Then call oauth_guide_get for the full guide.",
-      inputSchema: { run_id: z.string().describe("The run_id returned by oauth_guide_start") },
+        "Check a run started with oauth_guide_start. While running it returns the latest progress events; when finished it returns the verdict (tier, time to first connection and to production), the first three critical-path actions with who does them, blockers, and the guide's web URL. Then call oauth_guide_get for the full guide. The call waits up to wait_seconds (default 20, max 45) for the run to finish before returning, so just call it again while it says Running.",
+      inputSchema: {
+        run_id: z.string().describe("The run_id returned by oauth_guide_start"),
+        wait_seconds: z.number().min(0).max(45).optional().describe("Long-poll: wait up to this many seconds for done/error before returning progress (default 20, max 45)"),
+      },
     },
-    async ({ run_id }) => {
+    async ({ run_id, wait_seconds }) => {
       if (!isSafeId(run_id)) return text(`Invalid run_id ${JSON.stringify(run_id)}.`, true);
-      const events = await readEvents(run_id);
-      if (!events.length) return text(started.has(run_id) ? "Run is starting; no events yet. Poll again in ~20 s." : `Unknown run_id '${run_id}'.`, !started.has(run_id));
+      const deadline = Date.now() + Math.min(45, Math.max(0, wait_seconds ?? 20)) * 1000;
+      let events = await readEvents(run_id);
+      while (Date.now() < deadline && !events.some((e) => e.t === "done" || e.t === "error") && (events.length || started.has(run_id))) {
+        await sleep(Math.min(500, Math.max(0, deadline - Date.now())));
+        events = await readEvents(run_id);
+      }
+      if (!events.length) return text(started.has(run_id) ? "Run is starting; no events yet. Call oauth_guide_status again." : `Unknown run_id '${run_id}'.`, !started.has(run_id));
 
       const err = [...events].reverse().find((e) => e.t === "error");
       const done = events.find((e) => e.t === "done");
       if (!done) {
         if (err) return text(`Run FAILED.\n${fmtEvent(err)}`, true);
-        return text(`Running. Poll again in ~20 s. Last events:\n${events.slice(-5).map(fmtEvent).join("\n")}`);
+        return text(`Running. Call oauth_guide_status again with wait_seconds. Last events:\n${events.slice(-5).map(fmtEvent).join("\n")}`);
       }
       const slug = (done as Extract<RunEvent, { t: "done" }>).slug;
       const g = await findGuide(slug, true);
