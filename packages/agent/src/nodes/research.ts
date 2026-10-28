@@ -20,16 +20,49 @@ export type ParsedResearch = { notes: ResearchNote[]; queries: string[]; sourceU
 
 const clip = (s: string) => (s.length <= MAX_QUOTE ? s : s.slice(0, MAX_QUOTE - 1).trimEnd() + "…");
 
+/** Complete top-level `{...}` objects in a (possibly truncated) JSON array, string-aware. */
+function salvageObjects(text: string): unknown[] | null {
+  const out: unknown[] = [];
+  let depth = 0;
+  let inStr = false;
+  let esc = false;
+  let from = -1;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i]!;
+    if (inStr) {
+      if (esc) esc = false;
+      else if (ch === "\\") esc = true;
+      else if (ch === '"') inStr = false;
+      continue;
+    }
+    if (ch === '"') inStr = true;
+    else if (ch === "{") {
+      if (depth++ === 0) from = i;
+    } else if (ch === "}" && depth > 0 && --depth === 0) {
+      try {
+        out.push(JSON.parse(text.slice(from, i + 1)));
+      } catch {
+        /* skip a malformed object */
+      }
+    }
+  }
+  return out.length ? out : null;
+}
+
 function parseArrayFrom(text: string): unknown[] | null {
   const start = text.indexOf("[{");
+  if (start < 0) return null;
   const end = text.lastIndexOf("}]");
-  if (start < 0 || end <= start) return null;
-  try {
-    const v = JSON.parse(text.slice(start, end + 2));
-    return Array.isArray(v) ? v : null;
-  } catch {
-    return null;
+  if (end > start) {
+    try {
+      const v = JSON.parse(text.slice(start, end + 2));
+      if (Array.isArray(v)) return v;
+    } catch {
+      /* fall through to salvage */
+    }
   }
+  // Truncated (max_tokens) or malformed array: keep every complete object instead of losing all notes.
+  return salvageObjects(text.slice(start + 1));
 }
 
 /** Last text block alone first (the final answer), then all text blocks joined with "" (JSON split across blocks). */
@@ -102,7 +135,23 @@ async function loadPrompt(): Promise<string> {
   return fs.readFile(p, "utf8");
 }
 
-export const docsResearch: NodeFn = async (state, config) => {
+type Attempt = { notes: ResearchNote[]; queries: string[]; sourceUrls: string[]; unobserved: boolean; issues: string[]; stops: string[] };
+
+/** Narrower second try: fewer tools, shorter quotes, JSON only. */
+const NARROW_SUFFIX =
+  "\n\nRETRY (the previous attempt returned no usable notes): be narrow. Use at most 3 searches and 3 fetches, official provider docs only. " +
+  "Return at most 8 notes with quotes of 200 characters or fewer. Your entire final reply must be the JSON array and nothing else.";
+
+export type MakeLlm = (opts: { maxTokens: number; searches: number; fetches: number }) => { invoke: (messages: any[], o?: any) => Promise<any> };
+
+const defaultMakeLlm: MakeLlm = ({ maxTokens, searches, fetches }) =>
+  // Not makeLlm(): it sets temperature 0, which claude-sonnet-5-5 rejects ("temperature is not supported ... non-default values").
+  new ChatAnthropic({ model: modelName(), maxTokens }).bindTools([
+    { type: "web_search_20250305", name: "web_search", max_uses: searches },
+    { type: "web_fetch_20250910", name: "web_fetch", max_uses: fetches },
+  ] as any) as any;
+
+export const makeDocsResearch = (makeLlm: MakeLlm = defaultMakeLlm): NodeFn => async (state, config) => {
   if (isFake()) return fakeOrThrow("docs_research", "research", state);
 
   const target = state.target;
@@ -112,34 +161,50 @@ export const docsResearch: NodeFn = async (state, config) => {
   const useCase = state.input.useCase ? `\nUse case: ${state.input.useCase}` : "";
   const tools = state.input.tools?.length ? `\nTools needed: ${state.input.tools.join(", ")}` : "";
   const system = await loadPrompt();
-
-  // Not makeLlm(): it sets temperature 0, which claude-sonnet-5-5 rejects ("temperature is not supported ... non-default values").
-  const llm = new ChatAnthropic({ model: modelName(), maxTokens: 8192 }).bindTools([
-    { type: "web_search_20250305", name: "web_search", max_uses: WEB_SEARCH_MAX_USES },
-    { type: "web_fetch_20250910", name: "web_fetch", max_uses: WEB_FETCH_MAX_USES },
-  ] as any);
-  const messages: any[] = [
-    new SystemMessage({ content: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }] as any }),
-    new HumanMessage(`Research OAuth app registration and production approval for: ${name}.${site}${hints}${useCase}${tools}`),
-  ];
+  const base = `Research OAuth app registration and production approval for: ${name}.${site}${hints}${useCase}${tools}`;
   const toBlocks = (c: unknown): Block[] => (typeof c === "string" ? [{ type: "text", text: c }] : (c as Block[]));
-  const allBlocks: Block[] = [];
-  const issues: string[] = [];
-  for (let i = 0; i <= MAX_CONTINUATIONS; i++) {
-    const res: any = await llm.invoke(messages, { signal: config.signal });
-    allBlocks.push(...toBlocks(res.content));
-    const stop = res.response_metadata?.stop_reason;
-    if (stop === "max_tokens") issues.push("docs_research: response truncated (max_tokens); notes may be incomplete");
-    if (stop !== "pause_turn" || i === MAX_CONTINUATIONS) {
-      if (stop === "pause_turn") issues.push("docs_research: still paused after max continuations");
-      break;
-    }
-    messages.push(new AIMessage({ content: res.content }));
-  }
 
-  const parsed = parseResearchResponse(allBlocks);
-  for (const q of parsed.queries) log(config, "docs_research", `searching: ${q}`);
-  if (parsed.unobserved) issues.push("docs_research: sources were not observed in tool results");
-  if (parsed.notes.length === 0) issues.push("docs_research: no sourced notes extracted");
-  return { research: parsed.notes, ...(issues.length ? { issues } : {}) };
+  const attempt = async (human: string, llm: ReturnType<MakeLlm>): Promise<Attempt> => {
+    const messages: any[] = [
+      new SystemMessage({ content: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }] as any }),
+      new HumanMessage(human),
+    ];
+    const allBlocks: Block[] = [];
+    const issues: string[] = [];
+    const stops: string[] = [];
+    for (let i = 0; i <= MAX_CONTINUATIONS; i++) {
+      const res: any = await llm.invoke(messages, { signal: config.signal });
+      allBlocks.push(...toBlocks(res.content));
+      const stop = res.response_metadata?.stop_reason ?? "unknown";
+      stops.push(stop);
+      if (stop === "max_tokens") issues.push("docs_research: response truncated (max_tokens); notes may be incomplete");
+      if (stop !== "pause_turn" || i === MAX_CONTINUATIONS) {
+        if (stop === "pause_turn") issues.push("docs_research: still paused after max continuations");
+        break;
+      }
+      messages.push(new AIMessage({ content: res.content }));
+    }
+    return { ...parseResearchResponse(allBlocks), issues, stops };
+  };
+
+  let a = await attempt(base, makeLlm({ maxTokens: 16_000, searches: WEB_SEARCH_MAX_USES, fetches: WEB_FETCH_MAX_USES }));
+  for (const q of a.queries) await log(config, "docs_research", `searching: ${q}`);
+  if (a.notes.length === 0) {
+    await log(config, "docs_research", `no notes (stop_reason ${a.stops.join(",")}, ${a.sourceUrls.length} sources seen); retrying once with a narrower prompt`);
+    const first = a;
+    a = await attempt(base + NARROW_SUFFIX, makeLlm({ maxTokens: 16_000, searches: 3, fetches: 3 }));
+    for (const q of a.queries) await log(config, "docs_research", `searching (retry): ${q}`);
+    a.issues.unshift(...first.issues);
+    if (a.notes.length === 0) {
+      // Throwing makes graph.ts record a degraded node_finished and the issue; draft then caps confidence at low.
+      throw new Error(
+        `no sourced notes after retry (stop_reason ${first.stops.join(",")} then ${a.stops.join(",")}; ${first.sourceUrls.length + a.sourceUrls.length} sources seen)`,
+      );
+    }
+    a.issues.push("docs_research: first attempt returned no notes; second, narrower attempt succeeded");
+  }
+  if (a.unobserved) a.issues.push("docs_research: sources were not observed in tool results");
+  return { research: a.notes, ...(a.issues.length ? { issues: a.issues } : {}) };
 };
+
+export const docsResearch: NodeFn = makeDocsResearch();

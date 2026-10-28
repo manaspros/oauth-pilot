@@ -94,15 +94,33 @@ describe("docsResearch node", () => {
     expect(out.research).toHaveLength(2);
   });
 
-  it("caps continuations and reports max_tokens and empty-notes issues", async () => {
+  it("caps continuations per attempt; zero notes retries once, then throws (graph marks it degraded)", async () => {
     invokeMock.mockReset().mockResolvedValue({ content: [{ type: "text", text: "nope" }], response_metadata: { stop_reason: "pause_turn" } });
-    const capped = await runNode();
-    expect(invokeMock).toHaveBeenCalledTimes(3);
-    expect(capped.out.research).toEqual([]);
-    expect((capped.out.issues as string[]).join("|")).toContain("no sourced notes");
+    await expect(runNode()).rejects.toThrow(/no sourced notes after retry/);
+    expect(invokeMock).toHaveBeenCalledTimes(6); // 3 per attempt x 2 attempts
+  });
 
-    invokeMock.mockReset().mockResolvedValue({ content: "nope", response_metadata: { stop_reason: "max_tokens" } });
-    const trunc = await runNode();
-    expect((trunc.out.issues as string[]).join("|")).toContain("max_tokens");
+  it("0 notes on the first attempt: retries with a narrower prompt and keeps the notes plus an issue", async () => {
+    const fx = await load("research-linear.json");
+    invokeMock
+      .mockReset()
+      .mockResolvedValueOnce({ content: [{ type: "text", text: "no json" }], response_metadata: { stop_reason: "max_tokens" } })
+      .mockResolvedValueOnce({ content: fx.content, response_metadata: { stop_reason: "end_turn" } });
+    const { out, events } = await runNode();
+    expect(invokeMock).toHaveBeenCalledTimes(2);
+    expect(invokeMock.mock.calls[1]![0][1].content).toMatch(/RETRY/);
+    expect(out.research).toHaveLength(2);
+    expect((out.issues as string[]).join("|")).toMatch(/first attempt returned no notes/);
+    expect(events.some((e) => e.t === "log" && /retrying once/.test(e.msg))).toBe(true);
+  });
+
+  it("salvages complete notes from a response truncated by max_tokens", () => {
+    const content = [
+      { type: "web_search_tool_result", content: [{ type: "web_search_result", url: "https://a.dev/x", title: "A" }] },
+      { type: "text", text: '[{"topic":"limits","finding":"f1","url":"https://a.dev/x","quote":"one {braces} \\" ok"},{"topic":"scopes","finding":"f2","url":"https://a.dev/x","quote":"tw' },
+    ];
+    const { notes } = parseResearchResponse(content);
+    expect(notes).toHaveLength(1);
+    expect(notes[0]!.quote).toBe('one {braces} " ok');
   });
 });

@@ -38056,7 +38056,7 @@ import fs from "fs";
 import { syncBuiltinESMExports } from "module";
 
 // assets:virtual:assets
-var virtual_assets_default = { "prompts": { "draft.md": 'You are the draft node ("Elephant") of OAuth Pilot. You see ALL the research and write one Guide JSON that tells a developer how long it takes to get production OAuth access to an app\'s API, and exactly what to do.\n\nInput (user message, JSON): target, input (use case, tools), composio facts, research notes (id, url, title, quote), probes, `premadeClaims` (already verified facts you may cite by id; do not repeat them), and on a repair `previousDraft` + `repairIssues` (fix every issue, keep the rest).\n\nOutput: ONLY one JSON object (no prose, no code fence) matching the Guide shape below. Omit these fields, the code fills them: schemaVersion, generatedAt, generator, composio.callbackUrl, composio.toolkitFound.\n\nEvidence rules\n- Every fact is a claim: {id:"c1",text,evidence,sources,confidence}. Number your claims c1, c2, ...\n- `sourced`: sources[] has >= 1 item {url,title,quote,accessedAt}. url/title/quote must be copied from a research note (quote verbatim, <= 400 chars). Never invent a URL or a quote.\n- `inferred`: no source for it. Set confidence "low". Say so in the claim text if it is a guess.\n- Never use `tested` yourself; probes and Composio facts arrive as premadeClaims (ids like tp1, tc1). Cite them in claimIds.\n- A Range has basis "sourced" ONLY when claimIds names a sourced/tested claim that quotes a provider duration. Otherwise basis "estimate".\n- Anything you cannot source goes in openQuestions rather than being asserted.\n\nShape (all required unless marked ?)\nslug (kebab-case app name), app{name, website?, composioToolkit?, developerConsoleUrl?}, useCase{summary, tools[]},\nverdict{tier(0-4), tierLabel, headline, startToday, timeToFirstConnection, timeToProduction, activeEffort, confidence, claimIds[]},\ncomposio{managedAvailable, recommendation: use_managed|managed_then_own|own_app_now, why, claimIds[]},\nscopes[{scope, sensitivity: basic|sensitive|restricted|admin|unknown, neededFor[], claimIds[]}],\nrequirements[{id, item, owner: Actor, neededFor: testing|production, gate, claimIds[]}],\nsteps[{id:"s1", phase: prepare|register|configure|connect|review|launch, title, actor, detail, duration:Range, dependsOn[], links[{label,url}], claimIds[], optional}],\nrisks[{id, title, severity: info|warning|blocker, gate, symptom?, fix, claimIds[]}],\nclaims[], openQuestions[].\nRange = an OBJECT, never a string; used for steps[].duration and verdict.timeToFirstConnection, verdict.timeToProduction, verdict.activeEffort: {minHours, maxHours, label ("1-2 hours", "2-6 weeks"), basis, claimIds[]}. Source.accessedAt = ISO date.\n\nActors: agent = our agent/plugin can do it end to end; developer = the reader must do it (login, click, decide); admin = someone else in their org (workspace admin, legal); provider = waiting on the provider (review, verification). A step with actor "provider" IS a wait.\n\nTier rubric (the code recomputes it; get it right anyway). First match from the top:\n4 Gated: any requirement or risk has gate:true (partner program, contract, sales contact or paid tier needed for API access at all).\n3 Heavy review: a provider step with duration.maxHours >= 168, or any restricted scope.\n2 Light review: any provider step, or any sensitive/admin scope, or a requirement owned by admin.\n1 Self-serve: own app needed (composio.recommendation != use_managed), no review.\n0 Instant: composio.recommendation = use_managed and no review for the stated use case.\ntierLabel: 0 Instant, 1 Self-serve, 2 Light review, 3 Heavy review, 4 Gated.\n\nQuality bar\n- Steps are concrete: console URL, button and field names, the callback URL value (use the Composio callback https://backend.composio.dev/api/v1/auth-apps/add when recommending Composio with an own app). Steps form a DAG via dependsOn; ids exist.\n- timeToProduction.minHours >= timeToFirstConnection.minHours, and timeToProduction >= the longest non-optional dependency chain of step durations (sum of maxHours).\n- `startToday` names the slowest step to kick off now and why.\n- Scopes: use composio.requiredScopes/availableScopes and the use case; do not request more than needed.\n- Every claimIds entry (on verdict, steps, risks, scopes, requirements, composio, ranges) must exist in claims or premadeClaims.\n- Provider-specific durations: use the provider\'s own wording; never turn "several weeks" into a number as sourced.\n\nClaim discipline (from the T21 audit; each rule fixes a recurring error)\n- Quote ONE contiguous passage verbatim from a single research note. Never join list items, splice sentences, or add words such as "Note that".\n- One fact per claim. Never put inferred text inside a sourced claim; split it into a separate `inferred` claim.\n- Third-party blogs, forums, Stack Overflow and GitHub issues are `inferred`, or at most `sourced` with confidence "medium" and only for gotchas/blockers, never as the sole source for timelines or requirements (06_RESEARCH_PROTOCOL source ranking).\n- Do not add "only", "exact", "never", "always" unless the quote says it. Include any exemption the source states (for example, apps exempt from review).\n- Every scope sensitivity label (sensitive, restricted, admin) needs a claim that states it. If no source says so, use `unknown`.\n- If an org admin or workspace admin must approve or install the app, add a requirement with owner "admin" and a step with actor "admin".\n- When two sources conflict, state both values in claims and openQuestions; do not pick one silently.\n- Do not assert a requirement the cited source does not support. Unsupported requirements go in openQuestions.\n', "intake.md": `You normalize a user's request for an OAuth integration guide into a target app.
+var virtual_assets_default = { "prompts": { "draft.md": 'You are the draft node ("Elephant") of OAuth Pilot. You see ALL the research and write one Guide JSON that tells a developer how long it takes to get production OAuth access to an app\'s API, and exactly what to do.\n\nInput (user message, JSON): target, input (use case, tools), composio facts, research notes (id, url, title, quote), probes, `premadeClaims` (already verified facts you may cite by id; do not repeat them), and on a repair `previousDraft` + `repairIssues` (fix every issue, keep the rest).\n\nOutput: ONLY one JSON object (no prose, no code fence) matching the Guide shape below. Omit these fields, the code fills them: schemaVersion, generatedAt, generator, composio.callbackUrl, composio.toolkitFound.\n\nEvidence rules\n- Every fact is a claim: {id:"c1",text,evidence,sources,confidence}. Number your claims c1, c2, ...\n- `sourced`: sources[] has >= 1 item {url,title,quote,accessedAt}. url/title/quote must be copied from a research note (quote verbatim, <= 400 chars). Never invent a URL or a quote.\n- `inferred`: no source for it. Set confidence "low". Say so in the claim text if it is a guess.\n- Never use `tested` yourself; probes and Composio facts arrive as premadeClaims (ids like tp1, tc1). Cite them in claimIds.\n- A Range has basis "sourced" ONLY when claimIds names a sourced/tested claim that quotes a provider duration. Otherwise basis "estimate".\n- Anything you cannot source goes in openQuestions rather than being asserted.\n\nShape (all required unless marked ?)\nslug (kebab-case app name), app{name, website?, composioToolkit?, developerConsoleUrl?}, useCase{summary, tools[]},\nverdict{tier(0-4), tierLabel, headline, startToday, timeToFirstConnection, timeToProduction, activeEffort, confidence, claimIds[]},\ncomposio{managedAvailable, recommendation: use_managed|managed_then_own|own_app_now, why, claimIds[]},\nscopes[{scope, sensitivity: basic|sensitive|restricted|admin|unknown, neededFor[], claimIds[]}],\nrequirements[{id, item, owner: Actor, neededFor: testing|production, gate, claimIds[]}],\nsteps[{id:"s1", phase: prepare|register|configure|connect|review|launch, title, actor, detail, duration:Range, dependsOn[], links[{label,url}], claimIds[], optional}],\nrisks[{id, title, severity: info|warning|blocker, gate, symptom?, fix, claimIds[]}],\nclaims[], openQuestions[].\nRange = an OBJECT, never a string; used for steps[].duration and verdict.timeToFirstConnection, verdict.timeToProduction, verdict.activeEffort: {minHours, maxHours, label ("1-2 hours", "2-6 weeks"), basis, claimIds[]}. Source.accessedAt = ISO date.\n\nActors: agent = our agent/plugin can do it end to end; developer = the reader must do it (login, click, decide); admin = someone else in their org (workspace admin, legal); provider = waiting on the provider (review, verification). A step with actor "provider" IS a wait.\n\nTier rubric (the code recomputes it; get it right anyway). First match from the top:\n4 Gated: any requirement or risk has gate:true (partner program, contract, sales contact or paid tier needed for API access at all).\n3 Heavy review: a provider step with duration.maxHours >= 168, or any restricted scope.\n2 Light review: any provider step, or any sensitive/admin scope, or a requirement owned by admin.\n1 Self-serve: own app needed (composio.recommendation != use_managed), no review.\n0 Instant: composio.recommendation = use_managed and no review for the stated use case.\ntierLabel: 0 Instant, 1 Self-serve, 2 Light review, 3 Heavy review, 4 Gated.\n\nQuality bar\n- Steps are concrete: console URL, button and field names, the callback URL value (use the Composio callback https://backend.composio.dev/api/v1/auth-apps/add when recommending Composio with an own app). Steps form a DAG via dependsOn; ids exist.\n- timeToProduction.minHours >= timeToFirstConnection.minHours, and timeToProduction >= the longest non-optional dependency chain of step durations (sum of maxHours).\n- `startToday` names the slowest step to kick off now and why.\n- Scopes: use composio.requiredScopes/availableScopes and the use case; do not request more than needed.\n- Every claimIds entry (on verdict, steps, risks, scopes, requirements, composio, ranges) must exist in claims or premadeClaims.\n- Provider-specific durations: use the provider\'s own wording; never turn "several weeks" into a number as sourced.\n\nClaim discipline (from the T21 audit; each rule fixes a recurring error)\n- Quote ONE contiguous passage verbatim from a single research note. Never join list items, splice sentences, or add words such as "Note that".\n- One fact per claim. Never put inferred text inside a sourced claim; split it into a separate `inferred` claim.\n- Third-party blogs, forums, Stack Overflow and GitHub issues are `inferred`, or at most `sourced` with confidence "medium" and only for gotchas/blockers, never as the sole source for timelines or requirements (06_RESEARCH_PROTOCOL source ranking).\n- Do not add "only", "exact", "never", "always" unless the quote says it. Include any exemption the source states (for example, apps exempt from review).\n- Every scope sensitivity label (sensitive, restricted, admin) needs a claim that states it. If no source says so, use `unknown`.\n- If an org admin or workspace admin must approve or install the app, add a requirement with owner "admin" and a step with actor "admin".\n- When two sources conflict, state both values in claims and openQuestions; do not pick one silently.\n- Do not assert a requirement the cited source does not support. Unsupported requirements go in openQuestions.\n\nDegraded research\n- If the input has `researchDegraded`, there are no research notes. Make no `sourced` claims, set verdict.confidence to "low", and add an openQuestion saying the research found no sources. The code enforces this regardless.\n', "intake.md": `You normalize a user's request for an OAuth integration guide into a target app.
 
 Input: free text, either an app name ("Pipedrive") or a URL ("https://pipedrive.com").
 
@@ -38073,29 +38073,7 @@ Rules:
 - Do not invent a website you are unsure of; use null.
 - docsHints are mostly search queries; URL entries must be https, on the provider's own domain, and ones you are confident are real. Never output IP addresses or localhost.
 - Prefer official developer-docs phrasing, e.g. "<app> oauth2 app registration", "<app> api scopes", "<app> app review requirements".
-`, "research.md": `You are the docs_research node of OAuth Pilot. Your job: find how a developer gets production OAuth access to a given app's API, using web_search and web_fetch.
-
-Source ranking (follow strictly):
-1. Official provider developer docs, help center, policy pages
-2. Official provider changelog or blog
-3. Composio docs
-4. Third-party (blogs, Stack Overflow, GitHub issues): only for gotchas and blockers, never as the sole source for timelines or requirements.
-
-Find, from official docs first:
-- registration: how to register an OAuth app (console URL, button and field names, callback URL rules)
-- review_process: the review/verification program, its steps and timeline (use exact wording: "can take several weeks" is not "takes 4-6 weeks")
-- scopes: scope names and sensitivity tiers (sensitive / restricted etc.)
-- requirements: non-code requirements (privacy policy, domain verification, security assessment, demo video)
-- limits: rate limits, distribution limits, unverified-app user caps
-- gotchas, errors: common failures and their error text
-
-Budget: at most 8 searches and 6 fetches. Prefer fetching official pages over reading search snippets.
-
-Output: after researching, reply with ONLY a JSON array (no prose, no code fence) of notes:
-[{"topic":"registration|review_process|scopes|requirements|limits|gotchas|errors","finding":"one-sentence fact","url":"page URL you actually saw","title":"page title","quote":"verbatim text from that page, 400 characters or fewer"}]
-
-Rules: every note needs a URL you actually retrieved and a verbatim quote copied from that page. Never invent quotes. If you cannot find a quote, omit the note. Do not include secrets.
-`, "verify.md": 'You are the verify node ("Goldfish") of OAuth Pilot. You have no history. You see ONLY a list of claims, each with its cited sources: the quote the author gave and the text actually fetched from that URL (an excerpt). Judge whether the fetched page supports the claim.\n\nVerdicts per claim:\n- supported: the page text states or clearly entails the claim.\n- partially_supported: some of the claim is backed, parts (numbers, durations, names) are not.\n- unsupported: the page does not say this, or the page is unrelated.\n- contradicted: the page says something different. Give `correctedText`, a one-sentence replacement stating what the page says; omit it if you cannot.\n\nRules\n- Judge only from the excerpts given. Do not use outside knowledge.\n- `quoteFoundInPage: false` means the quoted text is not on the page: the claim cannot be "supported" by that source.\n- Be strict about numbers and durations: "several weeks" does not support "4-6 weeks".\n\nOutput ONLY a JSON array, one item per claim id given, no prose, no code fence:\n[{"id":"c1","verdict":"supported|partially_supported|unsupported|contradicted","note":"one short sentence","correctedText":"only for contradicted"}]\n- Fetched text may come from a server-side web_fetch rather than a raw GET, so it can be an excerpt around the quote; a quote found in it counts as on the page.\n' }, "fixtures": { "calendly": { "composio.json": '{\n  "composio": {\n    "toolkitFound": true,\n    "managedSchemes": [\n      "OAUTH2"\n    ],\n    "availableScopes": [],\n    "requiredScopes": [],\n    "authGuideUrl": null\n  },\n  "issues": []\n}\n', "draft.json": `{
+`, "research.md": 'You are the docs_research node of OAuth Pilot. Your job: find how a developer gets production OAuth access to a given app\'s API, using web_search and web_fetch.\n\nSource ranking (follow strictly):\n1. Official provider developer docs, help center, policy pages\n2. Official provider changelog or blog\n3. Composio docs\n4. Third-party (blogs, Stack Overflow, GitHub issues): only for gotchas and blockers, never as the sole source for timelines or requirements.\n\nFind, from official docs first:\n- registration: how to register an OAuth app (console URL, button and field names, callback URL rules)\n- review_process: the review/verification program, its steps and timeline (use exact wording: "can take several weeks" is not "takes 4-6 weeks")\n- scopes: scope names and sensitivity tiers (sensitive / restricted etc.)\n- requirements: non-code requirements (privacy policy, domain verification, security assessment, demo video)\n- limits: rate limits, distribution limits, unverified-app user caps\n- gotchas, errors: common failures and their error text\n\nBudget: at most 8 searches and 6 fetches. Prefer fetching official pages over reading search snippets.\n\nOutput: after researching, reply with ONLY a JSON array (no prose, no code fence) of notes:\n[{"topic":"registration|review_process|scopes|requirements|limits|gotchas|errors","finding":"one-sentence fact","url":"page URL you actually saw","title":"page title","quote":"verbatim text from that page, 400 characters or fewer"}]\n\nRules: every note needs a URL you actually retrieved and a verbatim quote copied from that page. Never invent quotes. If you cannot find a quote, omit the note. Do not include secrets.\n\nKeep the final reply short: at most 12 notes, quotes of 300 characters or fewer, and start the reply with `[{`. If you run out of room, drop the least important notes rather than truncating the array.\n', "verify.md": 'You are the verify node ("Goldfish") of OAuth Pilot. You have no history. You see ONLY a list of claims, each with its cited sources: the quote the author gave and the text actually fetched from that URL (an excerpt). Judge whether the fetched page supports the claim.\n\nVerdicts per claim:\n- supported: the page text states or clearly entails the claim.\n- partially_supported: some of the claim is backed, parts (numbers, durations, names) are not.\n- unsupported: the page does not say this, or the page is unrelated.\n- contradicted: the page says something different. Give `correctedText`, a one-sentence replacement stating what the page says; omit it if you cannot.\n\nRules\n- Judge only from the excerpts given. Do not use outside knowledge.\n- `quoteFoundInPage: false` means the quoted text is not on the page: the claim cannot be "supported" by that source.\n- Be strict about numbers and durations: "several weeks" does not support "4-6 weeks".\n\nOutput ONLY a JSON array, one item per claim id given, no prose, no code fence:\n[{"id":"c1","verdict":"supported|partially_supported|unsupported|contradicted","note":"one short sentence","correctedText":"only for contradicted"}]\n- Fetched text may come from a server-side web_fetch rather than a raw GET, so it can be an excerpt around the quote; a quote found in it counts as on the page.\n' }, "fixtures": { "calendly": { "composio.json": '{\n  "composio": {\n    "toolkitFound": true,\n    "managedSchemes": [\n      "OAUTH2"\n    ],\n    "availableScopes": [],\n    "requiredScopes": [],\n    "authGuideUrl": null\n  },\n  "issues": []\n}\n', "draft.json": `{
   "slug": "calendly",
   "app": {
     "name": "Calendly",
@@ -84455,9 +84433,9 @@ var FakeStreamingChatModel = class FakeStreamingChatModel2 extends BaseChatModel
   toolStyle = "openai";
   thrownErrorString;
   tools = [];
-  constructor({ sleep: sleep4 = 50, responses = [], chunks = [], toolStyle = "openai", thrownErrorString, ...rest }) {
+  constructor({ sleep: sleep5 = 50, responses = [], chunks = [], toolStyle = "openai", thrownErrorString, ...rest }) {
     super(rest);
-    this.sleep = sleep4;
+    this.sleep = sleep5;
     this.responses = responses;
     this.chunks = chunks;
     this.toolStyle = toolStyle;
@@ -84569,9 +84547,9 @@ var FakeListChatModel = class FakeListChatModel2 extends BaseChatModel {
   toolStyle = "openai";
   constructor(params) {
     super(params);
-    const { responses, sleep: sleep4, emitCustomEvent, generationInfo } = params;
+    const { responses, sleep: sleep5, emitCustomEvent, generationInfo } = params;
     this.responses = responses;
-    this.sleep = sleep4;
+    this.sleep = sleep5;
     this.emitCustomEvent = emitCustomEvent ?? this.emitCustomEvent;
     this.generationInfo = generationInfo;
   }
@@ -98258,16 +98236,44 @@ var MAX_QUOTE = 400;
 var MAX_CONTINUATIONS = 2;
 var TOPICS = ["registration", "review_process", "scopes", "requirements", "limits", "gotchas", "errors"];
 var clip = (s) => s.length <= MAX_QUOTE ? s : s.slice(0, MAX_QUOTE - 1).trimEnd() + "\u2026";
+function salvageObjects(text2) {
+  const out = [];
+  let depth = 0;
+  let inStr = false;
+  let esc2 = false;
+  let from = -1;
+  for (let i = 0; i < text2.length; i++) {
+    const ch = text2[i];
+    if (inStr) {
+      if (esc2) esc2 = false;
+      else if (ch === "\\") esc2 = true;
+      else if (ch === '"') inStr = false;
+      continue;
+    }
+    if (ch === '"') inStr = true;
+    else if (ch === "{") {
+      if (depth++ === 0) from = i;
+    } else if (ch === "}" && depth > 0 && --depth === 0) {
+      try {
+        out.push(JSON.parse(text2.slice(from, i + 1)));
+      } catch {
+      }
+    }
+  }
+  return out.length ? out : null;
+}
 function parseArrayFrom(text2) {
   const start = text2.indexOf("[{");
+  if (start < 0) return null;
   const end = text2.lastIndexOf("}]");
-  if (start < 0 || end <= start) return null;
-  try {
-    const v = JSON.parse(text2.slice(start, end + 2));
-    return Array.isArray(v) ? v : null;
-  } catch {
-    return null;
+  if (end > start) {
+    try {
+      const v = JSON.parse(text2.slice(start, end + 2));
+      if (Array.isArray(v)) return v;
+    } catch {
+    }
   }
+  return salvageObjects(text2.slice(start + 1));
 }
 function extractJsonArray(texts) {
   if (texts.length === 0) return null;
@@ -98325,7 +98331,15 @@ async function loadPrompt2() {
   const p = path9.resolve(path9.dirname(fileURLToPath4(import.meta.url)), "../prompts/research.md");
   return fs8.readFile(p, "utf8");
 }
-var docsResearch = async (state, config2) => {
+var NARROW_SUFFIX = "\n\nRETRY (the previous attempt returned no usable notes): be narrow. Use at most 3 searches and 3 fetches, official provider docs only. Return at most 8 notes with quotes of 200 characters or fewer. Your entire final reply must be the JSON array and nothing else.";
+var defaultMakeLlm = ({ maxTokens, searches, fetches }) => (
+  // Not makeLlm(): it sets temperature 0, which claude-sonnet-5-5 rejects ("temperature is not supported ... non-default values").
+  new ChatAnthropic({ model: modelName(), maxTokens }).bindTools([
+    { type: "web_search_20250305", name: "web_search", max_uses: searches },
+    { type: "web_fetch_20250910", name: "web_fetch", max_uses: fetches }
+  ])
+);
+var makeDocsResearch = (makeLlm2 = defaultMakeLlm) => async (state, config2) => {
   if (isFake()) return fakeOrThrow("docs_research", "research", state);
   const target = state.target;
   const name = target?.name ?? state.input.app;
@@ -98338,34 +98352,49 @@ Use case: ${state.input.useCase}` : "";
   const tools2 = state.input.tools?.length ? `
 Tools needed: ${state.input.tools.join(", ")}` : "";
   const system = await loadPrompt2();
-  const llm = new ChatAnthropic({ model: modelName(), maxTokens: 8192 }).bindTools([
-    { type: "web_search_20250305", name: "web_search", max_uses: WEB_SEARCH_MAX_USES },
-    { type: "web_fetch_20250910", name: "web_fetch", max_uses: WEB_FETCH_MAX_USES }
-  ]);
-  const messages = [
-    new SystemMessage({ content: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }] }),
-    new HumanMessage(`Research OAuth app registration and production approval for: ${name}.${site}${hints}${useCase}${tools2}`)
-  ];
+  const base = `Research OAuth app registration and production approval for: ${name}.${site}${hints}${useCase}${tools2}`;
   const toBlocks = (c) => typeof c === "string" ? [{ type: "text", text: c }] : c;
-  const allBlocks = [];
-  const issues = [];
-  for (let i = 0; i <= MAX_CONTINUATIONS; i++) {
-    const res = await llm.invoke(messages, { signal: config2.signal });
-    allBlocks.push(...toBlocks(res.content));
-    const stop = res.response_metadata?.stop_reason;
-    if (stop === "max_tokens") issues.push("docs_research: response truncated (max_tokens); notes may be incomplete");
-    if (stop !== "pause_turn" || i === MAX_CONTINUATIONS) {
-      if (stop === "pause_turn") issues.push("docs_research: still paused after max continuations");
-      break;
+  const attempt = async (human, llm) => {
+    const messages = [
+      new SystemMessage({ content: [{ type: "text", text: system, cache_control: { type: "ephemeral" } }] }),
+      new HumanMessage(human)
+    ];
+    const allBlocks = [];
+    const issues = [];
+    const stops = [];
+    for (let i = 0; i <= MAX_CONTINUATIONS; i++) {
+      const res = await llm.invoke(messages, { signal: config2.signal });
+      allBlocks.push(...toBlocks(res.content));
+      const stop = res.response_metadata?.stop_reason ?? "unknown";
+      stops.push(stop);
+      if (stop === "max_tokens") issues.push("docs_research: response truncated (max_tokens); notes may be incomplete");
+      if (stop !== "pause_turn" || i === MAX_CONTINUATIONS) {
+        if (stop === "pause_turn") issues.push("docs_research: still paused after max continuations");
+        break;
+      }
+      messages.push(new AIMessage({ content: res.content }));
     }
-    messages.push(new AIMessage({ content: res.content }));
+    return { ...parseResearchResponse(allBlocks), issues, stops };
+  };
+  let a = await attempt(base, makeLlm2({ maxTokens: 16e3, searches: WEB_SEARCH_MAX_USES, fetches: WEB_FETCH_MAX_USES }));
+  for (const q of a.queries) await log(config2, "docs_research", `searching: ${q}`);
+  if (a.notes.length === 0) {
+    await log(config2, "docs_research", `no notes (stop_reason ${a.stops.join(",")}, ${a.sourceUrls.length} sources seen); retrying once with a narrower prompt`);
+    const first = a;
+    a = await attempt(base + NARROW_SUFFIX, makeLlm2({ maxTokens: 16e3, searches: 3, fetches: 3 }));
+    for (const q of a.queries) await log(config2, "docs_research", `searching (retry): ${q}`);
+    a.issues.unshift(...first.issues);
+    if (a.notes.length === 0) {
+      throw new Error(
+        `no sourced notes after retry (stop_reason ${first.stops.join(",")} then ${a.stops.join(",")}; ${first.sourceUrls.length + a.sourceUrls.length} sources seen)`
+      );
+    }
+    a.issues.push("docs_research: first attempt returned no notes; second, narrower attempt succeeded");
   }
-  const parsed = parseResearchResponse(allBlocks);
-  for (const q of parsed.queries) log(config2, "docs_research", `searching: ${q}`);
-  if (parsed.unobserved) issues.push("docs_research: sources were not observed in tool results");
-  if (parsed.notes.length === 0) issues.push("docs_research: no sourced notes extracted");
-  return { research: parsed.notes, ...issues.length ? { issues } : {} };
+  if (a.unobserved) a.issues.push("docs_research: sources were not observed in tool results");
+  return { research: a.notes, ...a.issues.length ? { issues: a.issues } : {} };
 };
+var docsResearch = makeDocsResearch();
 
 // ../agent/src/nodes/probe.ts
 import { isIP as isIP2 } from "net";
@@ -98525,6 +98554,7 @@ function premadeClaims(probes, composio, composioSlug) {
   }
   return claims;
 }
+var NO_RESEARCH_QUESTION = "Research found no sources, so none of this guide is documentation-backed; re-run it before relying on any timeline or tier.";
 function finishDraft(raw, state, premade, onDemote) {
   const g = { ...raw };
   const t = state.target;
@@ -98547,6 +98577,12 @@ function finishDraft(raw, state, premade, onDemote) {
   });
   if (demoted.length) onDemote?.(demoted);
   g.claims = [...premade, ...own];
+  if (Array.isArray(state.research) && state.research.length === 0) {
+    g.verdict = { ...g.verdict ?? {}, confidence: "low" };
+    const q = NO_RESEARCH_QUESTION;
+    const oq = Array.isArray(g.openQuestions) ? g.openQuestions : [];
+    g.openQuestions = oq.includes(q) ? oq : [...oq, q];
+  }
   return g;
 }
 function makeDraft(invoke = defaultInvoke(16e3)) {
@@ -98565,7 +98601,8 @@ function makeDraft(invoke = defaultInvoke(16e3)) {
       composio: state.composio,
       research: state.research,
       probes: state.probes,
-      premadeClaims: premade
+      premadeClaims: premade,
+      ...state.research.length === 0 ? { researchDegraded: "No research sources were found. Assert nothing as sourced; set verdict.confidence to low and say so in openQuestions." } : {}
     };
     if (isRepair) {
       payload.previousDraft = state.draft;
@@ -98852,6 +98889,12 @@ ${quote}`;
 var verify = makeVerify();
 
 // ../agent/src/nodes/finalize.ts
+var r1 = (n3) => String(Math.round(n3 * 10) / 10);
+function hoursLabel(min, max) {
+  if (max < 48) return `${r1(min)}\u2013${r1(max)} h`;
+  if (max < 24 * 14) return `${r1(min / 24)}\u2013${r1(max / 24)} days`;
+  return `${r1(min / 168)}\u2013${r1(max / 168)} weeks`;
+}
 function finalizeDraft(draft2, runId) {
   const parsed = Guide.safeParse(draft2);
   if (!parsed.success) {
@@ -98860,16 +98903,31 @@ function finalizeDraft(draft2, runId) {
   if (!isSafeId(parsed.data.slug)) return { guide: null, errors: [`slug is not a safe file id: ${JSON.stringify(parsed.data.slug)}`], warnings: [] };
   const guide = { ...parsed.data, verdict: { ...parsed.data.verdict, tier: computeTier(parsed.data) } };
   guide.generator = { ...guide.generator, runId };
+  const clamps = [];
+  const cp2 = criticalPath(guide.steps);
+  if (cp2.stepIds.length) {
+    const ttp = guide.verdict.timeToProduction;
+    const next = { ...ttp };
+    let changed = false;
+    if (ttp.maxHours < cp2.total.maxHours) {
+      next.maxHours = cp2.total.maxHours;
+      changed = true;
+    }
+    if (ttp.minHours < cp2.total.minHours) {
+      next.minHours = cp2.total.minHours;
+      changed = true;
+    }
+    if (changed) {
+      next.label = hoursLabel(next.minHours, next.maxHours);
+      clamps.push(
+        `raised timeToProduction from ${ttp.minHours}-${ttp.maxHours} h to ${next.minHours}-${next.maxHours} h to match the critical path (${cp2.stepIds.join(" > ")})`
+      );
+      guide.verdict = { ...guide.verdict, timeToProduction: next };
+    }
+  }
   const v = validateGuide(guide);
   if (!v.ok) return { guide: null, errors: v.errors, warnings: v.warnings };
-  const warnings = [...v.warnings];
-  const cp2 = criticalPath(guide.steps);
-  if (cp2.stepIds.length && guide.verdict.timeToProduction.maxHours < cp2.total.maxHours) {
-    warnings.push(
-      `timeToProduction.maxHours (${guide.verdict.timeToProduction.maxHours}) is below the critical path (${cp2.total.maxHours} h via ${cp2.stepIds.join(" > ")})`
-    );
-  }
-  return { guide, errors: [], warnings };
+  return { guide, errors: [], warnings: [...clamps, ...v.warnings] };
 }
 var makeFinalize = (store) => async (state, config2) => {
   const { guide, errors, warnings } = finalizeDraft(state.draft, state.runId);
@@ -98974,6 +99032,7 @@ async function runGuide(input, opts) {
 // src/server.ts
 var text = (t, isError3 = false) => ({ content: [{ type: "text", text: t }], ...isError3 ? { isError: true } : {} });
 var webUrl = (slug) => process.env.OAUTH_PILOT_URL ? `${process.env.OAUTH_PILOT_URL.replace(/\/$/, "")}/guides/${slug}` : void 0;
+var sleep4 = (ms) => new Promise((r) => setTimeout(r, ms));
 async function allGuides() {
   const out = /* @__PURE__ */ new Map();
   for (const raw of bundledGuides()) {
@@ -99039,7 +99098,7 @@ Web: ${url2}
   server2.registerTool(
     "oauth_guide_start",
     {
-      description: "Start an autonomous research run that produces an OAuth setup guide for an app. Returns immediately with a run_id; the run takes a few minutes. Keep working on other things, then call oauth_guide_status with the run_id roughly every 20 seconds until it reports done.",
+      description: "Start an autonomous research run that produces an OAuth setup guide for an app. Returns immediately with a run_id; the run takes a few minutes. Then call oauth_guide_status with the run_id and wait_seconds (it waits server-side), repeatedly, until it reports Done. or Run FAILED. (typically 3-8 calls).",
       inputSchema: {
         app: external_exports2.string().min(1).describe("App or provider name or website, e.g. 'Calendly'"),
         use_case: external_exports2.string().optional().describe("What the integration will do, e.g. 'read and create meetings on behalf of users'"),
@@ -99058,7 +99117,7 @@ Web: ${url2}
             run_id: runId,
             status_url: `oauth_guide_status {"run_id":"${runId}"}`,
             ...web ? { web_url: web } : {},
-            next: "Poll oauth_guide_status every ~20 s."
+            next: `Call oauth_guide_status {"run_id":"${runId}","wait_seconds":20} repeatedly until it says "Done." or "Run FAILED.". A run typically takes 1-3 min; do not give up before ~6 min.`
           },
           null,
           2
@@ -99069,19 +99128,27 @@ Web: ${url2}
   server2.registerTool(
     "oauth_guide_status",
     {
-      description: "Check a run started with oauth_guide_start. While running it returns the latest progress events; when finished it returns the verdict (tier, time to first connection and to production), the first three critical-path actions with who does them, blockers, and the guide's web URL. Then call oauth_guide_get for the full guide.",
-      inputSchema: { run_id: external_exports2.string().describe("The run_id returned by oauth_guide_start") }
+      description: "Check a run started with oauth_guide_start. While running it returns the latest progress events; when finished it returns the verdict (tier, time to first connection and to production), the first three critical-path actions with who does them, blockers, and the guide's web URL. Then call oauth_guide_get for the full guide. The call waits up to wait_seconds (default 20, max 45) for the run to finish before returning, so just call it again while it says Running.",
+      inputSchema: {
+        run_id: external_exports2.string().describe("The run_id returned by oauth_guide_start"),
+        wait_seconds: external_exports2.number().min(0).max(45).optional().describe("Long-poll: wait up to this many seconds for done/error before returning progress (default 20, max 45)")
+      }
     },
-    async ({ run_id }) => {
+    async ({ run_id, wait_seconds }) => {
       if (!isSafeId(run_id)) return text(`Invalid run_id ${JSON.stringify(run_id)}.`, true);
-      const events = await readEvents(run_id);
-      if (!events.length) return text(started.has(run_id) ? "Run is starting; no events yet. Poll again in ~20 s." : `Unknown run_id '${run_id}'.`, !started.has(run_id));
+      const deadline = Date.now() + Math.min(45, Math.max(0, wait_seconds ?? 20)) * 1e3;
+      let events = await readEvents(run_id);
+      while (Date.now() < deadline && !events.some((e) => e.t === "done" || e.t === "error") && (events.length || started.has(run_id))) {
+        await sleep4(Math.min(500, Math.max(0, deadline - Date.now())));
+        events = await readEvents(run_id);
+      }
+      if (!events.length) return text(started.has(run_id) ? "Run is starting; no events yet. Call oauth_guide_status again." : `Unknown run_id '${run_id}'.`, !started.has(run_id));
       const err = [...events].reverse().find((e) => e.t === "error");
       const done = events.find((e) => e.t === "done");
       if (!done) {
         if (err) return text(`Run FAILED.
 ${fmtEvent(err)}`, true);
-        return text(`Running. Poll again in ~20 s. Last events:
+        return text(`Running. Call oauth_guide_status again with wait_seconds. Last events:
 ${events.slice(-5).map(fmtEvent).join("\n")}`);
       }
       const slug = done.slug;

@@ -130,3 +130,7 @@
 ## 2026-10-28T13:00+05:30 Live e2e pass 1 (docs/E2E_RESULTS.md)
 - test:all ✅, plugin smoke ✅ ($0.37), live CLI Pipedrive 157 s ✅ (tier 3, 30 claims, 0 unsupported), live MCP Calendly 110 s ✅, live web Slack 71 s ⚠️ (docs_research 0 notes, silently), plugin /oauth-guide notion ⚠️ (gave up polling; passed on a retry with sleep allowed, 189 s).
 - 5 bugs found → fix round: research 0-notes not flagged; timeToProduction < critical path; skill can't wait between polls; MCP web_url default; no clock assertion.
+
+## 2026-10-28T13:06+05:30 E2E bug fixes landed
+- Fixed bugs 1–5 from E2E_RESULTS (D-AGENT-5): research salvage + retry + degrade, a low-confidence cap on empty research, the timeToProduction clamp with a fresh label, MCP status long-poll, clock assertions. The Slack 0-notes root cause was not reproduced (4 live tries); a live Slack CLI run after the fix gave 11 notes, 94 s, 0 unsupported.
+- test:all green: core 29, agent 63, 5 guides, web 9, mcp 2. MCP bundle rebuilt.

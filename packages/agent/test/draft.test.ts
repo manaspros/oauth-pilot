@@ -36,7 +36,7 @@ vi.mock("../src/llm", () => ({
 }));
 
 import { buildGraph } from "../src/graph";
-import { extractJson, premadeClaims, finishDraft } from "../src/nodes/draft";
+import { extractJson, premadeClaims, finishDraft, NO_RESEARCH_QUESTION } from "../src/nodes/draft";
 import { validateGuide } from "@oauth-pilot/core";
 
 let dir: string;
@@ -107,6 +107,36 @@ describe("draft + repair loop", () => {
     expect(c1.testedHow).toBeUndefined();
     expect(g.claims.find((c: any) => c.id === "tp1")).toMatchObject({ evidence: "tested", testedHow: expect.any(String) });
     expect(seenIds).toEqual(["c1"]);
+  });
+
+  it("0 research notes: confidence is capped at low and an open question is added (deterministic), once", () => {
+    const raw = { verdict: { confidence: "high", tier: 0 }, openQuestions: ["q1"], claims: [] };
+    const st = { runId: "r", composio: null, target: { slug: "s" }, research: [] } as any;
+    const g = finishDraft(raw, st, []);
+    expect(g.verdict).toMatchObject({ confidence: "low", tier: 0 });
+    expect(g.openQuestions).toEqual(["q1", NO_RESEARCH_QUESTION]);
+    // repair pass: model already carried the question forward -> no duplicate
+    expect(finishDraft(g, st, []).openQuestions.filter((q: string) => q === NO_RESEARCH_QUESTION)).toHaveLength(1);
+    // with notes, confidence is left alone
+    const ok = finishDraft(raw, { ...st, research: [{ id: "r1" }] }, []);
+    expect(ok.verdict.confidence).toBe("high");
+    expect(ok.openQuestions).toEqual(["q1"]);
+  });
+
+  it("end to end: empty research -> draft payload flags it and the guide is low confidence", async () => {
+    seen.length = 0;
+    const emptyGraph = linear();
+    emptyGraph.verdict.confidence = "high";
+    replies.push(JSON.stringify(emptyGraph));
+    const mod = await import("../src/nodes/draft");
+    const node = mod.makeDraft(async (messages) => {
+      seen.push(messages[1].content);
+      return { text: replies.shift()! };
+    });
+    const out: any = await node({ input: { app: "Linear" }, runId: "r", target: { slug: "linear" }, composio: null, probes: [], research: [], issues: [], repairs: 0 } as any, { configurable: { emit: () => {} } } as any);
+    expect(JSON.parse(seen[0]!).researchDegraded).toMatch(/No research sources/);
+    expect(out.draft.verdict.confidence).toBe("low");
+    expect(out.draft.openQuestions).toContain(NO_RESEARCH_QUESTION);
   });
 
   it("extractJson tolerates prose and fences", () => {

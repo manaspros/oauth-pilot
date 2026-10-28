@@ -70,6 +70,8 @@ export function premadeClaims(probes: ProbeResult[], composio: ComposioFacts | n
   return claims;
 }
 
+export const NO_RESEARCH_QUESTION = "Research found no sources, so none of this guide is documentation-backed; re-run it before relying on any timeline or tier.";
+
 /** Fill the machine-owned fields and merge premade claims (premade ids win on collision). */
 export function finishDraft(raw: Json, state: State, premade: Json[], onDemote?: (ids: string[]) => void): Json {
   const g: Json = { ...raw };
@@ -94,6 +96,13 @@ export function finishDraft(raw: Json, state: State, premade: Json[], onDemote?:
   });
   if (demoted.length) onDemote?.(demoted);
   g.claims = [...premade, ...own];
+  // Deterministic degraded-research rule: with no research notes, nothing is sourced, so confidence is at most low.
+  if (Array.isArray(state.research) && state.research.length === 0) {
+    g.verdict = { ...(g.verdict ?? {}), confidence: "low" };
+    const q = NO_RESEARCH_QUESTION;
+    const oq: unknown[] = Array.isArray(g.openQuestions) ? g.openQuestions : [];
+    g.openQuestions = oq.includes(q) ? oq : [...oq, q];
+  }
   return g;
 }
 
@@ -114,6 +123,7 @@ export function makeDraft(invoke: InvokeText = defaultInvoke(16_000)): NodeFn {
       research: state.research,
       probes: state.probes,
       premadeClaims: premade,
+      ...(state.research.length === 0 ? { researchDegraded: "No research sources were found. Assert nothing as sourced; set verdict.confidence to low and say so in openQuestions." } : {}),
     };
     if (isRepair) {
       payload.previousDraft = state.draft;

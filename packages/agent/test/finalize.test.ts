@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
+import { criticalPath } from "@oauth-pilot/core";
 import { finalizeDraft } from "../src/nodes/finalize";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -18,12 +19,29 @@ describe("finalizeDraft", () => {
     expect(r.guide!.generator.runId).toBe("run-x");
   });
 
-  it("warns when timeToProduction is below the critical path", () => {
+  it("raises timeToProduction to the critical path (keeping basis/label) and says so", () => {
     const g = linear();
-    g.verdict.timeToProduction = { ...g.verdict.timeToProduction, minHours: 0.5, maxHours: 0.1 };
+    const cp = criticalPath(g.steps).total;
+    g.verdict.timeToProduction = { ...g.verdict.timeToProduction, minHours: g.verdict.timeToFirstConnection.minHours, maxHours: cp.maxHours - 0.5, basis: "estimate", label: "stale" };
     const r = finalizeDraft(g, "r");
     expect(r.guide).not.toBeNull();
-    expect(r.warnings.some((w) => /critical path/.test(w))).toBe(true);
+    const t = r.guide!.verdict.timeToProduction;
+    expect(t.maxHours).toBe(cp.maxHours);
+    expect(t.minHours).toBeGreaterThanOrEqual(cp.minHours);
+    expect(t.basis).toBe("estimate");
+    expect(t.label).not.toBe("stale");
+    expect(t.label).toMatch(/\d/);
+    expect(r.warnings.some((w) => /raised timeToProduction/.test(w))).toBe(true);
+    expect(r.warnings.some((w) => /is below the critical path/.test(w))).toBe(false);
+  });
+
+  it("does not touch a timeToProduction that already covers the critical path", () => {
+    const g = linear();
+    const cp = criticalPath(g.steps).total;
+    g.verdict.timeToProduction = { ...g.verdict.timeToProduction, minHours: cp.minHours, maxHours: cp.maxHours + 10 };
+    const r = finalizeDraft(g, "r");
+    expect(r.guide!.verdict.timeToProduction.maxHours).toBe(cp.maxHours + 10);
+    expect(r.warnings.some((w) => /raised/.test(w))).toBe(false);
   });
 
   it("returns errors (no guide) for a dangling claim id", () => {

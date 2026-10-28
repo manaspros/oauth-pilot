@@ -5,6 +5,13 @@ import { log } from "./common";
 
 export type FinalizeResult = { guide: Guide | null; errors: string[]; warnings: string[] };
 
+const r1 = (n: number) => String(Math.round(n * 10) / 10);
+function hoursLabel(min: number, max: number): string {
+  if (max < 48) return `${r1(min)}–${r1(max)} h`;
+  if (max < 24 * 14) return `${r1(min / 24)}–${r1(max / 24)} days`;
+  return `${r1(min / 168)}–${r1(max / 168)} weeks`;
+}
+
 /** safeParse -> validateGuide -> force tier = computeTier() -> critical-path check. Pure; no I/O. */
 export function finalizeDraft(draft: unknown, runId: string): FinalizeResult {
   const parsed = Guide.safeParse(draft);
@@ -14,16 +21,26 @@ export function finalizeDraft(draft: unknown, runId: string): FinalizeResult {
   if (!isSafeId(parsed.data.slug)) return { guide: null, errors: [`slug is not a safe file id: ${JSON.stringify(parsed.data.slug)}`], warnings: [] };
   const guide: Guide = { ...parsed.data, verdict: { ...parsed.data.verdict, tier: computeTier(parsed.data) } };
   guide.generator = { ...guide.generator, runId };
+  // The production range may not contradict its own critical path: raise it (basis and label are kept).
+  const clamps: string[] = [];
+  const cp = criticalPath(guide.steps);
+  if (cp.stepIds.length) {
+    const ttp = guide.verdict.timeToProduction;
+    const next = { ...ttp };
+    let changed = false;
+    if (ttp.maxHours < cp.total.maxHours) { next.maxHours = cp.total.maxHours; changed = true; }
+    if (ttp.minHours < cp.total.minHours) { next.minHours = cp.total.minHours; changed = true; }
+    if (changed) {
+      next.label = hoursLabel(next.minHours, next.maxHours);
+      clamps.push(
+        `raised timeToProduction from ${ttp.minHours}-${ttp.maxHours} h to ${next.minHours}-${next.maxHours} h to match the critical path (${cp.stepIds.join(" > ")})`,
+      );
+      guide.verdict = { ...guide.verdict, timeToProduction: next };
+    }
+  }
   const v = validateGuide(guide);
   if (!v.ok) return { guide: null, errors: v.errors, warnings: v.warnings };
-  const warnings = [...v.warnings];
-  const cp = criticalPath(guide.steps);
-  if (cp.stepIds.length && guide.verdict.timeToProduction.maxHours < cp.total.maxHours) {
-    warnings.push(
-      `timeToProduction.maxHours (${guide.verdict.timeToProduction.maxHours}) is below the critical path (${cp.total.maxHours} h via ${cp.stepIds.join(" > ")})`,
-    );
-  }
-  return { guide, errors: [], warnings };
+  return { guide, errors: [], warnings: [...clamps, ...v.warnings] };
 }
 
 // `done` is emitted by runGuide after node_finished so it is the last event.

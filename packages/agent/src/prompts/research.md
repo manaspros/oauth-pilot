@@ -20,3 +20,5 @@ Output: after researching, reply with ONLY a JSON array (no prose, no code fence
 [{"topic":"registration|review_process|scopes|requirements|limits|gotchas|errors","finding":"one-sentence fact","url":"page URL you actually saw","title":"page title","quote":"verbatim text from that page, 400 characters or fewer"}]
 
 Rules: every note needs a URL you actually retrieved and a verbatim quote copied from that page. Never invent quotes. If you cannot find a quote, omit the note. Do not include secrets.
+
+Keep the final reply short: at most 12 notes, quotes of 300 characters or fewer, and start the reply with `[{`. If you run out of room, drop the least important notes rather than truncating the array.

@@ -50,3 +50,6 @@ Claim discipline (from the T21 audit; each rule fixes a recurring error)
 - If an org admin or workspace admin must approve or install the app, add a requirement with owner "admin" and a step with actor "admin".
 - When two sources conflict, state both values in claims and openQuestions; do not pick one silently.
 - Do not assert a requirement the cited source does not support. Unsupported requirements go in openQuestions.
+
+Degraded research
+- If the input has `researchDegraded`, there are no research notes. Make no `sourced` claims, set verdict.confidence to "low", and add an openQuestion saying the research found no sources. The code enforces this regardless.
