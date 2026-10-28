@@ -139,3 +139,6 @@
 - test:all ✅ 25 s (core 29, agent 63, 5 guides, web 9, mcp 2). Slack web run ✅ 85 s, 7 notes, no degraded node (pass 1: 0 notes). /oauth-pilot:oauth-guide Trello ✅ 104 s with 2 long-poll status calls, no Bash (pass 1 gave up). MCP Calendly ✅ 90 s with 3 calls. Notion was answered from the plugin's cached guide, so Trello stood in.
 - Bugs: 1 mitigated (root cause unreproduced), 2 fixed (unit-tested), 3 fixed, 5 closed as config (.env OAUTH_PILOT_URL), 6 fixed. Open minor: bland "Running..." status text, no unit tests in packages/mcp.
 - Final pre-publish scan: 0 secrets or proxy host in the tree, staged diff or history.
+
+## 2026-10-28T13:32+05:30 Published
+- manaspros/oauth-pilot made PUBLIC with user approval, after a clean full-history secret scan. Anonymous GET of the repo and the raw README: 200. README install line updated for the public repo.

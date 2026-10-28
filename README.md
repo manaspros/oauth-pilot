@@ -122,7 +122,7 @@ claude plugin install oauth-pilot@oauth-pilot
 
 Or load it for one session without installing: `claude --plugin-dir plugin/oauth-pilot`.
 
-Via GitHub: `claude plugin marketplace add manaspros/oauth-pilot`, then the same `install` line. This works only for people with access to the repo, which is private for now.
+Via GitHub (the repo is public): `claude plugin marketplace add manaspros/oauth-pilot`, then the same `install` line.
 
 The plugin provides skills `/oauth-pilot:oauth-guide <app>` (verdict and next actions; uses the bundled MCP server, with an in-session research-and-verify fallback) and `/oauth-pilot:oauth-setup <app>` (walks through creating the OAuth app and Composio auth config, handing off to you at every login, 2FA, payment, terms or submit-for-review step), a read-only `oauth-goldfish` verifier agent, and fill-in templates (privacy policy, scope justification, demo video script). Secrets go only in `.env`, never in chat. Set `ANTHROPIC_API_KEY` (and optionally `ANTHROPIC_BASE_URL`, `COMPOSIO_API_KEY`) in the environment Claude Code starts in for live runs.
 
