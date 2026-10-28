@@ -164,7 +164,7 @@
       "phase": "connect",
       "title": "Authorize Linear through Composio managed OAuth2",
       "actor": "developer",
-      "detail": "In Composio, create a connection for the `linear` toolkit using the managed OAUTH2 auth config, requesting scopes `read` and `write`. Open the returned redirect link, pick the workspace on Linear's consent screen and approve. The connection becomes ACTIVE with no Linear app registration or review. Approve within 10 minutes: an unapproved connection expires.",
+      "detail": "In Composio, create a connection for the `linear` toolkit using the managed OAUTH2 auth config, requesting scopes `read` and `write`. Open the returned redirect link, pick the workspace on Linear's consent screen and approve. The connection becomes ACTIVE with no Linear app registration or review. Approve within 10 minutes: an unapproved connection expires. If your workspace has already authorized Composio's Linear app, Linear skips the consent screen and the connection becomes ACTIVE within seconds.",
       "duration": {
         "minHours": 0.05,
         "maxHours": 0.25,
@@ -182,7 +182,8 @@
         "tc1",
         "c4",
         "t1",
-        "t2"
+        "t2",
+        "t5"
       ],
       "optional": false
     },
@@ -717,6 +718,14 @@
       "evidence": "tested",
       "sources": [],
       "testedHow": "2026-10-28: POST https://api.linear.app/graphql with mutation oauthApplicationCreate (input name, developer, redirectUris=[https://backend.composio.dev/api/v1/auth-apps/add]) authorized with a personal API key returned HTTP 400, error \"Invalid scope: `oauth:create` required\" (FORBIDDEN). Nothing was created. Schema introspection showed the mutation exists and returns clientSecret once at creation.",
+      "confidence": "high"
+    },
+    {
+      "id": "t5",
+      "text": "Composio managed OAuth for Linear reaches ACTIVE: once the workspace has already authorized Composio's Linear app, opening the connect link skips the consent screen and the connection became ACTIVE about 13 seconds after initiation. LINEAR_GET_CURRENT_USER and LINEAR_LIST_LINEAR_ISSUES then both returned successful=true.",
+      "evidence": "tested",
+      "sources": [],
+      "testedHow": "2026-10-28 about 12:44 IST, Linear workspace testforcontext: POST /api/v3.1/connected_accounts {auth_config:{id:\"ac__X5eChqu0_hl\"}, connection:{user_id:\"oauth-pilot-t22-oauth\"}} returned INITIATED (ca_tD6Ak9Makygc). The short link was opened in Chrome and Linear redirected straight to Composio's \"Successfully connected\" page with no consent screen (app already authorized for the workspace). GET /connected_accounts/ca_tD6Ak9Makygc: status ACTIVE, auth_scheme OAUTH2, is_composio_managed true, created 07:14:07Z, updated 07:14:20Z. POST /api/v3/tools/execute/LINEAR_GET_CURRENT_USER and LINEAR_LIST_LINEAR_ISSUES with that connected_account_id: successful=true for both (5,279 bytes of issue data). LINEAR_CREATE_LINEAR_ISSUE was not run.",
       "confidence": "high"
     }
   ],

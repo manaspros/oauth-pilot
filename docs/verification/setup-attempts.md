@@ -27,7 +27,7 @@ Guide scopes for comparison (`guides/linear.json`): `read`, `write` (claim c4 al
   - The API_KEY path exists for Linear and needs no OAuth app. The guide's main path does not mention it; added as claim t3 and risk k7's fallback.
 - **Outcome:** tested (claim t3).
 
-## Attempt 3: Composio managed OAuth (the guide's main path, step s2)
+## Attempt 3: Composio managed OAuth, first try (the guide's main path, step s2)
 
 - **Date:** 2026-10-28. **Who:** agent initiated, user to approve in the browser.
 - **Steps:**
@@ -35,12 +35,26 @@ Guide scopes for comparison (`guides/linear.json`): `read`, `write` (claim c4 al
   2. `POST /connected_accounts` -> INITIATED with a short redirect URL `backend.composio.dev/api/v3/s/<code>`.
   3. Opened the link in Chrome. It redirected to `linear.app/oauth/authorize` with `redirect_uri=https://backend.composio.dev/api/v1/auth-apps/add` and `scope=read write issues:create comments:create`. The consent screen said "Composio is requesting access" to the `testforcontext` workspace with Read and Write permissions.
   4. The Authorize click was left to the user and was not made in time. Two attempts both went to EXPIRED: "Authorization was started but not completed within 10 minutes". Opening the first short URL after expiry returned 404 "URL not found".
-- **Result:** reached the consent screen (tested); never reached ACTIVE (not tested). The guide's s2 full flow is therefore still untested.
+- **Result:** reached the consent screen (tested); never reached ACTIVE in this attempt. Attempt 4 completed the flow.
 - **Doc drift / findings:**
   - Callback URL in the real authorize URL matches D-API-1 exactly (claim t1).
   - Requested scopes are `read write issues:create comments:create`. The guide lists `read` and `write` and says "requesting scopes read and write". The managed app requests two extra narrower scopes (`issues:create`, `comments:create`). `read`/`write` are a superset in practice, so the guide is not wrong, but it understates what the consent screen asks for. `comments:create` appears nowhere in the guide. The guide's scope list was left unchanged; t1 records the observed scope string.
   - Consent links expire after 10 minutes and an expired short link returns 404 (claim t2, risk k6). The guide's s2 now says to approve within 10 minutes.
 - **Outcome:** partial.
+
+## Attempt 4: Composio managed OAuth, completed (step s2, and the list half of s3)
+
+- **Date:** 2026-10-28, about 12:44 IST. **Who:** orchestrator agent; the link was opened in the user's Chrome.
+- **Steps:**
+  1. `POST /api/v3.1/connected_accounts` `{auth_config:{id:"ac__X5eChqu0_hl"}, connection:{user_id:"oauth-pilot-t22-oauth"}}` -> INITIATED, `ca_tD6Ak9Makygc`.
+  2. Opened the short link in Chrome. Linear redirected straight to Composio's "Successfully connected" page. No consent screen appeared, because the app was already authorized for the workspace.
+  3. `GET /connected_accounts/ca_tD6Ak9Makygc` -> status ACTIVE, auth_scheme OAUTH2, is_composio_managed true, created 07:14:07Z, updated 07:14:20Z (about 13 s).
+  4. `POST /api/v3/tools/execute/LINEAR_GET_CURRENT_USER` and `LINEAR_LIST_LINEAR_ISSUES` with that connected account -> `successful=true` for both (5,279 bytes of issue data). `LINEAR_CREATE_LINEAR_ISSUE` was not run.
+- **Result:** pass. Managed OAuth reached ACTIVE and tool calls worked (claim t5).
+- **Doc drift / findings:**
+  - Once a workspace has authorized Composio's Linear app, re-authorizing skips the consent screen. The guide's s2 assumed a consent screen every time; s2 now notes the skip.
+  - The earlier EXPIRED results in attempt 3 were the 10-minute window running out, not an error in the flow.
+- **Outcome:** tested (claim t5). s3 is only half covered (list, not create), so s3 stays untested.
 
 ## Not attempted
 
@@ -49,8 +63,8 @@ Guide scopes for comparison (`guides/linear.json`): `read`, `write` (claim c4 al
 
 ## What remains
 
-1. Complete a managed OAuth connection to ACTIVE: click Authorize within 10 minutes, then poll `GET /connected_accounts/{id}` and run `LINEAR_LIST_LINEAR_ISSUES` / `LINEAR_CREATE_LINEAR_ISSUE`. Only then can s2 and s3 be marked tested.
+1. Run `LINEAR_CREATE_LINEAR_ISSUE` against the managed connection (needed before s3 can be marked tested). The managed connect and list calls are done (attempt 4).
 2. Own-app path: create the Linear OAuth app in the UI (or with a personal key that has `oauth:create`), then run `composio-auth-config.mjs` with the credentials and connect.
 3. Decide whether the guide should list `issues:create` and `comments:create` as managed-app scopes.
 4. Optional: Google Calendar testing-mode project up to the consent screen.
-5. Clean up test objects in Composio (auth configs `ac_lRdLLROO-VLY`, `ac__X5eChqu0_hl`, connected account `ca_pOvD6nB1ne0I`, and the expired connections) if no longer wanted. No cleanup was done in this task.
+5. Clean up test objects in Composio (auth configs `ac_lRdLLROO-VLY`, `ac__X5eChqu0_hl`, connected accounts `ca_pOvD6nB1ne0I` and `ca_tD6Ak9Makygc`, and the expired connections) if no longer wanted. No cleanup was done in this task.

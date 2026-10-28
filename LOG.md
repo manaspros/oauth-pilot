@@ -119,3 +119,7 @@
 ## 2026-10-28T12:32+05:30 T25 PASS
 - README (what/run locally/tour/setup/decisions/evidence/verification/limits/credits) + docs/DEMO.md (5-min local reviewer script). Totals: 118 claims after the audit; 122 today (15 tested / 86 sourced / 21 inferred).
 - README-only Goldfish Q&A: run locally = `pnpm install && pnpm --filter web build && OAUTH_PILOT_FAKE=1 pnpm --filter web start`; tier 3 = a provider wait ≥ 1 week or a restricted scope (Gmail, CASA); tested = code-run probes, Composio lookups and the T22 setup; sourced = URL + quote + date, re-fetched by the verifier. Majors (private-repo install route, bundle-committed wording) fixed in round 1.
+
+## 2026-10-28T12:45+05:30 Final round (user: complete all steps, e2e results in md, share with Composio)
+- Managed OAuth for Linear reached ACTIVE (ca_tD6Ak9Makygc, OAUTH2, managed). The redirect skipped consent (already authorized); LINEAR_GET_CURRENT_USER + LINEAR_LIST_LINEAR_ISSUES succeeded.
+- Full-history secret scan: 0 hits (keys, proxy host, .env never tracked). The user chose to make manaspros/oauth-pilot public, keep the T22 Composio objects until after the demo, and keep the workspace name.

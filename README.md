@@ -87,7 +87,7 @@ Every factual claim in a guide carries one of three labels:
 
 | Label | Meaning | Rule |
 |---|---|---|
-| **tested** | We ran it and recorded how | Only code-made claims can be tested. Examples: a probe of a provider's `.well-known` OAuth metadata, the Composio toolkit lookup (managed app, auth scheme), and the T22 Linear API-key connection that reached ACTIVE and made working tool calls. A model cannot declare something tested; such a claim is demoted to inferred. |
+| **tested** | We ran it and recorded how | Only code-made claims can be tested. Examples: a probe of a provider's `.well-known` OAuth metadata, the Composio toolkit lookup (managed app, auth scheme), and the T22 Linear connections (API key and managed OAuth) that reached ACTIVE and made working tool calls. A model cannot declare something tested; such a claim is demoted to inferred. |
 | **sourced** | A page says so | At least one source with URL, an exact quote and a fetch date. The verifier re-fetches the page and checks the quote. |
 | **inferred** | Reasoned, not confirmed | Our judgement, shown with low or medium confidence. Where two official pages disagree (for example Salesforce security-review fees), both values are shown. |
 
@@ -97,7 +97,7 @@ The pattern is draft, then verify with fresh context: a drafting call with all t
 
 The agent generated the 5 library guides live. Fresh-context auditors then checked every claim against hand-built evidence packs (`research/apps/*.md`) and re-fetched cited pages.
 
-- Claims in the library: **after the audit** ([SUMMARY](docs/verification/SUMMARY.md)) 118 = 11 tested, 86 sourced, 21 inferred (before: 113 = 11 / 66 / 36). **Today** (recounted from `guides/*.json`) 122 = 15 tested, 86 sourced, 21 inferred, because T22 added 4 tested claims to the Linear guide.
+- Claims in the library: **after the audit** ([SUMMARY](docs/verification/SUMMARY.md)) 118 = 11 tested, 86 sourced, 21 inferred (before: 113 = 11 / 66 / 36). **Today** (recounted from `guides/*.json`) 123 = 16 tested, 86 sourced, 21 inferred, because T22 added 5 tested claims to the Linear guide.
 - No claim was found factually wrong. Verifier "unsupported" verdicts fell from 28 to 7: 20 were fetch artifacts (JS-rendered pages, truncated long pages), and the verifier now falls back to the `web_fetch` server tool.
 - One tier changed: Salesforce 1 to 2 (the agent missed the org-admin approval step).
 - Not verifiable: 7 Salesforce claims on help.salesforce.com (serves a JS shell), Gmail CASA cost and duration (single source), whether Shopify needs a Partner account for custom distribution.
@@ -107,7 +107,7 @@ Details: [docs/verification/SUMMARY.md](docs/verification/SUMMARY.md) and per-ap
 **Setup attempts (T22, Linear):** [docs/verification/setup-attempts.md](docs/verification/setup-attempts.md). Real attempts through Composio on 2026-10-28:
 - Creating a Linear OAuth app by API failed: it needs the `oauth:create` scope on the API key.
 - The Composio API-key path reached ACTIVE immediately and two tool calls worked (tested).
-- The managed OAuth path reached Linear's consent screen (callback URL and scopes observed), but the Authorize click was not made within 10 minutes, so both attempts expired. The full managed OAuth flow is still untested.
+- The managed OAuth path first reached Linear's consent screen (callback URL and scopes observed); two attempts expired because Authorize was not clicked within 10 minutes. A third connection then reached ACTIVE in about 13 s (the workspace had already authorized the app, so no consent screen) and `LINEAR_GET_CURRENT_USER` and `LINEAR_LIST_LINEAR_ISSUES` succeeded (tested). `LINEAR_CREATE_LINEAR_ISSUE` was not run.
 
 ## Claude Code plugin
 
@@ -158,7 +158,7 @@ Locked product decisions are in [docs/plan/00_PLAN.md](docs/plan/00_PLAN.md): sc
 - **Verifier fetch limits.** JS-rendered pages and very long pages (one Shopify page is 138k chars) can be unreadable. help.salesforce.com is a JS shell, so 7 Salesforce claims stay inferred with low confidence. Regenerating the guides would apply the newer verifier and prompt rules.
 - **Some tiers rest on estimates.** Shopify's tier 3 relies on an estimated review time; Linear's tier 0 assumes the managed app is enough for production.
 - **Not deployed.** The deploy task was cut; run locally. A recorded demo video is a next step.
-- **Setup is only partly proven.** The Linear OAuth consent was not completed (see setup attempts). No real provider approval, such as Google verification or CASA, was submitted.
+- **Setup is only partly proven.** Linear managed OAuth reached ACTIVE and listed issues, but issue creation was not run (see setup attempts). No real provider approval, such as Google verification or CASA, was submitted.
 - Fake mode replays Linear and Calendly only; live runs need your own keys and cost LLM tokens.
 
 ## Credits

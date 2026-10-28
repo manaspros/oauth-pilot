@@ -42,7 +42,7 @@ claude --plugin-dir plugin/oauth-pilot
 
 ## 5. What was verified (30 s)
 
-Open `docs/verification/SUMMARY.md`: 118 claims after the audit (11 tested, 86 sourced, 21 inferred; 15 tested today after T22 added 4 to Linear); 28 "unsupported" verdicts fell to 7, almost all fetch artifacts; Salesforce corrected from tier 1 to 2. Then `docs/verification/setup-attempts.md` for the Linear setup attempts: managed OAuth reached the consent screen but was not completed, API-key path reached ACTIVE with working tool calls, and creating an OAuth app by API needs the `oauth:create` scope.
+Open `docs/verification/SUMMARY.md`: 118 claims after the audit (11 tested, 86 sourced, 21 inferred; 16 tested today after T22 added 5 to Linear); 28 "unsupported" verdicts fell to 7, almost all fetch artifacts; Salesforce corrected from tier 1 to 2. Then `docs/verification/setup-attempts.md` for the Linear setup attempts: managed OAuth first expired at the consent screen, then reached ACTIVE with working list calls on a retry; the API-key path reached ACTIVE with working tool calls, and creating an OAuth app by API needs the `oauth:create` scope.
 
 ## Questions to check
 
