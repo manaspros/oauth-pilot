@@ -106,3 +106,8 @@
 - Verify fallback (D-AGENT-4): Goldfish caught a Blocker, where the fallback matched the model's own prose (echo → false supported). Fixed: tool-result text only, quote not in the prompt, 30 s timeout. 58 agent tests.
 - Live re-check of 5 unconfirmed Salesforce claims: 3 supported / 1 partial / 1 unsupported / 0 not_checked (identical before and after the Blocker fix, now on document text only). 13 s.
 - docs/verification/SUMMARY.md written. The MCP bundle is rebuilt with the audited guides and new prompts.
+
+## 2026-10-28T09:29+05:30 T23 PASS
+- Fresh git worktree: install + test:all green. Orchestrator re-ran test:all in the main repo: green, docs/ clean (the first attempt was killed with exit 137 with no leftovers; the re-run passed).
+- Goldfish Major: the plugin smoke's skip regex could mask real failures. Round 1 fixed it (skip only on rc≠0/is_error + an auth phrase; tools hard-restricted). Plugin smoke costs $0.30–0.35 per run.
+- Chore: scripts/check-secrets.sh now also blocks lin_api_ tokens (the user supplied a Linear key for T22; stored only in .env).

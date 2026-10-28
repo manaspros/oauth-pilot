@@ -21,7 +21,7 @@ export default defineConfig({
     reuseExistingServer: false,
     env: {
       OAUTH_PILOT_FAKE: "1",
-      GUIDES_DIR: path.resolve("packages/core/fixtures"),
+      GUIDES_DIR: path.resolve("guides"),
       DATA_DIR: dataDir,
     },
   },

@@ -225,10 +225,10 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 ## Phase 7 — Ship
 
 ### T23 · E2E suites green from a clean clone
-- **Status:** todo · **Tier:** A · **Deps:** T16, T18, T19, T21 (and T17 unless cut) · **Est:** 30 min · **Agent:** sonnet
+- **Status:** done · **Tier:** A · **Deps:** T16, T18, T19, T21 (and T17 unless cut) · **Est:** 30 min · **Agent:** sonnet
 - **Files:** `e2e/**` (fixes only), `e2e/plugin.e2e.sh`, `playwright.config.ts`
 - **Accept:** in a fresh `git worktree` of HEAD: `pnpm install && pnpm test:all` passes, with web case 2 now on `gmail` and MCP asserts on `gmail`. `pnpm e2e:plugin` passes or is documented as needing a Claude login (Tier C).
-- **Notes:**
+- **Notes:** agent:ad630bc43f3f403e2. Clean worktree `pnpm install && pnpm test:all` green (core 29, agent 58, 5 guides, web 8, mcp 2). Web case 2 + MCP on gmail; screenshots only with UPDATE_SCREENSHOTS=1. e2e:plugin passes on a real claude -p ($0.30–0.35); skips only on an auth failure.
 
 ### T24 · Deploy — HUMAN approval
 - **Status:** human · **Tier:** C · **Deps:** T23

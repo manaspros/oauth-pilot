@@ -36,16 +36,16 @@ async function run(label, guidesDir, check) {
   }
 }
 
-await run("repo guides dir", path.join(root, "packages/core/fixtures"), async (client, out) => {
+await run("repo guides dir", path.join(root, "guides"), async (client, out) => {
   const tools = (await client.listTools()).tools.map((t) => t.name).sort();
   assert.deepEqual(tools, ["oauth_guide_get", "oauth_guide_list", "oauth_guide_start", "oauth_guide_status"]);
 
   const list = out(await client.callTool({ name: "oauth_guide_list", arguments: {} }));
-  assert.match(list, /linear/, "list includes linear");
+  assert.match(list, /gmail/, "list includes gmail");
 
-  const got = await client.callTool({ name: "oauth_guide_get", arguments: { slug: "linear" } });
+  const got = await client.callTool({ name: "oauth_guide_get", arguments: { slug: "gmail" } });
   assert.ok(!got.isError);
-  assert.match(out(got), /Evidence/, "get linear contains Evidence");
+  assert.match(out(got), /Evidence/, "get gmail contains Evidence");
 
   const started = JSON.parse(out(await client.callTool({ name: "oauth_guide_start", arguments: { app: "calendly" } })));
   assert.ok(started.run_id, "start returns run_id");
@@ -69,9 +69,9 @@ await run("repo guides dir", path.join(root, "packages/core/fixtures"), async (c
 const emptyDir = mkdtempSync(path.join(tmpdir(), "oauth-pilot-empty-"));
 try {
   await run("empty GUIDES_DIR (embedded)", emptyDir, async (client, out) => {
-    assert.match(out(await client.callTool({ name: "oauth_guide_list", arguments: {} })), /linear/, "embedded list includes linear");
-    const got = await client.callTool({ name: "oauth_guide_get", arguments: { slug: "linear" } });
-    assert.ok(!got.isError, "embedded get linear ok");
+    assert.match(out(await client.callTool({ name: "oauth_guide_list", arguments: {} })), /gmail/, "embedded list includes gmail");
+    const got = await client.callTool({ name: "oauth_guide_get", arguments: { slug: "gmail" } });
+    assert.ok(!got.isError, "embedded get gmail ok");
     assert.match(out(got), /Evidence/);
   });
 } finally {

@@ -10,7 +10,7 @@ test("submitting Calendly shows the agent graph progressing, then lands on the g
   // Mid-run: something is running or already done, and the log is streaming.
   await expect(page.locator('[data-testid="run-node"][data-status="running"], [data-testid="run-node"][data-status="done"]').first()).toBeVisible();
   await expect(page.getByTestId("log-line").first()).toBeVisible();
-  await page.screenshot({ path: "docs/screenshots/run.png" });
+  await page.screenshot({ path: process.env.UPDATE_SCREENSHOTS === "1" ? "docs/screenshots/run.png" : "test-results/run.png" });
 
   await expect(page.getByTestId("run-banner")).toBeVisible({ timeout: 45_000 });
   for (const n of ["intake", "composio_lookup", "docs_research", "probe", "draft", "verify", "finalize"]) {

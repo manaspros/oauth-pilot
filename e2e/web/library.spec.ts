@@ -4,15 +4,17 @@ test("library lists guide cards with tier badges", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: /How hard is it to get your OAuth app approved/ })).toBeVisible();
   const cards = page.getByTestId("guide-card");
-  expect(await cards.count()).toBeGreaterThanOrEqual(1);
+  expect(await cards.count()).toBe(5);
   await expect(cards.first().getByTestId("tier-badge")).toBeVisible();
   await expect(page.getByTestId("guide-card").filter({ hasText: "Linear" })).toBeVisible();
 });
 
 test("tier filter narrows the grid", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: /^Tier 1/ }).click();
-  for (const c of await page.getByTestId("guide-card").all()) await expect(c).toHaveAttribute("data-tier", "1");
+  await expect(page.getByTestId("guide-card")).toHaveCount(5);
+  await page.getByRole("button", { name: /^Tier 2/ }).click();
+  await expect(page.getByTestId("guide-card")).toHaveCount(2); // google-calendar, salesforce
+  for (const c of await page.getByTestId("guide-card").all()) await expect(c).toHaveAttribute("data-tier", "2");
 });
 
 test("guide api and markdown endpoint", async ({ request }) => {

@@ -1,16 +1,30 @@
 import { expect, test } from "@playwright/test";
 
-test("guide page renders verdict, start today, timeline, flow and ledger", async ({ page }) => {
-  await page.goto("/guides/linear");
-  await expect(page.getByTestId("tier-badge")).toBeVisible();
-  await expect(page.getByTestId("start-today")).toContainText("Create the Linear OAuth2 application");
-  expect(await page.getByTestId("timeline-item").count()).toBeGreaterThanOrEqual(3);
-  expect(await page.getByTestId("claim-row").count()).toBeGreaterThanOrEqual(3);
+// Screenshots go to test-results/ (gitignored); set UPDATE_SCREENSHOTS=1 to refresh docs/screenshots/.
+const shot = (name: string) => (process.env.UPDATE_SCREENSHOTS === "1" ? `docs/screenshots/${name}` : `test-results/${name}`);
+
+test("gmail guide: tier 3, CASA on the critical path, evidence ledger with sources, uncertain items marked", async ({ page }) => {
+  await page.goto("/guides/gmail");
+  await expect(page.getByTestId("tier-badge").first()).toHaveAttribute("data-tier", "3");
+  await expect(page.getByTestId("start-today")).toBeVisible();
+
+  const items = page.getByTestId("timeline-item");
+  expect(await items.count()).toBeGreaterThanOrEqual(3);
+  await expect(page.getByTestId("timeline")).toContainText(/CASA|security assessment/i);
+  await expect(items.filter({ hasText: /CASA|security assessment/i }).first()).toBeVisible();
+
+  expect(await page.getByTestId("claim-row").count()).toBeGreaterThanOrEqual(10);
   await expect(page.getByTestId("ledger-counts")).toContainText("sourced");
+  // sources are rendered as links on sourced claims
+  expect(await page.locator('[data-testid="claim-row"][data-evidence="sourced"] a[href^="http"]').count()).toBeGreaterThanOrEqual(3);
+  // uncertain items are marked: inferred claims and open questions
+  expect(await page.locator('[data-testid="claim-row"][data-evidence="inferred"]').count()).toBeGreaterThanOrEqual(1);
+  await expect(page.getByTestId("ledger-counts")).toContainText(/[1-9]\d* open question/);
+
   await expect(page.locator(".react-flow__node").nth(2)).toBeVisible();
   expect(await page.locator(".react-flow__node").count()).toBeGreaterThanOrEqual(3);
   for (const h of await page.locator("a[href]").evaluateAll((as) => as.map((a) => a.getAttribute("href") ?? ""))) expect(h).not.toMatch(/^\s*(javascript|data):/i);
-  await page.screenshot({ path: "docs/screenshots/guide.png", fullPage: true });
+  await page.screenshot({ path: shot("guide.png"), fullPage: true });
 });
 
 test("clicking a step node opens a detail panel", async ({ page }) => {
