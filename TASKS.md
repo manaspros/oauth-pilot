@@ -237,7 +237,7 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Notes:** User chose no deploy (2026-10-28): local run + docs/DEMO.md instead.
 
 ### T25 · README + DEMO + final Goldfish read
-- **Status:** in_progress · **Tier:** A · **Deps:** T23 · **Est:** 30 min · **Agent:** sonnet writes; separate fresh sonnet Goldfish reads
+- **Status:** done · **Tier:** A · **Deps:** T23 · **Est:** 30 min · **Agent:** sonnet writes; separate fresh sonnet Goldfish reads
 - **Files:** `README.md`, `docs/DEMO.md`
 - **Do:** README sections:
   - what it is (3 lines)
@@ -252,4 +252,4 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 
   DEMO.md: a 5-minute reviewer script.
 - **Accept:** the Goldfish, given only README.md, correctly answers: how to run locally, what tier 3 means, what was tested vs sourced. The Q&A goes in LOG.md.
-- **Notes:** agent:abc598bc71470d069
+- **Notes:** agent:abc598bc71470d069. README + DEMO.md (local run; deploy cut). README-only Goldfish answered run-locally / tier 3 / tested-vs-sourced correctly (PASS); round 1 fixed the private-repo install route + bundle-is-committed wording. Plugin validate notes cleared.

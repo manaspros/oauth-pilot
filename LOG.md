@@ -115,3 +115,7 @@
 ## 2026-10-28T12:30+05:30 T22 PASS (partial setup)
 - Attempts run by the orchestrator with the user's Linear key; write-up by a sonnet worker (docs/verification/setup-attempts.md, 4 new tested claims + 2 risks in guides/linear.json). D-OPS-3.
 - API_KEY connection ACTIVE with working tool calls. Managed OAuth consent screen reached in the user's Chrome (Browser 1), but Authorize was not clicked within 10 min, twice → EXPIRED. Own-app path blocked: oauth:create scope. MCP bundle rebuilt.
+
+## 2026-10-28T12:32+05:30 T25 PASS
+- README (what/run locally/tour/setup/decisions/evidence/verification/limits/credits) + docs/DEMO.md (5-min local reviewer script). Totals: 118 claims after the audit; 122 today (15 tested / 86 sourced / 21 inferred).
+- README-only Goldfish Q&A: run locally = `pnpm install && pnpm --filter web build && OAUTH_PILOT_FAKE=1 pnpm --filter web start`; tier 3 = a provider wait ≥ 1 week or a restricted scope (Gmail, CASA); tested = code-run probes, Composio lookups and the T22 setup; sourced = URL + quote + date, re-fetched by the verifier. Majors (private-repo install route, bundle-committed wording) fixed in round 1.
