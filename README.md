@@ -95,6 +95,8 @@ The pattern is draft, then verify with fresh context: a drafting call with all t
 
 ## Verification summary
 
+End-to-end results (offline suites plus live web, CLI, MCP and Claude Code plugin runs, with timings and bugs found and fixed): [docs/E2E_RESULTS.md](docs/E2E_RESULTS.md).
+
 The agent generated the 5 library guides live. Fresh-context auditors then checked every claim against hand-built evidence packs (`research/apps/*.md`) and re-fetched cited pages.
 
 - Claims in the library: **after the audit** ([SUMMARY](docs/verification/SUMMARY.md)) 118 = 11 tested, 86 sourced, 21 inferred (before: 113 = 11 / 66 / 36). **Today** (recounted from `guides/*.json`) 123 = 16 tested, 86 sourced, 21 inferred, because T22 added 5 tested claims to the Linear guide.

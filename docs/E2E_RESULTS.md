@@ -1,5 +1,83 @@
 # OAuth Pilot: end-to-end test results
 
+## Pass 2 (after fixes, 2026-10-28, commit 14eaf08)
+
+Same method as pass 1 (pass 1 below is kept unchanged as history). Fixes under test: D-AGENT-5 (empty research degrades and retries, production clock clamped to the critical path, `oauth_guide_status` long-poll via `wait_seconds`) plus the clocks assertion in the web e2e. Live runs used scratch `DATA_DIR`s outside the repo; keys came from `.env` and are not recorded. Working tree after the pass: only `docs/screenshots/live-run.png` and this file changed.
+
+### Pass 2 summary
+
+| # | Success criterion | Result | Evidence (pass 2) |
+|---|---|---|---|
+| 1 | Site shows 5 guides with tier badges and both clocks | ✅ | Playwright 9/9, including the new clocks assertion on library cards and guide page |
+| 2 | Gmail: CASA on the critical path, ledger with sources, uncertain items marked | ✅ | `guide.spec.ts` passes (unchanged from pass 1) |
+| 3 | Unfamiliar app, graph lights up, guide in < ~3 min | ✅ | Slack web run 85 s, no degraded node, 7 research notes, 11 claims (tested 3, sourced 5, inferred 3), verifier fetched 7/7 cited pages. Pass 1 was 71 s with 0 notes and 0 sourced claims. |
+| 4a | `/oauth-pilot:oauth-guide <app>` returns a verdict with MCP tools only | ✅ | Trello (uncached app): finished, 104 s, $0.171, 7 turns, 2 `oauth_guide_status` calls, verdict "Trello: Tier 0, Instant". See F for why Notion was not the one exercised. |
+| 4b | `/oauth-pilot:oauth-setup linear` | unchanged | Not re-run; see pass 1 section H |
+| 5 | MCP start -> status reports a summary | ✅ | Calendly live: 3 status calls with `wait_seconds:30`, Done at 90 s, "Done. Calendly: tier 0 (Instant)..." (pass 1: polling every 5 s, 110 s) |
+| 6 | README | n/a | Not exercised |
+| Offline | `pnpm test:all` | ✅ | exit 0, 25 s: core 29, agent 63, mcp none (passWithNoTests), 5/5 guides valid, 9/9 Playwright, 2/2 MCP e2e |
+
+Nothing failed in pass 2. Caveats are listed in the bug table and in F.
+
+### Bugs: status
+
+| # (pass 1) | Bug | Status | Evidence |
+|---|---|---|---|
+| 1 | Web run finishes "ok" with 0 research notes, silent | Mitigated | Slack rerun got 7 notes and 5 sourced claims. The root cause was never reproduced (D-AGENT-5 says 0 notes failed to reproduce in 4 live tries), so the degrade/retry path was not hit live in pass 2; it is covered by unit tests only (agent suite 58 -> 63 tests). |
+| 2 | `timeToProduction.maxHours` below the critical path (Pipedrive) | Fixed (unit-tested only) | No pass 2 run logged "raised timeToProduction" (Slack stream checked; Calendly and Trello guides have consistent clocks). The clamp is exercised by unit tests only; Pipedrive was not re-run. |
+| 3 | Skill cannot wait between polls in a restricted session | Fixed | Trello via `claude -p` with only oauth-pilot MCP tools (no Bash): finished with a verdict using 2 status calls, versus 9 rapid calls and a give-up in pass 1. Calendly via MCP driver: 3 calls of `wait_seconds:30`. |
+| 4 | First MCP status uninformative during probe/research | Still open (minor) | Calendly status at 30 s and 60 s returned "Running. Call oauth_guide_status again with wait_seconds. Last events:"; not examined further. |
+| 5 | MCP start result hardcodes `http://localhost:3000/guides/<slug>` | Not a bug (closed) | Orchestrator check: no localhost default exists in code (`webUrl()` returns undefined unless `OAUTH_PILOT_URL` is set). The test shell loaded `.env`, which sets `OAUTH_PILOT_URL=http://localhost:3000`. Asserted in e2e/mcp.e2e.mjs. |
+| 6 | No Playwright assertion for the two clocks | Fixed | Commit 813047a; web e2e now 9 tests (was 8). |
+| 7 | `packages/mcp` has no unit tests | Still open | vitest reports "No test files found"; covered only by `e2e:mcp`. |
+
+### Pass 2 re-run details
+
+**Offline (`pnpm test:all`, exit 0, 25.3 s):** typecheck of core, agent, mcp, web all Done. Unit: `packages/core` 2 files / 29 tests; `packages/agent` 11 files / 63 tests; `packages/mcp` no test files. `validate:guides` 5 guides, 0 failed. Web e2e 9 passed (20.2 s, includes `next build`). MCP e2e: `ok: repo guides dir (623 ms)`, `ok: empty GUIDES_DIR (embedded) (141 ms)`. The MCP bundle rebuild left no diff.
+
+**D. Live web run, Slack:** `pnpm --filter web build`, `.env` exported, `next start -p 3231`, `POST /api/runs {"app":"Slack"}` gave `slack-20aca948`; SSE streamed to `done`.
+
+| Node | Start (s) | Duration (s) | Notes |
+|---|---|---|---|
+| intake | 0.0 | 2.6 | target Slack |
+| composio_lookup | 2.6 | 0.4 | "slack: OAUTH2, 0 required scopes" |
+| probe | 2.6 | 0.5 | 6 probes, 2 ok |
+| docs_research | 2.6 | 25.6 | **7 notes** (pass 1: 0 notes, 39 s) |
+| draft | 28.3 | 44.7 | drafted from 7 notes, 3 premade claims |
+| verify | 73.0 | 12.1 | fetched 7/7 cited pages, 2/6 web_fetch fallbacks; supported 5, partial 0, unsupported 2, contradicted 0, not checked 1 |
+| finalize | 85.1 | 0.0 | guide valid |
+
+- Node order: intake, then composio_lookup + probe + docs_research in parallel, draft, verify, finalize, done. No degraded nodes, no research-retry log lines visible.
+- **Total 85.1 s** (< 3 min).
+- Guide: tier 0 (Instant), confidence medium, 11 claims by evidence: tested 3, sourced 5, inferred 3; 6 open questions. `GET /guides/slack?generated=1` returned 200 with `data-testid="tier-badge" data-tier="0"`.
+- Tier 0 for Slack is still debatable (Marketplace review exists); the guide now carries sourced claims and the verifier flagged 2 claims unsupported, so it is not silently confident.
+- Screenshot refreshed: `docs/screenshots/live-run.png` (1280x900, Playwright). Server stopped; nothing listening on 3231.
+
+**F. Plugin skill, MCP tools only** (`claude -p --plugin-dir plugin/oauth-pilot --max-budget-usd 2`, allowed only `mcp__plugin_oauth-pilot_oauth-pilot__*`, Bash/Read/Write and all other tools disallowed):
+- Run with "notion": finished in 20 s, $0.187, 4 turns, but with **no generation run**: the plugin's own data dir (`~/.claude/plugins/data/oauth-pilot-inline/guides/notion.json`, left by pass 1) already held a Notion guide, so the skill loaded it and never polled. That run does not test the polling fix.
+- One retry with an app that was not cached, "trello" (a deviation from the requested app, chosen so polling is exercised): **finished with a verdict.** 104 s, $0.171, 7 turns, 1 `oauth_guide_start`, **2 `oauth_guide_status` calls**, 1 `oauth_guide_get`. Verdict line: "## Trello: Tier 0 · Instant" (time to first connection 5-30 min, production about an hour or less, confidence medium), with 3 critical-path actions. It could not save `./oauth-guides/trello.md` because no write tool was allowed, and said so.
+- The Notion cache was left in place (outside the repo).
+
+**E. Live MCP, Calendly** (MCP SDK driver, scratch `DATA_DIR`): `oauth_guide_start {app:"Calendly"}` gave `calendly-b2b52674`; `oauth_guide_status {wait_seconds:30}` returned "Running" at 30.0 s and 60.0 s and "Done. Calendly: tier 0 (Instant)..." at 90.0 s: **3 status calls, 90 s** (pass 1: about 22 calls every 5 s, 110 s). Time to first connection 5-30 min, production under 1 hour, confidence medium.
+
+**Bug 2 spot-check:** no run in pass 2 logged "raised timeToProduction" (Slack SSE has no such line; the clamp's log is only emitted when it fires). The clamp is unit-tested only.
+
+### Pass 2 numbers
+
+| Run | Surface | Time | Cost |
+|---|---|---|---|
+| `pnpm test:all` | offline | 25 s | none |
+| Slack | web | 85 s | proxy-billed, not reported |
+| Notion (cached, no polling) | plugin skill | 20 s | $0.187 |
+| Trello | plugin skill | 104 s | $0.171 |
+| Calendly | MCP | 90 s | proxy-billed, not reported |
+
+Claude Code cost counted this pass: $0.358.
+
+---
+
+# Pass 1 (original run, history)
+
 - **Date:** 2026-10-28
 - **Commit:** `2795845` (working tree clean apart from `docs/screenshots/live-run.png` and this file)
 - **Environment:** Linux, Node v26.11.1, pnpm 12.15.0, Claude Code CLI (headless). Model `claude-sonnet-5-5` through an Anthropic-compatible proxy (LiteLLM). Composio key from `.env`. Live outputs went to a scratch `DATA_DIR` outside the repo.
