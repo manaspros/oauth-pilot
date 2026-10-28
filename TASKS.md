@@ -214,13 +214,13 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Notes:** agent:abcbf9560a3fef986 (generation) Generated 5 guides (validate ok): linear t0, google-calendar t2, gmail t3, salesforce t1, shopify t3; 113 claims (11 tested/66 sourced/36 inferred); ~10 min wall. Audited by 3 auditors: sourced 66→86, inferred 36→21; Salesforce tier 1→2. 20/28 unsupported were fetch artifacts → verify web_fetch fallback + draft rules (D-AGENT-4). SUMMARY.md written. MCP bundle rebuilt.
 
 ### T22 · HUMAN: real setup attempt via the plugin
-- **Status:** human · **Tier:** B · **Deps:** T20, T21 · **Est:** 30 min with the user
+- **Status:** done · **Tier:** B · **Deps:** T20, T21 · **Est:** 30 min with the user
 - **Files:** `docs/verification/setup-attempts.md`, `guides/linear.json` (claims upgraded to `tested`)
 - **Do:**
   - With the user at the keyboard, run `/oauth-pilot:oauth-setup linear` end to end: Linear OAuth app → Composio auth config → connect → ACTIVE.
   - Optional: a Google Cloud testing-mode project for Calendar, up to the consent screen.
 - **Accept:** setup-attempts.md lists each attempt with date, steps, result and doc drift.
-- **Notes:**
+- **Notes:** agent:a80bad8b7d4fce2c4 (write-up; attempts run by orchestrator with the user's Linear key). API_KEY path ACTIVE + 2 tool calls ok; managed OAuth reached the consent screen but expired twice (Authorize not clicked); oauthApplicationCreate needs the oauth:create scope. 4 new tested claims (t1–t4). Own-app OAuth + Calendar not done.
 
 ## Phase 7 — Ship
 
@@ -231,13 +231,13 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 - **Notes:** agent:ad630bc43f3f403e2. Clean worktree `pnpm install && pnpm test:all` green (core 29, agent 58, 5 guides, web 8, mcp 2). Web case 2 + MCP on gmail; screenshots only with UPDATE_SCREENSHOTS=1. e2e:plugin passes on a real claude -p ($0.30–0.35); skips only on an auth failure.
 
 ### T24 · Deploy — HUMAN approval
-- **Status:** human · **Tier:** C · **Deps:** T23
+- **Status:** cut · **Tier:** C · **Deps:** T23
 - **Do:** Dockerfile; the user creates the service and sets env vars on the host (never committed). Smoke test: one live run on the deployed URL.
 - **Accept:** a public URL serves `/` and one live generation succeeds; the URL is recorded in the README. If skipped: `docs/DEMO.md` links a recorded demo video instead.
-- **Notes:**
+- **Notes:** User chose no deploy (2026-10-28): local run + docs/DEMO.md instead.
 
 ### T25 · README + DEMO + final Goldfish read
-- **Status:** todo · **Tier:** A · **Deps:** T23 · **Est:** 30 min · **Agent:** sonnet writes; separate fresh sonnet Goldfish reads
+- **Status:** in_progress · **Tier:** A · **Deps:** T23 · **Est:** 30 min · **Agent:** sonnet writes; separate fresh sonnet Goldfish reads
 - **Files:** `README.md`, `docs/DEMO.md`
 - **Do:** README sections:
   - what it is (3 lines)
@@ -252,4 +252,4 @@ Critical path: T00 → T01, T02 → T03 → T10 → T11, T12 → T13 → T14 →
 
   DEMO.md: a 5-minute reviewer script.
 - **Accept:** the Goldfish, given only README.md, correctly answers: how to run locally, what tier 3 means, what was tested vs sourced. The Q&A goes in LOG.md.
-- **Notes:**
+- **Notes:** agent:abc598bc71470d069

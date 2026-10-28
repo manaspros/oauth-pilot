@@ -111,3 +111,7 @@
 - Fresh git worktree: install + test:all green. Orchestrator re-ran test:all in the main repo: green, docs/ clean (the first attempt was killed with exit 137 with no leftovers; the re-run passed).
 - Goldfish Major: the plugin smoke's skip regex could mask real failures. Round 1 fixed it (skip only on rc≠0/is_error + an auth phrase; tools hard-restricted). Plugin smoke costs $0.30–0.35 per run.
 - Chore: scripts/check-secrets.sh now also blocks lin_api_ tokens (the user supplied a Linear key for T22; stored only in .env).
+
+## 2026-10-28T12:30+05:30 T22 PASS (partial setup)
+- Attempts run by the orchestrator with the user's Linear key; write-up by a sonnet worker (docs/verification/setup-attempts.md, 4 new tested claims + 2 risks in guides/linear.json). D-OPS-3.
+- API_KEY connection ACTIVE with working tool calls. Managed OAuth consent screen reached in the user's Chrome (Browser 1), but Authorize was not clicked within 10 min, twice → EXPIRED. Own-app path blocked: oauth:create scope. MCP bundle rebuilt.

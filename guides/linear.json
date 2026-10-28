@@ -71,7 +71,8 @@
     "claimIds": [
       "tc1",
       "c3",
-      "c4"
+      "c4",
+      "t3"
     ]
   },
   "scopes": [
@@ -82,7 +83,8 @@
         "LINEAR_LIST_LINEAR_ISSUES"
       ],
       "claimIds": [
-        "c4"
+        "c4",
+        "t1"
       ]
     },
     {
@@ -92,7 +94,8 @@
         "LINEAR_CREATE_LINEAR_ISSUE"
       ],
       "claimIds": [
-        "c4"
+        "c4",
+        "t1"
       ]
     }
   ],
@@ -161,7 +164,7 @@
       "phase": "connect",
       "title": "Authorize Linear through Composio managed OAuth2",
       "actor": "developer",
-      "detail": "In Composio, create a connection for the `linear` toolkit using the managed OAUTH2 auth config, requesting scopes `read` and `write`. Open the returned redirect link, pick the workspace on Linear's consent screen and approve. The connection becomes ACTIVE with no Linear app registration or review.",
+      "detail": "In Composio, create a connection for the `linear` toolkit using the managed OAUTH2 auth config, requesting scopes `read` and `write`. Open the returned redirect link, pick the workspace on Linear's consent screen and approve. The connection becomes ACTIVE with no Linear app registration or review. Approve within 10 minutes: an unapproved connection expires.",
       "duration": {
         "minHours": 0.05,
         "maxHours": 0.25,
@@ -177,7 +180,9 @@
       "links": [],
       "claimIds": [
         "tc1",
-        "c4"
+        "c4",
+        "t1",
+        "t2"
       ],
       "optional": false
     },
@@ -239,7 +244,7 @@
       "phase": "register",
       "title": "Optional: register your own Linear OAuth2 app and use it in Composio",
       "actor": "developer",
-      "detail": "Go to linear.app/settings/api/applications/new, create an OAuth2 application, and set the redirect callback URL to https://backend.composio.dev/api/v1/auth-apps/add. Prefer a dedicated workspace to own the app so every admin has access. Choose private or public distribution. Copy the client ID and secret into a custom Composio auth config for `linear`, then reconnect. Skip this if the managed app is enough.",
+      "detail": "Go to linear.app/settings/api/applications/new, create an OAuth2 application, and set the redirect callback URL to https://backend.composio.dev/api/v1/auth-apps/add. Prefer a dedicated workspace to own the app so every admin has access. Choose private or public distribution. Copy the client ID and secret into a custom Composio auth config for `linear`, then reconnect. Skip this if the managed app is enough. Creating the app through the GraphQL API with a personal API key needs the `oauth:create` scope; otherwise use the settings page.",
       "duration": {
         "minHours": 0.25,
         "maxHours": 0.5,
@@ -265,7 +270,8 @@
       "claimIds": [
         "c1",
         "c14",
-        "c13"
+        "c13",
+        "t4"
       ],
       "optional": true
     }
@@ -331,6 +337,29 @@
       "claimIds": [
         "c2",
         "c15"
+      ]
+    },
+    {
+      "id": "k6",
+      "title": "Composio consent link expires after 10 minutes",
+      "severity": "warning",
+      "gate": false,
+      "symptom": "The connection shows EXPIRED (\"Authorization was started but not completed within 10 minutes\") and the old short link returns 404 \"URL not found\".",
+      "fix": "Initiate a fresh connected account and approve on Linear's consent screen straight away. Expired links cannot be reused.",
+      "claimIds": [
+        "t2"
+      ]
+    },
+    {
+      "id": "k7",
+      "title": "Personal API key cannot create an OAuth app without oauth:create",
+      "severity": "info",
+      "gate": false,
+      "symptom": "GraphQL oauthApplicationCreate returns HTTP 400 \"Invalid scope: `oauth:create` required\".",
+      "fix": "Create the app in the Linear UI at linear.app/settings/api/applications/new, or issue a personal API key that includes the oauth:create scope. As a fallback that needs no OAuth app, use a Composio API_KEY connection with a personal key.",
+      "claimIds": [
+        "t4",
+        "t3"
       ]
     }
   ],
@@ -657,6 +686,38 @@
         "verdict": "supported",
         "note": "The page says rate limits are dynamically increased for workspace-level OAuth apps using Actor Authorization."
       }
+    },
+    {
+      "id": "t1",
+      "text": "Composio's managed Linear OAuth app sends the user to linear.app/oauth/authorize with redirect_uri https://backend.composio.dev/api/v1/auth-apps/add and scope \"read write issues:create comments:create\"; the consent screen reads \"Composio is requesting access\" to the workspace with Read and Write permissions.",
+      "evidence": "tested",
+      "sources": [],
+      "testedHow": "2026-10-28, Linear workspace testforcontext: POST /api/v3.1/auth_configs {type: use_composio_managed_auth} then POST /api/v3.1/connected_accounts for user oauth-pilot-t22 returned INITIATED with a backend.composio.dev/api/v3/s/<code> link. Opened in Chrome, it redirected to linear.app/oauth/authorize with the redirect_uri and scope above and showed the consent screen. Authorize was not clicked in time, so the connection never reached ACTIVE.",
+      "confidence": "high"
+    },
+    {
+      "id": "t2",
+      "text": "A Composio connection initiated with managed OAuth moves to EXPIRED with \"Authorization was started but not completed within 10 minutes\" if the user does not approve in time, and the short redirect link then returns 404 \"URL not found\".",
+      "evidence": "tested",
+      "sources": [],
+      "testedHow": "2026-10-28: two managed Linear connected accounts were initiated and left unapproved. Both went to EXPIRED with status reason \"Authorization was started but not completed within 10 minutes\". Opening the first short URL after expiry returned HTTP 404 \"URL not found\".",
+      "confidence": "high"
+    },
+    {
+      "id": "t3",
+      "text": "An API_KEY auth config plus a Linear personal API key gives an ACTIVE Composio connection and working Linear tool calls, as an alternative to OAuth.",
+      "evidence": "tested",
+      "sources": [],
+      "testedHow": "2026-10-28: POST /api/v3.1/auth_configs {toolkit:{slug:linear}, auth_config:{type:use_custom_auth, authScheme:API_KEY, credentials:{}}} returned 201 (ac_lRdLLROO-VLY). POST /api/v3.1/connected_accounts with connection.state {authScheme:API_KEY, val:{status:ACTIVE, generic_api_key:<personal key>}} returned 201 (ca_pOvD6nB1ne0I), status ACTIVE immediately. POST /api/v3/tools/execute for LINEAR_GET_CURRENT_USER and LINEAR_GET_ALL_LINEAR_TEAMS with that connected_account_id both returned successful=true. LINEAR_LIST_LINEAR_TEAMS failed with \"missing project_id\".",
+      "confidence": "high"
+    },
+    {
+      "id": "t4",
+      "text": "Creating a Linear OAuth app through the GraphQL API (oauthApplicationCreate) with a personal API key is rejected unless the key has the `oauth:create` scope.",
+      "evidence": "tested",
+      "sources": [],
+      "testedHow": "2026-10-28: POST https://api.linear.app/graphql with mutation oauthApplicationCreate (input name, developer, redirectUris=[https://backend.composio.dev/api/v1/auth-apps/add]) authorized with a personal API key returned HTTP 400, error \"Invalid scope: `oauth:create` required\" (FORBIDDEN). Nothing was created. Schema introspection showed the mutation exists and returns clientSecret once at creation.",
+      "confidence": "high"
     }
   ],
   "openQuestions": [
