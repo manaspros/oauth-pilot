@@ -7,6 +7,10 @@ test("gmail guide: tier 3, CASA on the critical path, evidence ledger with sourc
   await page.goto("/guides/gmail");
   await expect(page.getByTestId("tier-badge").first()).toHaveAttribute("data-tier", "3");
   await expect(page.getByTestId("start-today")).toBeVisible();
+  for (const id of ["tile-first", "tile-prod"]) {
+    await expect(page.getByTestId(id)).toBeVisible();
+    expect((await page.getByTestId(id).innerText()).trim().length).toBeGreaterThan(10);
+  }
 
   const items = page.getByTestId("timeline-item");
   expect(await items.count()).toBeGreaterThanOrEqual(3);

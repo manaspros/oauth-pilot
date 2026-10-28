@@ -9,6 +9,19 @@ test("library lists guide cards with tier badges", async ({ page }) => {
   await expect(page.getByTestId("guide-card").filter({ hasText: "Linear" })).toBeVisible();
 });
 
+test("every library card shows both clocks (first connection and production) with values", async ({ page }) => {
+  await page.goto("/");
+  const cards = page.getByTestId("guide-card");
+  await expect(cards).toHaveCount(5);
+  for (const c of await cards.all()) {
+    await expect(c).toContainText("First connection");
+    await expect(c).toContainText("production");
+    const values = await c.locator("b").allInnerTexts();
+    expect(values.length).toBeGreaterThanOrEqual(2);
+    for (const v of values.slice(0, 2)) expect(v.trim().length).toBeGreaterThan(0);
+  }
+});
+
 test("tier filter narrows the grid", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByTestId("guide-card")).toHaveCount(5);
