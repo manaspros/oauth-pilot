@@ -126,3 +126,7 @@
 
 ## 2026-10-28T12:49+05:30 Verifier re-run (measurement)
 - Fixed verify on the pre-audit guides, 2 live runs: unsupported 28 → 8 / 5; 14 then 17 of the 20 confirmed artifacts cleared; 19 web_fetch fallbacks; ~70–80 s for 5 apps. Remaining: 3 Shopify long-page misses. New drift: Linear c4 quote is stale. docs/verification/verifier-rerun.md.
+
+## 2026-10-28T13:00+05:30 Live e2e pass 1 (docs/E2E_RESULTS.md)
+- test:all ✅, plugin smoke ✅ ($0.37), live CLI Pipedrive 157 s ✅ (tier 3, 30 claims, 0 unsupported), live MCP Calendly 110 s ✅, live web Slack 71 s ⚠️ (docs_research 0 notes, silently), plugin /oauth-guide notion ⚠️ (gave up polling; passed on a retry with sleep allowed, 189 s).
+- 5 bugs found → fix round: research 0-notes not flagged; timeToProduction < critical path; skill can't wait between polls; MCP web_url default; no clock assertion.
